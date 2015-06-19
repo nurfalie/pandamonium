@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>pandemonium_mainwindow</class>
+ <widget class="QMainWindow" name="pandemonium_mainwindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>700</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>pandemonium</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QTabWidget" name="tab_3">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>&amp;Configuration</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QGroupBox" name="proxy_information">
+          <property name="title">
+           <string>&amp;Proxy</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>false</bool>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QComboBox" name="proxy_type">
+               <property name="sizeAdjustPolicy">
+                <enum>QComboBox::AdjustToContents</enum>
+               </property>
+               <item>
+                <property name="text">
+                 <string>HTTP</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>SOCKS5</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>&amp;Address</string>
+               </property>
+               <property name="buddy">
+                <cstring>proxy_address</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="proxy_address"/>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>&amp;Port</string>
+               </property>
+               <property name="buddy">
+                <cstring>proxy_port</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>&amp;User</string>
+               </property>
+               <property name="buddy">
+                <cstring>proxy_user</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="proxy_user"/>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>&amp;Password</string>
+               </property>
+               <property name="buddy">
+                <cstring>proxy_password</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLineEdit" name="proxy_password">
+               <property name="echoMode">
+                <enum>QLineEdit::Password</enum>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <layout class="QHBoxLayout" name="horizontalLayout_2">
+               <item>
+                <widget class="QSpinBox" name="proxy_port">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>65535</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>&amp;Kernel</string>
+            </property>
+            <property name="buddy">
+             <cstring>kernel_path</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="kernel_path"/>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="select_kernel">
+            <property name="text">
+             <string>Select</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_6">
+            <property name="text">
+             <string>Kernel Process ID</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="activate_kernel">
+            <property name="text">
+             <string>Activate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="deactivate_kernel">
+            <property name="text">
+             <string>Deactivate</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLineEdit" name="kernel_pid">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="defined_urls">
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="horizontalScrollMode">
+           <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Search Depth</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>URL</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="new_url">
+            <property name="text">
+             <string>New URL</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="remove_defined_url">
+            <property name="text">
+             <string>Remove Selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Discovered URLs</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <item>
+           <spacer name="horizontalSpacer_6">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="all_toggled">
+            <property name="text">
+             <string>All Toggled</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="none_toggled">
+            <property name="text">
+             <string>None Toggled</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_7">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="discovered_urls">
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="horizontalScrollMode">
+           <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Export</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>URL</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_6">
+          <item>
+           <widget class="QComboBox" name="page">
+            <item>
+             <property name="text">
+              <string>Page 1</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_8">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="export_toggled">
+            <property name="text">
+             <string>Export</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="remove_discovered_url">
+            <property name="text">
+             <string>Remove Selected</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_9">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+       <zorder>proxy_information</zorder>
+       <zorder></zorder>
+       <zorder>defined_urls</zorder>
+       <zorder></zorder>
+       <zorder>discovered_urls</zorder>
+       <zorder>export_toggled</zorder>
+       <zorder>all_toggled</zorder>
+       <zorder>none_toggled</zorder>
+       <zorder>remove_discovered_url</zorder>
+       <zorder>horizontalSpacer_6</zorder>
+       <zorder>horizontalSpacer_7</zorder>
+       <zorder>horizontalSpacer_8</zorder>
+       <zorder>horizontalSpacer_9</zorder>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>700</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="action_Quit"/>
+   </widget>
+   <addaction name="menu_File"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action_Quit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>tab_3</tabstop>
+  <tabstop>proxy_information</tabstop>
+  <tabstop>proxy_type</tabstop>
+  <tabstop>proxy_address</tabstop>
+  <tabstop>proxy_port</tabstop>
+  <tabstop>proxy_user</tabstop>
+  <tabstop>proxy_password</tabstop>
+  <tabstop>kernel_path</tabstop>
+  <tabstop>select_kernel</tabstop>
+  <tabstop>kernel_pid</tabstop>
+  <tabstop>activate_kernel</tabstop>
+  <tabstop>deactivate_kernel</tabstop>
+  <tabstop>defined_urls</tabstop>
+  <tabstop>new_url</tabstop>
+  <tabstop>remove_defined_url</tabstop>
+  <tabstop>all_toggled</tabstop>
+  <tabstop>none_toggled</tabstop>
+  <tabstop>discovered_urls</tabstop>
+  <tabstop>page</tabstop>
+  <tabstop>export_toggled</tabstop>
+  <tabstop>remove_discovered_url</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
