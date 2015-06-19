@@ -25,27 +25,13 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QApplication>
+#include <QMainWindow>
 
-#include <iostream>
-
-int main(int argc, char *argv[])
+class pandemonium: public QMainWindow
 {
-  QApplication qapplication(argc, argv);
+  Q_OBJECT
 
-  try
-    {
-      return qapplication.exec();
-    }
-  catch(std::bad_alloc &exception)
-    {
-      std::cerr << QObject::tr("Memory allocation error at line ").
-	toStdString()
-		<< __LINE__
-		<< QObject::tr(", file ").toStdString()
-		<< __FILE__ << "." << std::endl;
-      exit(EXIT_FAILURE);
-    }
-
-  return EXIT_SUCCESS;
-}
+ public:
+  pandemonium(void);
+  ~pandemonium();
+};
