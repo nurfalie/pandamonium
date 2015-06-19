@@ -25,31 +25,8 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QDir>
+#include "pandemonium_createdb.h"
 
-#include "pandemonium.h"
-
-pandemonium::pandemonium(void):QMainWindow()
+void pandemonium_createdb::createdb(void)
 {
-  QDir().mkdir(homePath());
-  m_ui.setupUi(this);
-  show();
-}
-
-pandemonium::~pandemonium()
-{
-}
-
-QString pandemonium::homePath(void)
-{
-  QByteArray homepath(qgetenv("PANDEMONIUM_HOME"));
-
-  if(homepath.isEmpty())
-#ifdef Q_OS_WIN32
-    return QDir::currentPath() + QDir::separator() + ".pandemonium";
-#else
-    return QDir::homePath() + QDir::separator() + ".pandemonium";
-#endif
-  else
-    return homepath.constData();
 }

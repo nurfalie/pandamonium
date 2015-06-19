@@ -25,7 +25,14 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#ifndef _pandemonium_h_
+#define _pandemonium_h_
+
 #include <QMainWindow>
+
+#include "ui_pandemonium.h"
+
+#define PANDEMONIUM_VERSION_STR "2015.07.01"
 
 class pandemonium: public QMainWindow
 {
@@ -34,4 +41,10 @@ class pandemonium: public QMainWindow
  public:
   pandemonium(void);
   ~pandemonium();
+  static QString homePath(void);
+
+ private:
+  Ui_pandemonium_mainwindow m_ui;
 };
+
+#endif

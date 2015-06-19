@@ -26,15 +26,53 @@
 */
 
 #include <QApplication>
+#include <QSettings>
 
 #include <iostream>
 
+#include "pandemonium.h"
+
 int main(int argc, char *argv[])
 {
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  QMacStyle *style = new (std::nothrow) QMacStyle();
+
+  if(style)
+    QApplication::setStyle(style);
+#endif
+#endif
+#if QT_VERSION >= 0x050000
+#ifdef Q_OS_WIN32
+  QApplication::addLibraryPath("plugins");
+  QApplication::setStyle("fusion");
+#endif
+#endif
+
   QApplication qapplication(argc, argv);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  /*
+  ** Eliminate pool errors on OS X.
+  */
+
+  CocoaInitializer ci;
+#endif
+#endif
+  QCoreApplication::setApplicationName("pandemonium");
+  QCoreApplication::setOrganizationName("pandemonium");
+  QCoreApplication::setOrganizationDomain("pandemonium");
+  QCoreApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
+  QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                     pandemonium::homePath());
+  QSettings::setDefaultFormat(QSettings::IniFormat);
+
+  pandemonium *p = 0;
 
   try
     {
+      p = new pandemonium();
       return qapplication.exec();
     }
   catch(std::bad_alloc &exception)
@@ -46,6 +84,9 @@ int main(int argc, char *argv[])
 		<< __FILE__ << "." << std::endl;
       exit(EXIT_FAILURE);
     }
+
+  if(p)
+    p->deleteLater();
 
   return EXIT_SUCCESS;
 }
