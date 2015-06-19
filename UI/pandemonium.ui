@@ -423,18 +423,12 @@
         </item>
        </layout>
        <zorder>proxy_information</zorder>
-       <zorder></zorder>
        <zorder>defined_urls</zorder>
-       <zorder></zorder>
        <zorder>discovered_urls</zorder>
        <zorder>export_toggled</zorder>
        <zorder>all_toggled</zorder>
        <zorder>none_toggled</zorder>
        <zorder>remove_discovered_url</zorder>
-       <zorder>horizontalSpacer_6</zorder>
-       <zorder>horizontalSpacer_7</zorder>
-       <zorder>horizontalSpacer_8</zorder>
-       <zorder>horizontalSpacer_9</zorder>
       </widget>
      </widget>
     </item>
