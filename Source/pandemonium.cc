@@ -27,6 +27,7 @@
 
 #include <QDir>
 #include <QSettings>
+#include <QtDebug>
 
 #include "pandemonium.h"
 #include "pandemonium_createdb.h"
@@ -58,6 +59,32 @@ pandemonium::pandemonium(void):QMainWindow()
   pandemonium_createdb::createdb();
   QApplication::restoreOverrideCursor();
   statusBar()->clearMessage();
+
+  /*
+  ** Restore proxy settings.
+  */
+
+  m_ui.proxy_address->setText(settings.value("pandemonium_proxy_address").
+			      toString().trimmed());
+  m_ui.proxy_password->setText(settings.value("pandemonium_proxy_password").
+			       toString());
+  m_ui.proxy_port->setValue(settings.value("pandemonium_proxy_port").toInt());
+
+  int index = settings.value("pandemonium_proxy_type").toInt();
+
+  if(index < 0 || index > 1)
+    index = 0;
+
+  m_ui.proxy_type->setCurrentIndex(index);
+  m_ui.proxy_user->setText
+    (settings.value("pandemonium_proxy_user").toString());
+
+  foreach(QString key, settings.allKeys())
+    if(key.startsWith("pandemonium_proxy"))
+      {
+	m_ui.proxy_information->setChecked(true);
+	break;
+      }
 }
 
 pandemonium::~pandemonium()
