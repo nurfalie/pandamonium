@@ -355,14 +355,14 @@
           <item>
            <widget class="QPushButton" name="all_toggled">
             <property name="text">
-             <string>All Toggled</string>
+             <string>Toggle All</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QPushButton" name="none_toggled">
             <property name="text">
-             <string>None Toggled</string>
+             <string>Toggle None</string>
             </property>
            </widget>
           </item>
