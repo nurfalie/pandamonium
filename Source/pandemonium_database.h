@@ -36,6 +36,7 @@ class pandemonium_database
 {
  public:
   static QPair<QSqlDatabase, QString> database(void);
+  static void addSearchUrl(const QString &str);
   static void createdb(void);
 
  private:

@@ -25,9 +25,12 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QInputDialog>
 #include <QSettings>
+#include <QSqlQuery>
 #include <QtDebug>
 
 #include "pandemonium.h"
@@ -45,10 +48,18 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(close(void)));
+  connect(m_ui.add_search_url,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotAddSearchUrl(void)));
   connect(m_ui.kernel_path,
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveKernelPath(void)));
+  connect(m_ui.list_search_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotListSearchUrls(void)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -62,6 +73,7 @@ pandemonium::pandemonium(void):QMainWindow()
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
   m_highlightTimer.start(2500);
+  m_ui.search_urls->setColumnHidden(2, true); // url_hash
 
   QSettings settings;
 
@@ -153,6 +165,8 @@ void pandemonium::slotAddSearchUrl(void)
 
   if(!ok)
     return;
+
+  pandemonium_database::addSearchUrl(str);
 }
 
 void pandemonium::slotHighlightTimeout(void)
@@ -178,6 +192,62 @@ void pandemonium::slotHighlightTimeout(void)
 
   palette.setColor(m_ui.kernel_pid->backgroundRole(), color);
   m_ui.kernel_pid->setPalette(palette);
+}
+
+void pandemonium::slotListSearchUrls(void)
+{
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+  m_ui.search_urls->clearContents();
+  m_ui.search_urls->setRowCount(0);
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandemonium_database::database();
+    pair.first.setDatabaseName
+      (pandemonium::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+	int row = 0;
+
+	if(query.exec("SELECT search_depth, url, url_hash "
+		      "FROM pandemonium_search_urls "
+		      "ORDER BY url"))
+	  while(query.next())
+	    {
+	      QComboBox *comboBox = new QComboBox();
+	      QTableWidgetItem *item = 0;
+	      int index = 0;
+
+	      comboBox->addItem("5");
+	      comboBox->addItem("10");
+	      comboBox->addItem("15");
+	      index = comboBox->findText(query.value(0).toString());
+
+	      if(index >= 0)
+		comboBox->setCurrentIndex(index);
+
+	      m_ui.search_urls->setRowCount(row + 1);
+	      m_ui.search_urls->setCellWidget(row, 0, comboBox);
+	      item = new QTableWidgetItem(query.value(1).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_ui.search_urls->setItem(row, 1, item);
+	      item = new QTableWidgetItem(query.value(2).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_ui.search_urls->setItem(row, 2, item);
+	      row += 1;
+	    }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  QApplication::restoreOverrideCursor();
 }
 
 void pandemonium::slotProxyInformationToggled(bool state)

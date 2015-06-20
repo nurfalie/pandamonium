@@ -53,6 +53,7 @@ class pandemonium: public QMainWindow
  private slots:
   void slotAddSearchUrl(void);
   void slotHighlightTimeout(void);
+  void slotListSearchUrls(void);
   void slotProxyInformationToggled(bool state);
   void slotSaveProxyInformation(void);
   void slotSaveKernelPath(void);

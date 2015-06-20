@@ -252,7 +252,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="defined_urls">
+         <widget class="QTableWidget" name="search_urls">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
@@ -270,6 +270,11 @@
           <column>
            <property name="text">
             <string>URL</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>url_hash (hidden)</string>
            </property>
           </column>
          </widget>
@@ -290,21 +295,21 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="list_url">
+           <widget class="QPushButton" name="list_search_urls">
             <property name="text">
              <string>List</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="new_url">
+           <widget class="QPushButton" name="add_search_url">
             <property name="text">
              <string>New URL</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_defined_url">
+           <widget class="QPushButton" name="remove_search_urls">
             <property name="text">
              <string>Remove Selected</string>
             </property>
@@ -431,21 +436,21 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="list_discovered_url">
+           <widget class="QPushButton" name="list_discovered_urls">
             <property name="text">
              <string>List</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_all_discovered_url">
+           <widget class="QPushButton" name="remove_all_discovered_urls">
             <property name="text">
              <string>Remove All</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_discovered_url">
+           <widget class="QPushButton" name="remove_discovered_urls">
             <property name="text">
              <string>Remove Selected</string>
             </property>
@@ -513,18 +518,18 @@
   <tabstop>kernel_pid</tabstop>
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>
-  <tabstop>defined_urls</tabstop>
-  <tabstop>list_url</tabstop>
-  <tabstop>new_url</tabstop>
-  <tabstop>remove_defined_url</tabstop>
+  <tabstop>search_urls</tabstop>
+  <tabstop>list_search_urls</tabstop>
+  <tabstop>add_search_url</tabstop>
+  <tabstop>remove_search_urls</tabstop>
   <tabstop>all_toggled</tabstop>
   <tabstop>none_toggled</tabstop>
   <tabstop>discovered_urls</tabstop>
   <tabstop>page</tabstop>
   <tabstop>export_toggled</tabstop>
-  <tabstop>list_discovered_url</tabstop>
-  <tabstop>remove_all_discovered_url</tabstop>
-  <tabstop>remove_discovered_url</tabstop>
+  <tabstop>list_discovered_urls</tabstop>
+  <tabstop>remove_all_discovered_urls</tabstop>
+  <tabstop>remove_discovered_urls</tabstop>
  </tabstops>
  <resources/>
  <connections/>

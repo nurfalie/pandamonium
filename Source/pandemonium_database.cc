@@ -25,8 +25,10 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QCryptographicHash>
 #include <QDir>
 #include <QSqlQuery>
+#include <QUrl>
 
 #include "pandemonium.h"
 #include "pandemonium_database.h"
@@ -47,6 +49,50 @@ QPair<QSqlDatabase, QString> pandemonium_database::database(void)
     ("QSQLITE", QString("database_%1").arg(dbId));
   pair.second = pair.first.connectionName();
   return pair;
+}
+
+void pandemonium_database::addSearchUrl(const QString &str)
+{
+  QUrl url(QUrl::fromUserInput(str.trimmed()));
+
+  if(url.isEmpty())
+    return;
+  else if(!url.isValid())
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+#if QT_VERSION >= 0x050100
+	QCryptographicHash hash(QCryptographicHash::Sha3_512);
+#elif QT_VERSION >= 0x050000
+	QCryptographicHash hash(QCryptographicHash::Sha512);
+#else
+	QCryptographicHash hash(QCryptographicHash::Sha1);
+#endif
+	QSqlQuery query(pair.first);
+
+	hash.addData(url.toEncoded());
+	query.prepare("INSERT OR REPLACE INTO pandemonium_search_urls "
+		      "(url, url_hash) "
+		      "VALUES(?, ?)");
+	query.bindValue(0, url.toString());
+	query.bindValue(1, hash.result().toHex());
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
 
 void pandemonium_database::createdb(void)
@@ -78,6 +124,7 @@ void pandemonium_database::createdb(void)
 	    else
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
+		 "search_depth INTEGER NOT NULL DEFAULT 15, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");
 	  }
