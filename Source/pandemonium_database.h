@@ -38,6 +38,7 @@ class pandemonium_database
   static QPair<QSqlDatabase, QString> database(void);
   static void addSearchUrl(const QString &str);
   static void createdb(void);
+  static void removeSearchUrls(const QStringList &list);
 
  private:
   pandemonium_database(void)

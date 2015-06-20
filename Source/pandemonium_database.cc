@@ -29,6 +29,7 @@
 #include <QDir>
 #include <QSqlQuery>
 #include <QUrl>
+#include <QtDebug>
 
 #include "pandemonium.h"
 #include "pandemonium_database.h"
@@ -84,7 +85,7 @@ void pandemonium_database::addSearchUrl(const QString &str)
 		      "(url, url_hash) "
 		      "VALUES(?, ?)");
 	query.bindValue(0, url.toString());
-	query.bindValue(1, hash.result().toHex());
+	query.bindValue(1, hash.result().toHex().constData());
 	query.exec();
       }
 
@@ -135,4 +136,39 @@ void pandemonium_database::createdb(void)
 
       QSqlDatabase::removeDatabase(pair.second);
     }
+}
+
+void pandemonium_database::removeSearchUrls(const QStringList &list)
+{
+  if(list.isEmpty())
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.exec("PRAGMA secure_delete = ON");
+
+	foreach(QString str, list)
+	  {
+	    query.prepare("DELETE FROM pandemonium_search_urls "
+			  "WHERE url_hash = ?");
+	    query.bindValue(0, str);
+	    query.exec();
+	  }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }

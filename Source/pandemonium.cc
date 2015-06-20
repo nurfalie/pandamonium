@@ -64,6 +64,10 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyInformationToggled(bool)));
+  connect(m_ui.remove_search_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveSelectedSearchUrls(void)));
   connect(m_ui.save_proxy_information,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -167,6 +171,7 @@ void pandemonium::slotAddSearchUrl(void)
     return;
 
   pandemonium_database::addSearchUrl(str);
+  slotListSearchUrls();
 }
 
 void pandemonium::slotHighlightTimeout(void)
@@ -212,6 +217,8 @@ void pandemonium::slotListSearchUrls(void)
       {
 	QSqlQuery query(pair.first);
 	int row = 0;
+
+	query.setForwardOnly(true);
 
 	if(query.exec("SELECT search_depth, url, url_hash "
 		      "FROM pandemonium_search_urls "
@@ -267,6 +274,27 @@ void pandemonium::slotProxyInformationToggled(bool state)
       settings.remove("pandemonium_proxy_port");
       settings.remove("pandemonium_proxy_type");
       settings.remove("pandemonium_proxy_user");
+    }
+}
+
+void pandemonium::slotRemoveSelectedSearchUrls(void)
+{
+  QModelIndexList indexes
+    (m_ui.search_urls->selectionModel()->selectedRows(2));
+  QStringList list;
+
+  while(!indexes.isEmpty())
+    {
+      QModelIndex index(indexes.takeFirst());
+
+      if(index.isValid())
+	list << index.data().toString();
+    }
+
+  if(!list.isEmpty())
+    {
+      pandemonium_database::removeSearchUrls(list);
+      slotListSearchUrls();
     }
 }
 
