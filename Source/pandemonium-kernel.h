@@ -28,8 +28,12 @@
 #ifndef _pandemonium_kernel_h_
 #define _pandemonium_kernel_h_
 
-class pandemonium_kernel
+#include <QObject>
+
+class pandemonium_kernel: public QObject
 {
+  Q_OBJECT
+
  public:
   pandemonium_kernel(void);
   ~pandemonium_kernel();

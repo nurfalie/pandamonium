@@ -25,68 +25,37 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QApplication>
-#include <QSettings>
+#ifndef _pandemonium_gui_h_
+#define _pandemonium_gui_h_
 
-#include <iostream>
+#include <QMainWindow>
+#include <QTimer>
 
-#include "pandemonium.h"
+#include "ui_pandemonium.h"
 
-int main(int argc, char *argv[])
+class pandemonium_gui: public QMainWindow
 {
-#ifdef Q_OS_MAC
-#if QT_VERSION < 0x050000
-  QMacStyle *style = new (std::nothrow) QMacStyle();
+  Q_OBJECT
 
-  if(style)
-    QApplication::setStyle(style);
+ public:
+  pandemonium_gui(void);
+  ~pandemonium_gui();
+  void closeEvent(QCloseEvent *event);
+
+ private:
+  QTimer m_highlightTimer;
+  Ui_pandemonium_mainwindow m_ui;
+  void saveKernelPath(const QString &path);
+
+ private slots:
+  void slotAddSearchUrl(void);
+  void slotHighlightTimeout(void);
+  void slotListSearchUrls(void);
+  void slotProxyInformationToggled(bool state);
+  void slotRemoveSelectedSearchUrls(void);
+  void slotSaveProxyInformation(void);
+  void slotSaveKernelPath(void);
+  void slotSelectKernelPath(void);
+};
+
 #endif
-#endif
-#if QT_VERSION >= 0x050000
-#ifdef Q_OS_WIN32
-  QApplication::addLibraryPath("plugins");
-  QApplication::setStyle("fusion");
-#endif
-#endif
-
-  QApplication qapplication(argc, argv);
-
-#ifdef Q_OS_MAC
-#if QT_VERSION >= 0x050000
-  /*
-  ** Eliminate pool errors on OS X.
-  */
-
-  CocoaInitializer ci;
-#endif
-#endif
-  QCoreApplication::setApplicationName("pandemonium");
-  QCoreApplication::setOrganizationName("pandemonium");
-  QCoreApplication::setOrganizationDomain("pandemonium");
-  QCoreApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
-  QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
-                     pandemonium::homePath());
-  QSettings::setDefaultFormat(QSettings::IniFormat);
-
-  pandemonium *p = 0;
-
-  try
-    {
-      p = new pandemonium();
-      return qapplication.exec();
-    }
-  catch(std::bad_alloc &exception)
-    {
-      std::cerr << QObject::tr("Memory allocation error at line ").
-	toStdString()
-		<< __LINE__
-		<< QObject::tr(", file ").toStdString()
-		<< __FILE__ << "." << std::endl;
-      exit(EXIT_FAILURE);
-    }
-
-  if(p)
-    p->deleteLater();
-
-  return EXIT_SUCCESS;
-}

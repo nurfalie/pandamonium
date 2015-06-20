@@ -25,12 +25,54 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QApplication>
+#include <QSettings>
+
+#include <iostream>
+
+#include "pandemonium-common.h"
 #include "pandemonium-kernel.h"
 
-pandemonium_kernel::pandemonium_kernel(void):QObject()
+int main(int argc, char *argv[])
 {
-}
+  QApplication qapplication(argc, argv);
 
-pandemonium_kernel::~pandemonium_kernel()
-{
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+  /*
+  ** Eliminate pool errors on OS X.
+  */
+
+  CocoaInitializer ci;
+#endif
+#endif
+  QCoreApplication::setApplicationName("pandemonium");
+  QCoreApplication::setOrganizationName("pandemonium");
+  QCoreApplication::setOrganizationDomain("pandemonium");
+  QCoreApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
+  QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
+                     pandemonium_common::homePath());
+  QSettings::setDefaultFormat(QSettings::IniFormat);
+
+  pandemonium_kernel *p = 0;
+
+  try
+    {
+      p = new pandemonium_kernel();
+      return qapplication.exec();
+    }
+  catch(std::bad_alloc &exception)
+    {
+      std::cerr << QObject::tr("Memory allocation error at line ").
+	toStdString()
+		<< __LINE__
+		<< QObject::tr(", file ").toStdString()
+		<< __FILE__ << "." << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+  if(p)
+    p->deleteLater();
+
+  return EXIT_SUCCESS;
 }

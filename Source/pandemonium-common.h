@@ -25,12 +25,34 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "pandemonium-kernel.h"
+#ifndef _pandemonium_common_h_
+#define _pandemonium_common_h_
 
-pandemonium_kernel::pandemonium_kernel(void):QObject()
-{
-}
+#include <QDir>
 
-pandemonium_kernel::~pandemonium_kernel()
+#define PANDEMONIUM_VERSION_STR "2015.07.04"
+
+class pandemonium_common
 {
-}
+ public:
+  static QString homePath(void)
+  {
+    QByteArray homepath(qgetenv("PANDEMONIUM_HOME"));
+
+    if(homepath.isEmpty())
+#ifdef Q_OS_WIN32
+      return QDir::currentPath() + QDir::separator() + ".pandemonium";
+#else
+      return QDir::homePath() + QDir::separator() + ".pandemonium";
+#endif
+    else
+      return homepath.constData();
+  }
+
+ private:
+  pandemonium_common(void)
+  {
+  }
+};
+
+#endif

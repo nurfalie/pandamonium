@@ -26,19 +26,19 @@
 */
 
 #include <QComboBox>
-#include <QDir>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QSettings>
 #include <QSqlQuery>
 #include <QtDebug>
 
-#include "pandemonium.h"
+#include "pandemonium-common.h"
 #include "pandemonium-database.h"
+#include "pandemonium-gui.h"
 
-pandemonium::pandemonium(void):QMainWindow()
+pandemonium_gui::pandemonium_gui(void):QMainWindow()
 {
-  QDir().mkdir(homePath());
+  QDir().mkdir(pandemonium_common::homePath());
   m_ui.setupUi(this);
   connect(&m_highlightTimer,
 	  SIGNAL(timeout(void)),
@@ -124,25 +124,11 @@ pandemonium::pandemonium(void):QMainWindow()
       }
 }
 
-pandemonium::~pandemonium()
+pandemonium_gui::~pandemonium_gui()
 {
 }
 
-QString pandemonium::homePath(void)
-{
-  QByteArray homepath(qgetenv("PANDEMONIUM_HOME"));
-
-  if(homepath.isEmpty())
-#ifdef Q_OS_WIN32
-    return QDir::currentPath() + QDir::separator() + ".pandemonium";
-#else
-    return QDir::homePath() + QDir::separator() + ".pandemonium";
-#endif
-  else
-    return homepath.constData();
-}
-
-void pandemonium::closeEvent(QCloseEvent *event)
+void pandemonium_gui::closeEvent(QCloseEvent *event)
 {
   QSettings settings;
 
@@ -150,7 +136,7 @@ void pandemonium::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
-void pandemonium::saveKernelPath(const QString &path)
+void pandemonium_gui::saveKernelPath(const QString &path)
 {
   QSettings settings;
 
@@ -158,7 +144,7 @@ void pandemonium::saveKernelPath(const QString &path)
   m_ui.kernel_path->selectAll();
 }
 
-void pandemonium::slotAddSearchUrl(void)
+void pandemonium_gui::slotAddSearchUrl(void)
 {
   QString str("");
   bool ok = true;
@@ -174,7 +160,7 @@ void pandemonium::slotAddSearchUrl(void)
   slotListSearchUrls();
 }
 
-void pandemonium::slotHighlightTimeout(void)
+void pandemonium_gui::slotHighlightTimeout(void)
 {
   QColor color;
   QFileInfo fileInfo;
@@ -199,7 +185,7 @@ void pandemonium::slotHighlightTimeout(void)
   m_ui.kernel_pid->setPalette(palette);
 }
 
-void pandemonium::slotListSearchUrls(void)
+void pandemonium_gui::slotListSearchUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
   m_ui.search_urls->clearContents();
@@ -210,7 +196,7 @@ void pandemonium::slotListSearchUrls(void)
   {
     pair = pandemonium_database::database();
     pair.first.setDatabaseName
-      (pandemonium::homePath() + QDir::separator() +
+      (pandemonium_common::homePath() + QDir::separator() +
        "pandemonium_search_urls.db");
 
     if(pair.first.open())
@@ -257,7 +243,7 @@ void pandemonium::slotListSearchUrls(void)
   QApplication::restoreOverrideCursor();
 }
 
-void pandemonium::slotProxyInformationToggled(bool state)
+void pandemonium_gui::slotProxyInformationToggled(bool state)
 {
   if(!state)
     {
@@ -277,7 +263,7 @@ void pandemonium::slotProxyInformationToggled(bool state)
     }
 }
 
-void pandemonium::slotRemoveSelectedSearchUrls(void)
+void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 {
   QModelIndexList indexes
     (m_ui.search_urls->selectionModel()->selectedRows(2));
@@ -298,12 +284,12 @@ void pandemonium::slotRemoveSelectedSearchUrls(void)
     }
 }
 
-void pandemonium::slotSaveKernelPath(void)
+void pandemonium_gui::slotSaveKernelPath(void)
 {
   saveKernelPath(m_ui.kernel_path->text());
 }
 
-void pandemonium::slotSaveProxyInformation(void)
+void pandemonium_gui::slotSaveProxyInformation(void)
 {
   QSettings settings;
 
@@ -319,7 +305,7 @@ void pandemonium::slotSaveProxyInformation(void)
     ("pandemonium_proxy_user", m_ui.proxy_user->text());
 }
 
-void pandemonium::slotSelectKernelPath(void)
+void pandemonium_gui::slotSelectKernelPath(void)
 {
   QFileDialog dialog;
 

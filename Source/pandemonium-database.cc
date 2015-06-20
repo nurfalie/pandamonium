@@ -26,13 +26,13 @@
 */
 
 #include <QCryptographicHash>
-#include <QDir>
 #include <QSqlQuery>
 #include <QUrl>
 #include <QtDebug>
 
-#include "pandemonium.h"
+#include "pandemonium-common.h"
 #include "pandemonium-database.h"
+#include "pandemonium-gui.h"
 
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;
@@ -66,7 +66,7 @@ void pandemonium_database::addSearchUrl(const QString &str)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium::homePath() + QDir::separator() +
+      (pandemonium_common::homePath() + QDir::separator() +
        "pandemonium_search_urls.db");
 
     if(pair.first.open())
@@ -110,7 +110,7 @@ void pandemonium_database::createdb(void)
       {
 	pair = database();
 	pair.first.setDatabaseName
-	  (pandemonium::homePath() + QDir::separator() + fileName);
+	  (pandemonium_common::homePath() + QDir::separator() + fileName);
 
 	if(pair.first.open())
 	  {
@@ -148,7 +148,7 @@ void pandemonium_database::removeSearchUrls(const QStringList &list)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium::homePath() + QDir::separator() +
+      (pandemonium_common::homePath() + QDir::separator() +
        "pandemonium_search_urls.db");
 
     if(pair.first.open())
