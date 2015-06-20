@@ -15,10 +15,10 @@ INCLUDEPATH +=
 
 FORMS = UI/pandemonium.ui
 
-HEADERS = Source/pandemonium_createdb.h \
-          Source/pandemonium.h
+HEADERS = Source/pandemonium.h \
+	  Source/pandemonium_database.h
 SOURCES = Source/pandemonium.cc \
-          Source/pandemonium_createdb.cc \
+          Source/pandemonium_database.cc \
           Source/pandemonium_main.cc \
 
 PROJECTNAME = pandemonium

@@ -31,12 +31,16 @@
 #include <QtDebug>
 
 #include "pandemonium.h"
-#include "pandemonium_createdb.h"
+#include "pandemonium_database.h"
 
 pandemonium::pandemonium(void):QMainWindow()
 {
   QDir().mkdir(homePath());
   m_ui.setupUi(this);
+  connect(&m_highlightTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotHighlightTimeout(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -57,6 +61,7 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
+  m_highlightTimer.start(2500);
 
   QSettings settings;
 
@@ -65,7 +70,7 @@ pandemonium::pandemonium(void):QMainWindow()
   statusBar()->showMessage(tr("Creating databases..."));
   statusBar()->repaint();
   QApplication::setOverrideCursor(Qt::BusyCursor);
-  pandemonium_createdb::createdb();
+  pandemonium_database::createdb();
   QApplication::restoreOverrideCursor();
   statusBar()->clearMessage();
 
@@ -135,6 +140,44 @@ void pandemonium::saveKernelPath(const QString &path)
 
   settings.setValue("pandemonium_kernel_path", path);
   m_ui.kernel_path->selectAll();
+}
+
+void pandemonium::slotAddSearchUrl(void)
+{
+  QString str("");
+  bool ok = true;
+
+  str = QInputDialog::getText
+    (this, tr("pandemonium: New Search URL"), tr("&URL"),
+     QLineEdit::Normal, QString(""), &ok);
+
+  if(!ok)
+    return;
+}
+
+void pandemonium::slotHighlightTimeout(void)
+{
+  QColor color;
+  QFileInfo fileInfo;
+  QPalette palette;
+
+  fileInfo.setFile(m_ui.kernel_path->text());
+
+  if(fileInfo.isExecutable())
+    color = QColor(144, 238, 144);
+  else
+    color = QColor(240, 128, 128); // Light coral!
+
+  palette.setColor(m_ui.kernel_path->backgroundRole(), color);
+  m_ui.kernel_path->setPalette(palette);
+
+  if(m_ui.kernel_pid->text().toLongLong() > 0)
+    color = QColor(144, 238, 144);
+  else
+    color = QColor(240, 128, 128); // Light coral!
+
+  palette.setColor(m_ui.kernel_pid->backgroundRole(), color);
+  m_ui.kernel_pid->setPalette(palette);
 }
 
 void pandemonium::slotProxyInformationToggled(bool state)

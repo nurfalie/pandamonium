@@ -25,21 +25,21 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _pandemonium_createdb_h_
-#define _pandemonium_createdb_h_
+#ifndef _pandemonium_database_h_
+#define _pandemonium_database_h_
 
 #include <QPair>
 #include <QReadWriteLock>
 #include <QSqlDatabase>
 
-class pandemonium_createdb
+class pandemonium_database
 {
  public:
   static QPair<QSqlDatabase, QString> database(void);
   static void createdb(void);
 
  private:
-  pandemonium_createdb(void)
+  pandemonium_database(void)
   {
   }
 

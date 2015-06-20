@@ -29,6 +29,7 @@
 #define _pandemonium_h_
 
 #include <QMainWindow>
+#include <QTimer>
 
 #include "ui_pandemonium.h"
 
@@ -45,10 +46,13 @@ class pandemonium: public QMainWindow
   void closeEvent(QCloseEvent *event);
 
  private:
+  QTimer m_highlightTimer;
   Ui_pandemonium_mainwindow m_ui;
   void saveKernelPath(const QString &path);
 
  private slots:
+  void slotAddSearchUrl(void);
+  void slotHighlightTimeout(void);
   void slotProxyInformationToggled(bool state);
   void slotSaveProxyInformation(void);
   void slotSaveKernelPath(void);

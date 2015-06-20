@@ -29,12 +29,12 @@
 #include <QSqlQuery>
 
 #include "pandemonium.h"
-#include "pandemonium_createdb.h"
+#include "pandemonium_database.h"
 
-QReadWriteLock pandemonium_createdb::s_dbIdLock;
-quint64 pandemonium_createdb::s_dbId = 0;
+QReadWriteLock pandemonium_database::s_dbIdLock;
+quint64 pandemonium_database::s_dbId = 0;
 
-QPair<QSqlDatabase, QString> pandemonium_createdb::database(void)
+QPair<QSqlDatabase, QString> pandemonium_database::database(void)
 {
   QPair<QSqlDatabase, QString> pair;
   quint64 dbId = 0;
@@ -49,7 +49,7 @@ QPair<QSqlDatabase, QString> pandemonium_createdb::database(void)
   return pair;
 }
 
-void pandemonium_createdb::createdb(void)
+void pandemonium_database::createdb(void)
 {
   QStringList fileNames;
 
