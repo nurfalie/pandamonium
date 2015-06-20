@@ -2,7 +2,7 @@ purge.commands = rm -f *~ && rm -f */*~
 
 CONFIG += qt release thread warn_on
 LANGUAGE = C++
-QT +=
+QT += sql
 TEMPLATE = app
 
 QMAKE_CLEAN += pandemonium

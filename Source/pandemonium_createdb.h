@@ -28,15 +28,22 @@
 #ifndef _pandemonium_createdb_h_
 #define _pandemonium_createdb_h_
 
+#include <QPair>
+#include <QReadWriteLock>
+
 class pandemonium_createdb
 {
  public:
+  static QPair<QSqlDatabase, QString> database(void);
   static void createdb(void);
 
  private:
   pandemonium_createdb(void)
   {
   }
+
+  static QReadWriteLock s_dbIdLock;
+  static quint64 s_dbId;
 };
 
 #endif

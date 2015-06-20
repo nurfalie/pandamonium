@@ -305,7 +305,7 @@
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Discovered URLs</string>
+        <string>Discovered &amp;URLs</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>

@@ -25,8 +25,45 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QDir>
+#include <QSqlDatabase>
+
+#include "pandemonium.h"
 #include "pandemonium_createdb.h"
+
+QReadWriteLock pandemonium_createdb::s_dbIdLock;
+quint64 pandemonium_createdb::s_dbId = 0;
+
+QPair<QSqlDatabase, QString> pandemonium_createdb::database(void)
+{
+  QPair<QSqlDatabase, QString> pair;
+  quint64 dbId = 0;
+
+  QWriteLocker locker(&s_dbIdLock);
+
+  dbId = s_dbId += 1;
+  locker.unlock();
+  pair.first = QSqlDatabase::addDatabase
+    ("QSQLITE", QString("database_%1").arg(dbId));
+  pair.second = pair.first.connectionName();
+  return pair;
+}
 
 void pandemonium_createdb::createdb(void)
 {
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium::homePath() + QDir::separator() + "pandemonium_urls.db");
+
+    if(pair.first.open())
+      {
+      }
+
+    pair.first.close();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }

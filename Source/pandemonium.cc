@@ -26,6 +26,7 @@
 */
 
 #include <QDir>
+#include <QSettings>
 
 #include "pandemonium.h"
 
@@ -33,6 +34,14 @@ pandemonium::pandemonium(void):QMainWindow()
 {
   QDir().mkdir(homePath());
   m_ui.setupUi(this);
+  connect(m_ui.action_Quit,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(close(void)));
+
+  QSettings settings;
+
+  restoreGeometry(settings.value("pandemonium_mainwindow").toByteArray());
   show();
 }
 
@@ -52,4 +61,12 @@ QString pandemonium::homePath(void)
 #endif
   else
     return homepath.constData();
+}
+
+void pandemonium::closeEvent(QCloseEvent *event)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_mainwindow", saveGeometry());
+  QMainWindow::closeEvent(event);
 }

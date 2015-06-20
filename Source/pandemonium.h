@@ -42,6 +42,7 @@ class pandemonium: public QMainWindow
   pandemonium(void);
   ~pandemonium();
   static QString homePath(void);
+  void closeEvent(QCloseEvent *event);
 
  private:
   Ui_pandemonium_mainwindow m_ui;
