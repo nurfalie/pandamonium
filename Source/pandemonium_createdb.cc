@@ -26,7 +26,7 @@
 */
 
 #include <QDir>
-#include <QSqlDatabase>
+#include <QSqlQuery>
 
 #include "pandemonium.h"
 #include "pandemonium_createdb.h"
@@ -51,19 +51,41 @@ QPair<QSqlDatabase, QString> pandemonium_createdb::database(void)
 
 void pandemonium_createdb::createdb(void)
 {
-  QPair<QSqlDatabase, QString> pair;
+  QStringList fileNames;
 
-  {
-    pair = database();
-    pair.first.setDatabaseName
-      (pandemonium::homePath() + QDir::separator() + "pandemonium_urls.db");
+  fileNames << "pandemonium_discovered_urls.db"
+	    << "pandemonium_search_urls.db";
 
-    if(pair.first.open())
+  foreach(QString fileName, fileNames)
+    {
+      QPair<QSqlDatabase, QString> pair;
+
       {
+	pair = database();
+	pair.first.setDatabaseName
+	  (pandemonium::homePath() + QDir::separator() + fileName);
+
+	if(pair.first.open())
+	  {
+	    QSqlQuery query(pair.first);
+
+	    if(fileName == "pandemonium_discovered_urls.db")
+	      query.exec
+		("CREATE TABLE IF NOT EXISTS pandemonium_discovered_urls("
+		 "description TEXT NOT NULL, "
+		 "title TEXT NOT NULL, "
+		 "url TEXT NOT NULL)");
+	    else
+	      query.exec
+		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
+		 "url TEXT NOT NULL, "
+		 "url_hash TEXT NOT NULL PRIMARY KEY)");
+	  }
+
+	pair.first.close();
+	pair.first = QSqlDatabase();
       }
 
-    pair.first.close();
-  }
-
-  QSqlDatabase::removeDatabase(pair.second);
+      QSqlDatabase::removeDatabase(pair.second);
+    }
 }

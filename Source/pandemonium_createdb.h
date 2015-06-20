@@ -30,6 +30,7 @@
 
 #include <QPair>
 #include <QReadWriteLock>
+#include <QSqlDatabase>
 
 class pandemonium_createdb
 {

@@ -29,6 +29,7 @@
 #include <QSettings>
 
 #include "pandemonium.h"
+#include "pandemonium_createdb.h"
 
 pandemonium::pandemonium(void):QMainWindow()
 {
@@ -43,6 +44,12 @@ pandemonium::pandemonium(void):QMainWindow()
 
   restoreGeometry(settings.value("pandemonium_mainwindow").toByteArray());
   show();
+  statusBar()->showMessage(tr("Creating databases..."));
+  statusBar()->repaint();
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+  pandemonium_createdb::createdb();
+  QApplication::restoreOverrideCursor();
+  statusBar()->clearMessage();
 }
 
 pandemonium::~pandemonium()
