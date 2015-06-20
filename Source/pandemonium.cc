@@ -34,7 +34,7 @@
 #include <QtDebug>
 
 #include "pandemonium.h"
-#include "pandemonium_database.h"
+#include "pandemonium-database.h"
 
 pandemonium::pandemonium(void):QMainWindow()
 {

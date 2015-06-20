@@ -32,7 +32,7 @@
 #include <QtDebug>
 
 #include "pandemonium.h"
-#include "pandemonium_database.h"
+#include "pandemonium-database.h"
 
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;

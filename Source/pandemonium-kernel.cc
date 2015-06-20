@@ -25,7 +25,7 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "pandemonium_kernel.h"
+#include "pandemonium-kernel.h"
 
 pandemonium_kernel::pandemonium_kernel(void)
 {
