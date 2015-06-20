@@ -39,6 +39,14 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(close(void)));
+  connect(m_ui.proxy_information,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotProxyInformationToggled(bool)));
+  connect(m_ui.save_proxy_information,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveProxyInformation(void)));
 
   QSettings settings;
 
@@ -76,4 +84,40 @@ void pandemonium::closeEvent(QCloseEvent *event)
 
   settings.setValue("pandemonium_mainwindow", saveGeometry());
   QMainWindow::closeEvent(event);
+}
+
+void pandemonium::slotProxyInformationToggled(bool state)
+{
+  if(!state)
+    {
+      m_ui.proxy_address->clear();
+      m_ui.proxy_password->clear();
+      m_ui.proxy_port->setValue(m_ui.proxy_port->minimum());
+      m_ui.proxy_type->setCurrentIndex(0);
+      m_ui.proxy_user->clear();
+
+      QSettings settings;
+
+      settings.remove("pandemonium_proxy_address");
+      settings.remove("pandemonium_proxy_password");
+      settings.remove("pandemonium_proxy_port");
+      settings.remove("pandemonium_proxy_type");
+      settings.remove("pandemonium_proxy_user");
+    }
+}
+
+void pandemonium::slotSaveProxyInformation(void)
+{
+  QSettings settings;
+
+  settings.setValue
+    ("pandemonium_proxy_address", m_ui.proxy_address->text().trimmed());
+  settings.setValue
+    ("pandemonium_proxy_password", m_ui.proxy_password->text());
+  settings.setValue
+    ("pandemonium_proxy_port", m_ui.proxy_port->value());
+  settings.setValue
+    ("pandemonium_proxy_type", m_ui.proxy_type->currentIndex());
+  settings.setValue
+    ("pandemonium_proxy_user", m_ui.proxy_user->text());
 }

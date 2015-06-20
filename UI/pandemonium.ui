@@ -155,6 +155,30 @@
              </item>
             </layout>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="save_proxy_information">
+               <property name="text">
+                <string>Save</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
           </layout>
          </widget>
         </item>
@@ -483,6 +507,7 @@
   <tabstop>proxy_port</tabstop>
   <tabstop>proxy_user</tabstop>
   <tabstop>proxy_password</tabstop>
+  <tabstop>save_proxy_information</tabstop>
   <tabstop>kernel_path</tabstop>
   <tabstop>select_kernel</tabstop>
   <tabstop>kernel_pid</tabstop>

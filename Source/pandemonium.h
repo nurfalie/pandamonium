@@ -46,6 +46,10 @@ class pandemonium: public QMainWindow
 
  private:
   Ui_pandemonium_mainwindow m_ui;
+
+ private slots:
+  void slotProxyInformationToggled(bool state);
+  void slotSaveProxyInformation(void);
 };
 
 #endif
