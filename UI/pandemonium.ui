@@ -198,7 +198,7 @@
            <widget class="QLineEdit" name="kernel_path"/>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="select_kernel">
+           <widget class="QPushButton" name="select_kernel_path">
             <property name="text">
              <string>Select</string>
             </property>
@@ -509,7 +509,7 @@
   <tabstop>proxy_password</tabstop>
   <tabstop>save_proxy_information</tabstop>
   <tabstop>kernel_path</tabstop>
-  <tabstop>select_kernel</tabstop>
+  <tabstop>select_kernel_path</tabstop>
   <tabstop>kernel_pid</tabstop>
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>

@@ -46,10 +46,13 @@ class pandemonium: public QMainWindow
 
  private:
   Ui_pandemonium_mainwindow m_ui;
+  void saveKernelPath(const QString &path);
 
  private slots:
   void slotProxyInformationToggled(bool state);
   void slotSaveProxyInformation(void);
+  void slotSaveKernelPath(void);
+  void slotSelectKernelPath(void);
 };
 
 #endif

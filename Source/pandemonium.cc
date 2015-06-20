@@ -26,6 +26,7 @@
 */
 
 #include <QDir>
+#include <QFileDialog>
 #include <QSettings>
 #include <QtDebug>
 
@@ -40,6 +41,10 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(close(void)));
+  connect(m_ui.kernel_path,
+	  SIGNAL(returnPressed(void)),
+	  this,
+	  SLOT(slotSaveKernelPath(void)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -48,6 +53,10 @@ pandemonium::pandemonium(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSaveProxyInformation(void)));
+  connect(m_ui.select_kernel_path,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectKernelPath(void)));
 
   QSettings settings;
 
@@ -59,6 +68,13 @@ pandemonium::pandemonium(void):QMainWindow()
   pandemonium_createdb::createdb();
   QApplication::restoreOverrideCursor();
   statusBar()->clearMessage();
+
+  /*
+  ** Restore kernel path.
+  */
+
+  m_ui.kernel_path->setText
+    (settings.value("pandemonium_kernel_path").toString());
 
   /*
   ** Restore proxy settings.
@@ -113,6 +129,14 @@ void pandemonium::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
+void pandemonium::saveKernelPath(const QString &path)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_kernel_path", path);
+  m_ui.kernel_path->selectAll();
+}
+
 void pandemonium::slotProxyInformationToggled(bool state)
 {
   if(!state)
@@ -133,6 +157,11 @@ void pandemonium::slotProxyInformationToggled(bool state)
     }
 }
 
+void pandemonium::slotSaveKernelPath(void)
+{
+  saveKernelPath(m_ui.kernel_path->text());
+}
+
 void pandemonium::slotSaveProxyInformation(void)
 {
   QSettings settings;
@@ -147,4 +176,26 @@ void pandemonium::slotSaveProxyInformation(void)
     ("pandemonium_proxy_type", m_ui.proxy_type->currentIndex());
   settings.setValue
     ("pandemonium_proxy_user", m_ui.proxy_user->text());
+}
+
+void pandemonium::slotSelectKernelPath(void)
+{
+  QFileDialog dialog;
+
+  dialog.setWindowTitle(tr("pandemonium: Select Kernel Path"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    {
+      m_ui.kernel_path->setText(dialog.selectedFiles().value(0));
+      saveKernelPath(dialog.selectedFiles().value(0));
+    }
 }
