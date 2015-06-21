@@ -19,15 +19,17 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual \
                           -fPIE -fstack-protector-all -fwrapv -pie
 }
 
-INCLUDEPATH +=
+INCLUDEPATH += . Source
 
-HEADERS = Source/pandemonium-common.h \
-	  Source/pandemonium-database.h \
-          Source/pandemonium-kernel.h
-SOURCES = Source/pandemonium-database.cc \
-          Source/pandemonium-kernel.cc \
-	  Source/pandemonium-kernel-main.cc \
-          Source/pandemonium-kernel-url.cc
+HEADERS = Source\\pandemonium-common.h \
+	  Source\\pandemonium-database.h \
+          Source\\pandemonium-kernel.h \
+          Source\\pandemonium-kernel-url.h
+
+SOURCES = Source\\pandemonium-database.cc \
+          Source\\pandemonium-kernel.cc \
+	  Source\\pandemonium-kernel-main.cc \
+          Source\\pandemonium-kernel-url.cc
 
 PROJECTNAME = pandemonium-kernel
 TARGET = pandemonium-kernel

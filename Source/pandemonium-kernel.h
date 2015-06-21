@@ -30,7 +30,10 @@
 
 #include <QHash>
 #include <QObject>
+#include <QPointer>
 #include <QTimer>
+
+#include "pandemonium-kernel-url.h"
 
 class pandemonium_kernel: public QObject
 {
@@ -41,7 +44,7 @@ class pandemonium_kernel: public QObject
   ~pandemonium_kernel();
 
  private:
-QHash<QString, int> m_searchUrls;
+  QHash<QString, QPointer<pandemonium_kernel_url> > m_searchUrls;
   QTimer m_controlTimer;
   QTimer m_rovingTimer;
   void prepareWebEngine(void);

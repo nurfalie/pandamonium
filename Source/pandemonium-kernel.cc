@@ -83,6 +83,10 @@ void pandemonium_kernel::slotRovingTimeout(void)
       QPair<QString, int> pair(list.takeFirst());
 
       if(!m_searchUrls.contains(pair.first))
-	m_searchUrls[pair.first] = pair.second;
+	{
+	  pandemonium_kernel_url *url = new pandemonium_kernel_url
+	    (pair.first, pair.second, this);
+	  m_searchUrls[pair.first] = url;
+	}
     }
 }

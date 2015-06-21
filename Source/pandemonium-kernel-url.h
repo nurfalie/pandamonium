@@ -28,11 +28,22 @@
 #ifndef _pandemonium_kernel_url_h_
 #define _pandemonium_kernel_url_h_
 
-class pandemonium_kernel_url
+#include <QObject>
+#include <QUrl>
+
+class pandemonium_kernel_url: public QObject
 {
+  Q_OBJECT
+
  public:
-  pandemonium_kernel_url(void);
+  pandemonium_kernel_url(const QString &url,
+			 const int depth,
+			 QObject *parent);
   ~pandemonium_kernel_url();
+
+ private:
+  QUrl m_url;
+  int m_depth;
 };
 
 #endif

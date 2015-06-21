@@ -27,8 +27,11 @@
 
 #include "pandemonium-kernel-url.h"
 
-pandemonium_kernel_url::pandemonium_kernel_url(void)
+pandemonium_kernel_url::pandemonium_kernel_url
+(const QString &url, const int depth, QObject *parent):QObject(parent)
 {
+  m_depth = depth;
+  m_url = QUrl::fromUserInput(url);
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
