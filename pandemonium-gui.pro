@@ -4,9 +4,19 @@ QT += sql widgets
 TEMPLATE = app
 
 QMAKE_CLEAN += pandemonium
-QMAKE_CXXFLAGS_RELEASE += -Wall -Werror -Wextra -Wpointer-arith \
+
+win32 {
+QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
+                          -Wextra -Wpointer-arith \
+                          -Wstack-protector -Wstrict-overflow=5 \
+                          -fstack-protector-all -fwrapv -pie
+}
+else {
+QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
+                          -Wextra -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=5 \
                           -fPIE -fstack-protector-all -fwrapv -pie
+}
 
 INCLUDEPATH +=
 
