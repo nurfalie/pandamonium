@@ -39,6 +39,7 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
 	  this,
 	  SLOT(slotControlTimeout(void)));
   m_controlTimer.start(2500);
+  pandemonium_database::createdb();
   pandemonium_database::recordKernelProcessId(QApplication::applicationPid());
   prepareWebEngine();
 }
