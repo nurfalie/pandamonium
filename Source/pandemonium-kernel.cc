@@ -38,7 +38,12 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotControlTimeout(void)));
+  connect(&m_rovingTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotRovingTimeout(void)));
   m_controlTimer.start(2500);
+  m_rovingTimer.start(2500);
   pandemonium_database::createdb();
   pandemonium_database::recordKernelProcessId(QApplication::applicationPid());
   prepareWebEngine();
@@ -67,4 +72,17 @@ void pandemonium_kernel::slotControlTimeout(void)
   if(pandemonium_database::
      shouldTerminateKernel(QApplication::applicationPid()))
     deleteLater();
+}
+
+void pandemonium_kernel::slotRovingTimeout(void)
+{
+  QList<QPair<QString, int> > list(pandemonium_database::searchUrls());
+
+  while(!list.isEmpty())
+    {
+      QPair<QString, int> pair(list.takeFirst());
+
+      if(!m_searchUrls.contains(pair.first))
+	m_searchUrls[pair.first] = pair.second;
+    }
 }

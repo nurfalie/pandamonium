@@ -28,6 +28,7 @@
 #ifndef _pandemonium_kernel_h_
 #define _pandemonium_kernel_h_
 
+#include <QHash>
 #include <QObject>
 #include <QTimer>
 
@@ -40,11 +41,14 @@ class pandemonium_kernel: public QObject
   ~pandemonium_kernel();
 
  private:
+QHash<QString, int> m_searchUrls;
   QTimer m_controlTimer;
+  QTimer m_rovingTimer;
   void prepareWebEngine(void);
 
  private slots:
   void slotControlTimeout(void);
+  void slotRovingTimeout(void);
 };
 
 #endif

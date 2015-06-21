@@ -277,9 +277,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 	      QTableWidgetItem *item = 0;
 	      int index = 0;
 
-	      comboBox->addItem("5");
-	      comboBox->addItem("10");
-	      comboBox->addItem("15");
+	      comboBox->addItem("-1");
 	      comboBox->setProperty("url_hash", query.value(2));
 	      index = comboBox->findText(query.value(0).toString());
 

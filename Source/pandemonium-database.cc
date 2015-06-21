@@ -286,7 +286,7 @@ void pandemonium_database::createdb(void)
 	    else
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
-		 "search_depth INTEGER NOT NULL DEFAULT 15, "
+		 "search_depth INTEGER NOT NULL DEFAULT -1, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");
 	  }
