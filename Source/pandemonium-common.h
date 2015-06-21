@@ -28,6 +28,11 @@
 #ifndef _pandemonium_common_h_
 #define _pandemonium_common_h_
 
+extern "C"
+{
+#include <signal.h>
+}
+
 #include <QDir>
 
 #define PANDEMONIUM_VERSION_STR "2015.07.04"
@@ -47,6 +52,38 @@ class pandemonium_common
 #endif
     else
       return homepath.constData();
+  }
+
+  static void prepareSignalHandler(void (*signal_handler) (int))
+  {
+    QList<int> list;
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+    struct sigaction act;
+#endif
+    list << SIGABRT
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+	 << SIGBUS
+#endif
+	 << SIGFPE
+	 << SIGILL
+	 << SIGINT
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+	 << SIGQUIT
+#endif
+	 << SIGSEGV
+	 << SIGTERM;
+
+    while(!list.isEmpty())
+      {
+#if defined(Q_OS_LINUX) || defined(Q_OS_MAC) || defined(Q_OS_UNIX)
+	act.sa_handler = signal_handler;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	sigaction(list.takeFirst(), &act, 0);
+#else
+	signal(list.takeFirst(), signal_handler);
+#endif
+      }
   }
 
  private:

@@ -1,6 +1,7 @@
 CONFIG += qt release thread warn_on
 LANGUAGE = C++
 QT += sql webkit
+QT -= gui
 TEMPLATE = app
 
 QMAKE_CLEAN += pandemonium-kernel

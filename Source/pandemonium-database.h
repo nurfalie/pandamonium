@@ -35,9 +35,13 @@
 class pandemonium_database
 {
  public:
+  static QList<QPair<QString, int> > searchUrls(void);
   static QPair<QSqlDatabase, QString> database(void);
+  static bool isKernelActive(void);
   static void addSearchUrl(const QString &str);
   static void createdb(void);
+  static void recordKernelDeactivation(const qint64 process_id);
+  static void recordKernelProcessId(const qint64 process_id);
   static void removeSearchUrls(const QStringList &list);
 
  private:

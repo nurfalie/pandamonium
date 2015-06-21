@@ -37,6 +37,43 @@
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;
 
+QList<QPair<QString, int> > pandemonium_database::searchUrls(void)
+{
+  QList<QPair<QString, int> > list;
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT search_depth, url "
+		      "FROM pandemonium_search_urls"))
+	  while(query.next())
+	    {
+	      QPair<QString, int> pair;
+
+	      pair.first = query.value(1).toString();
+	      pair.second = query.value(0).toInt();
+	      list << pair;
+	    }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return list;
+}
+
 QPair<QSqlDatabase, QString> pandemonium_database::database(void)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -50,6 +87,37 @@ QPair<QSqlDatabase, QString> pandemonium_database::database(void)
     ("QSQLITE", QString("database_%1").arg(dbId));
   pair.second = pair.first.connectionName();
   return pair;
+}
+
+bool pandemonium_database::isKernelActive(void)
+{
+  QPair<QSqlDatabase, QString> pair;
+  bool active = false;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_kernel_command.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("SELECT COUNT(*) FROM pandemonium_kernel_command");
+
+	if(query.exec())
+	  if(query.next())
+	    if(query.value(0).toLongLong() > 0)
+	      active = true;
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return active;
 }
 
 void pandemonium_database::addSearchUrl(const QString &str)
@@ -101,6 +169,7 @@ void pandemonium_database::createdb(void)
   QStringList fileNames;
 
   fileNames << "pandemonium_discovered_urls.db"
+	    << "pandemonium_kernel_command.db"
 	    << "pandemonium_search_urls.db";
 
   foreach(QString fileName, fileNames)
@@ -122,6 +191,20 @@ void pandemonium_database::createdb(void)
 		 "description TEXT NOT NULL, "
 		 "title TEXT NOT NULL, "
 		 "url TEXT NOT NULL)");
+	    else if(fileName == "pandemonium_kernel_command.db")
+	      {
+		query.exec
+		  ("CREATE TABLE IF NOT EXISTS pandemonium_kernel_command("
+		   "command TEXT NOT NULL, "
+		   "kernel_process_id INTEGER NOT NULL PRIMARY KEY)");
+		query.exec
+		  ("CREATE TRIGGER IF NOT EXISTS "
+		   "pandemonium_kernel_command_trigger "
+		   "BEFORE INSERT ON pandemonium_kernel_command "
+		   "BEGIN "
+		   "DELETE FROM pandemonium_kernel_command;"
+		   "END");
+	      }
 	    else
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
@@ -136,6 +219,62 @@ void pandemonium_database::createdb(void)
 
       QSqlDatabase::removeDatabase(pair.second);
     }
+}
+
+void pandemonium_database::recordKernelDeactivation(const qint64 process_id)
+{
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_kernel_command.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("DELETE FROM pandemonium_kernel_command WHERE "
+		      "kernel_process_id = ?");
+	query.bindValue(0, process_id);
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
+void pandemonium_database::recordKernelProcessId(const qint64 process_id)
+{
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_kernel_command.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("INSERT INTO pandemonium_kernel_command"
+		      "(command, kernel_process_id) "
+		      "VALUES(?, ?)");
+	query.bindValue(0, "rove");
+	query.bindValue(1, process_id);
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
 
 void pandemonium_database::removeSearchUrls(const QStringList &list)

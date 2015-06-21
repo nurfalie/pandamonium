@@ -29,6 +29,7 @@
 #define _pandemonium_kernel_h_
 
 #include <QObject>
+#include <QTimer>
 
 class pandemonium_kernel: public QObject
 {
@@ -37,6 +38,12 @@ class pandemonium_kernel: public QObject
  public:
   pandemonium_kernel(void);
   ~pandemonium_kernel();
+
+ private:
+  QTimer m_controlTimer;
+
+ private slots:
+  void slotControlTimeout(void);
 };
 
 #endif

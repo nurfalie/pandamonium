@@ -28,6 +28,7 @@
 #include <QComboBox>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
 #include <QtDebug>
@@ -48,10 +49,18 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(close(void)));
+  connect(m_ui.activate_kernel,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotActivateKernel(void)));
   connect(m_ui.add_search_url,
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotAddSearchUrl(void)));
+  connect(m_ui.deactivate_kernel,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotDeactivateKernel(void)));
   connect(m_ui.kernel_path,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -144,6 +153,28 @@ void pandemonium_gui::saveKernelPath(const QString &path)
   m_ui.kernel_path->selectAll();
 }
 
+void pandemonium_gui::slotActivateKernel(void)
+{
+  QString program(m_ui.kernel_path->text());
+
+#ifdef Q_OS_MAC
+  if(QFileInfo(program).isBundle())
+    {
+      QStringList list;
+
+      list << "-a" << program;
+
+      QProcess::startDetached("open", list);
+    }
+  else
+    QProcess::startDetached(program);
+#elif defined(Q_OS_WIN32)
+  QProcess::startDetached(QString("\"%1\"").arg(program));
+#else
+  QProcess::startDetached(program);
+#endif
+}
+
 void pandemonium_gui::slotAddSearchUrl(void)
 {
   QString str("");
@@ -160,6 +191,10 @@ void pandemonium_gui::slotAddSearchUrl(void)
   slotListSearchUrls();
 }
 
+void pandemonium_gui::slotDeactivateKernel(void)
+{
+}
+
 void pandemonium_gui::slotHighlightTimeout(void)
 {
   QColor color;
@@ -168,7 +203,7 @@ void pandemonium_gui::slotHighlightTimeout(void)
 
   fileInfo.setFile(m_ui.kernel_path->text());
 
-  if(fileInfo.isExecutable())
+  if(fileInfo.isExecutable() && fileInfo.size() > 0)
     color = QColor(144, 238, 144);
   else
     color = QColor(240, 128, 128); // Light coral!
@@ -307,7 +342,7 @@ void pandemonium_gui::slotSaveProxyInformation(void)
 
 void pandemonium_gui::slotSelectKernelPath(void)
 {
-  QFileDialog dialog;
+  QFileDialog dialog(this);
 
   dialog.setWindowTitle(tr("pandemonium: Select Kernel Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);

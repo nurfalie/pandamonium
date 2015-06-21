@@ -25,12 +25,28 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QCoreApplication>
+
+#include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
 
 pandemonium_kernel::pandemonium_kernel(void):QObject()
 {
+  connect(&m_controlTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotControlTimeout(void)));
+  m_controlTimer.start(1500);
 }
 
 pandemonium_kernel::~pandemonium_kernel()
 {
+  pandemonium_database::recordKernelDeactivation
+    (QCoreApplication::applicationPid());
+}
+
+void pandemonium_kernel::slotControlTimeout(void)
+{
+  pandemonium_database::recordKernelProcessId
+    (QCoreApplication::applicationPid());
 }

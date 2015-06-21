@@ -25,17 +25,42 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QApplication>
+#include <QCoreApplication>
 #include <QSettings>
 
 #include <iostream>
 
 #include "pandemonium-common.h"
+#include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
+
+static qint64 kernel_process_id = 0;
+
+static void signal_handler(int signal_number)
+{
+  static int fatal_error = 0;
+
+  if(fatal_error)
+    _Exit(signal_number);
+
+  fatal_error = 1;
+  pandemonium_database::recordKernelDeactivation(kernel_process_id);
+  _Exit(signal_number);
+}
 
 int main(int argc, char *argv[])
 {
-  QApplication qapplication(argc, argv);
+  pandemonium_common::prepareSignalHandler(signal_handler);
+
+  QCoreApplication qapplication(argc, argv);
+
+  kernel_process_id = qapplication.applicationPid();
+
+  if(pandemonium_database::isKernelActive())
+    {
+      qapplication.exit(EXIT_FAILURE);
+      return EXIT_FAILURE;
+    }
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000

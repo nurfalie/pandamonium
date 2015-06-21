@@ -48,7 +48,9 @@ class pandemonium_gui: public QMainWindow
   void saveKernelPath(const QString &path);
 
  private slots:
+  void slotActivateKernel(void);
   void slotAddSearchUrl(void);
+  void slotDeactivateKernel(void);
   void slotHighlightTimeout(void);
   void slotListSearchUrls(void);
   void slotProxyInformationToggled(bool state);
