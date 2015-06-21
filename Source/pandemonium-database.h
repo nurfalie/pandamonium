@@ -45,6 +45,7 @@ class pandemonium_database
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);
   static void removeSearchUrls(const QStringList &list);
+  static void saveDepth(const QString &depth, const QVariant &url_hash);
 
  private:
   pandemonium_database(void)

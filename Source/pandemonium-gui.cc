@@ -136,6 +136,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	m_ui.proxy_information->setChecked(true);
 	break;
       }
+
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+  slotListSearchUrls();
+  QApplication::restoreOverrideCursor();
 }
 
 pandemonium_gui::~pandemonium_gui()
@@ -199,6 +203,16 @@ void pandemonium_gui::slotAddSearchUrl(void)
 void pandemonium_gui::slotDeactivateKernel(void)
 {
   pandemonium_database::recordKernelDeactivation();
+}
+
+void pandemonium_gui::slotDepthChanged(const QString &text)
+{
+  QComboBox *comboBox = qobject_cast<QComboBox *> (sender());
+
+  if(!comboBox)
+    return;
+
+  pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
 }
 
 void pandemonium_gui::slotHighlightTimeout(void)
@@ -266,6 +280,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 	      comboBox->addItem("5");
 	      comboBox->addItem("10");
 	      comboBox->addItem("15");
+	      comboBox->setProperty("url_hash", query.value(2));
 	      index = comboBox->findText(query.value(0).toString());
 
 	      if(index >= 0)
@@ -280,6 +295,10 @@ void pandemonium_gui::slotListSearchUrls(void)
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.search_urls->setItem(row, 2, item);
 	      row += 1;
+	      connect(comboBox,
+		      SIGNAL(currentIndexChanged(const QString &)),
+		      this,
+		      SLOT(slotDepthChanged(const QString &)));
 	    }
       }
 

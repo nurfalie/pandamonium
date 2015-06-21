@@ -34,7 +34,7 @@
 #include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
 
-static qint64 kernel_process_id = 0;
+static qint64 s_kernel_process_id = 0;
 
 static void signal_handler(int signal_number)
 {
@@ -44,7 +44,7 @@ static void signal_handler(int signal_number)
     _Exit(signal_number);
 
   fatal_error = 1;
-  pandemonium_database::recordKernelDeactivation(kernel_process_id);
+  pandemonium_database::recordKernelDeactivation(s_kernel_process_id);
   _Exit(signal_number);
 }
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
   QCoreApplication qapplication(argc, argv);
 
-  kernel_process_id = qapplication.applicationPid();
+  s_kernel_process_id = qapplication.applicationPid();
 
   if(pandemonium_database::isKernelActive())
     {

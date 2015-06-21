@@ -406,3 +406,33 @@ void pandemonium_database::removeSearchUrls(const QStringList &list)
 
   QSqlDatabase::removeDatabase(pair.second);
 }
+
+void pandemonium_database::saveDepth(const QString &depth,
+				     const QVariant &url_hash)
+{
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("UPDATE pandemonium_search_urls "
+		      "SET search_depth = ? "
+		      "WHERE url_hash = ?");
+	query.bindValue(0, depth.toInt());
+	query.bindValue(1, url_hash.toString());
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
