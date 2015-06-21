@@ -58,6 +58,12 @@ pandemonium_kernel::~pandemonium_kernel()
 
 void pandemonium_kernel::prepareWebEngine(void)
 {
+  QWebSettings::globalSettings()->setAttribute
+    (QWebSettings::JavascriptEnabled, false);
+  QWebSettings::globalSettings()->setAttribute
+    (QWebSettings::PluginsEnabled, false);
+  QWebSettings::globalSettings()->setAttribute
+    (QWebSettings::PrivateBrowsingEnabled, true);
   QWebSettings::globalSettings()->setIconDatabasePath("");
   QWebSettings::globalSettings()->setLocalStoragePath("");
   QWebSettings::globalSettings()->setMaximumPagesInCache(0);
@@ -90,7 +96,7 @@ void pandemonium_kernel::slotRovingTimeout(void)
 
       if(!m_searchUrls.contains(pair.first))
 	{
-	  pandemonium_kernel_url *url = new pandemonium_kernel_url
+	  QPointer<pandemonium_kernel_url> url = new pandemonium_kernel_url
 	    (pair.first, pair.second, this);
 	  m_searchUrls[pair.first] = url;
 	}
