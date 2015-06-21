@@ -269,7 +269,7 @@ void pandemonium_database::createdb(void)
 		("CREATE TABLE IF NOT EXISTS pandemonium_discovered_urls("
 		 "description TEXT NOT NULL, "
 		 "title TEXT NOT NULL, "
-		 "url TEXT NOT NULL)");
+		 "url TEXT NOT NULL PRIMARY KEY)");
 	    else if(fileName == "pandemonium_kernel_command.db")
 	      {
 		query.exec
