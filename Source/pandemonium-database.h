@@ -31,6 +31,7 @@
 #include <QPair>
 #include <QReadWriteLock>
 #include <QSqlDatabase>
+#include <QUrl>
 
 class pandemonium_database
 {
@@ -42,10 +43,14 @@ class pandemonium_database
   static qint64 kernelProcessId(void);
   static void addSearchUrl(const QString &str);
   static void createdb(void);
+  static void markUrlAsVisited(const QUrl &url);
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);
-  static void removeSearchUrls(const QStringList &list);
+  static void removeSearchUrls(const QList<QString> &list);
   static void saveDepth(const QString &depth, const QVariant &url_hash);
+  static void saveUrlMetaData(const QList<QString> description,
+			      const QString &title,
+			      const QUrl &url);
 
  private:
   pandemonium_database(void)

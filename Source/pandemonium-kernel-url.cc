@@ -25,15 +25,59 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QNetworkReply>
+#include <QWebFrame>
+
+#include "pandemonium-database.h"
 #include "pandemonium-kernel-url.h"
 
 pandemonium_kernel_url::pandemonium_kernel_url
 (const QString &url, const int depth, QObject *parent):QObject(parent)
 {
   m_depth = depth;
-  m_url = QUrl::fromUserInput(url);
+  m_url = m_urlToLoad = QUrl::fromUserInput(url);
+  connect(&m_webView,
+	  SIGNAL(loadFinished(bool)),
+	  this,
+	  SLOT(slotLoadFinished(bool)));
+  connect(m_webView.page()->networkAccessManager(),
+	  SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
+	  this,
+	  SLOT(slotSslErrors(QNetworkReply *, const QList<QSslError> &)));
+  m_webView.load(m_urlToLoad);
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
 {
+}
+
+void pandemonium_kernel_url::slotLoadFinished(bool ok)
+{
+  if(!ok)
+    return;
+
+  pandemonium_database::markUrlAsVisited(m_urlToLoad);
+
+  QWebFrame *mainFrame = m_webView.page()->mainFrame();
+
+  if(mainFrame)
+    {
+      QList<QString> list;
+      QMultiMap<QString, QString> map(mainFrame->QWebFrame::metaData());
+
+      list << map.values("description")
+	   << map.values("keywords");
+      pandemonium_database::saveUrlMetaData(list,
+					    m_webView.title(),
+					    m_urlToLoad);
+    }
+}
+
+void pandemonium_kernel_url::slotSslErrors(QNetworkReply *reply,
+					   const QList<QSslError> &errors)
+{
+  Q_UNUSED(errors);
+
+  if(reply)
+    reply->ignoreSslErrors();
 }

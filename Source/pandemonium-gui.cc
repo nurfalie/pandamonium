@@ -169,7 +169,7 @@ void pandemonium_gui::slotActivateKernel(void)
 #ifdef Q_OS_MAC
   if(QFileInfo(program).isBundle())
     {
-      QStringList list;
+      QList<QString> list;
 
       list << "-a" << program;
 
@@ -330,9 +330,9 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
 
 void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 {
+  QList<QString> list;
   QModelIndexList indexes
     (m_ui.search_urls->selectionModel()->selectedRows(2));
-  QStringList list;
 
   while(!indexes.isEmpty())
     {

@@ -30,6 +30,9 @@
 
 #include <QObject>
 #include <QUrl>
+#include <QWebView>
+
+class QNetworkReply;
 
 class pandemonium_kernel_url: public QObject
 {
@@ -43,7 +46,13 @@ class pandemonium_kernel_url: public QObject
 
  private:
   QUrl m_url;
+  QUrl m_urlToLoad;
+  QWebView m_webView;
   int m_depth;
+
+ private slots:
+  void slotLoadFinished(bool ok);
+  void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 
 #endif
