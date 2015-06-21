@@ -41,6 +41,7 @@ class pandemonium_kernel: public QObject
 
  private:
   QTimer m_controlTimer;
+  void prepareWebEngine(void);
 
  private slots:
   void slotControlTimeout(void);

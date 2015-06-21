@@ -25,7 +25,9 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QCoreApplication>
+#include <QApplication>
+#include <QWebSettings>
+#include <QtDebug>
 
 #include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
@@ -37,20 +39,31 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
 	  this,
 	  SLOT(slotControlTimeout(void)));
   m_controlTimer.start(2500);
-  pandemonium_database::recordKernelProcessId
-    (QCoreApplication::applicationPid());
+  pandemonium_database::recordKernelProcessId(QApplication::applicationPid());
+  prepareWebEngine();
 }
 
 pandemonium_kernel::~pandemonium_kernel()
 {
   pandemonium_database::recordKernelDeactivation
-    (QCoreApplication::applicationPid());
-  QCoreApplication::quit();
+    (QApplication::applicationPid());
+  QApplication::quit();
+}
+
+void pandemonium_kernel::prepareWebEngine(void)
+{
+  QWebSettings::globalSettings()->setLocalStoragePath("");
+  QWebSettings::globalSettings()->setIconDatabasePath("");
+  QWebSettings::globalSettings()->setMaximumPagesInCache(0);
+  QWebSettings::globalSettings()->setObjectCacheCapacities(0, 0, 0);
+  QWebSettings::globalSettings()->setOfflineStoragePath("");
+  QWebSettings::globalSettings()->setOfflineWebApplicationCachePath("");
+  QWebSettings::globalSettings()->setOfflineWebApplicationCacheQuota(0);
 }
 
 void pandemonium_kernel::slotControlTimeout(void)
 {
   if(pandemonium_database::
-     shouldTerminateKernel(QCoreApplication::applicationPid()))
+     shouldTerminateKernel(QApplication::applicationPid()))
     deleteLater();
 }

@@ -61,10 +61,10 @@ int main(int argc, char *argv[])
   CocoaInitializer ci;
 #endif
 #endif
-  QCoreApplication::setApplicationName("pandemonium");
-  QCoreApplication::setOrganizationName("pandemonium");
-  QCoreApplication::setOrganizationDomain("pandemonium");
-  QCoreApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
+  QApplication::setApplicationName("pandemonium");
+  QApplication::setOrganizationName("pandemonium");
+  QApplication::setOrganizationDomain("pandemonium");
+  QApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
   QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
                      pandemonium_common::homePath());
   QSettings::setDefaultFormat(QSettings::IniFormat);

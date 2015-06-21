@@ -32,7 +32,6 @@
 
 #include "pandemonium-common.h"
 #include "pandemonium-database.h"
-#include "pandemonium-gui.h"
 
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;

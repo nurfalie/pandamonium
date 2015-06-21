@@ -25,7 +25,7 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QCoreApplication>
+#include <QApplication>
 #include <QSettings>
 
 #include <iostream>
@@ -51,8 +51,9 @@ static void signal_handler(int signal_number)
 int main(int argc, char *argv[])
 {
   pandemonium_common::prepareSignalHandler(signal_handler);
+  qputenv("TZ", ":UTC");
 
-  QCoreApplication qapplication(argc, argv);
+  QApplication qapplication(argc, argv);
 
   s_kernel_process_id = qapplication.applicationPid();
 
@@ -71,10 +72,10 @@ int main(int argc, char *argv[])
   CocoaInitializer ci;
 #endif
 #endif
-  QCoreApplication::setApplicationName("pandemonium");
-  QCoreApplication::setOrganizationName("pandemonium");
-  QCoreApplication::setOrganizationDomain("pandemonium");
-  QCoreApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
+  QApplication::setApplicationName("pandemonium");
+  QApplication::setOrganizationName("pandemonium");
+  QApplication::setOrganizationDomain("pandemonium");
+  QApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
   QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
                      pandemonium_common::homePath());
   QSettings::setDefaultFormat(QSettings::IniFormat);
