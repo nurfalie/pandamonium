@@ -81,6 +81,12 @@ void pandemonium_kernel::slotRovingTimeout(void)
   while(!list.isEmpty())
     {
       QPair<QString, int> pair(list.takeFirst());
+      QUrl url(QUrl::fromUserInput(pair.first));
+
+      if(url.isEmpty())
+	continue;
+      else if(!url.isValid())
+	continue;
 
       if(!m_searchUrls.contains(pair.first))
 	{
