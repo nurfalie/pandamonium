@@ -26,7 +26,8 @@ HEADERS = Source/pandemonium-common.h \
           Source/pandemonium-kernel.h
 SOURCES = Source/pandemonium-database.cc \
           Source/pandemonium-kernel.cc \
-	  Source/pandemonium-kernel-main.cc
+	  Source/pandemonium-kernel-main.cc \
+          Source/pandemonium-kernel-url.cc
 
 PROJECTNAME = pandemonium-kernel
 TARGET = pandemonium-kernel
