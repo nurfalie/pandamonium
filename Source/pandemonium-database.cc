@@ -136,6 +136,7 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 	QSqlQuery query(pair.first);
 
 	query.setForwardOnly(true);
+
 	query.prepare("SELECT command FROM pandemonium_kernel_command "
 		      "WHERE kernel_process_id = ?");
 	query.bindValue(0, process_id);
@@ -148,7 +149,10 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 		  terminate = true;
 	      }
 	    else
-	      terminate = true;
+	      {
+		query.exec("DELETE FROM pandemonium_kernel_command");
+		terminate = true;
+	      }
 	  }
 	else
 	  terminate = true;
@@ -314,8 +318,8 @@ void pandemonium_database::recordKernelDeactivation(const qint64 process_id)
 	  query.exec("DELETE FROM pandemonium_kernel_command");
 	else
 	  {
-	    query.prepare("DELETE FROM pandemonium_kernel_command WHERE "
-			  "kernel_process_id = ?");
+	    query.prepare("DELETE FROM pandemonium_kernel_command "
+			  "WHERE kernel_process_id = ?");
 	    query.bindValue(0, process_id);
 	    query.exec();
 	  }
@@ -341,13 +345,24 @@ void pandemonium_database::recordKernelProcessId(const qint64 process_id)
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
+	bool ok = true;
 
-	query.prepare("INSERT INTO pandemonium_kernel_command"
-		      "(command, kernel_process_id) "
-		      "VALUES(?, ?)");
-	query.bindValue(0, "rove");
-	query.bindValue(1, process_id);
-	query.exec();
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT command FROM pandemonium_kernel_command"))
+	  if(query.next())
+	    if(query.value(0).toString().trimmed() == "terminate")
+	      ok = false;
+
+	if(ok)
+	  {
+	    query.prepare("INSERT INTO pandemonium_kernel_command"
+			  "(command, kernel_process_id) "
+			  "VALUES(?, ?)");
+	    query.bindValue(0, "rove");
+	    query.bindValue(1, process_id);
+	    query.exec();
+	  }
       }
 
     pair.first.close();
