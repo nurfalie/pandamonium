@@ -45,6 +45,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotHighlightTimeout(void)));
+  connect(&m_kernelDatabaseTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotKernelDatabaseTimeout(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -86,6 +90,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
   m_highlightTimer.start(2500);
+  m_kernelDatabaseTimer.start(2500);
   m_ui.search_urls->setColumnHidden(2, true); // url_hash
 
   QSettings settings;
@@ -193,6 +198,7 @@ void pandemonium_gui::slotAddSearchUrl(void)
 
 void pandemonium_gui::slotDeactivateKernel(void)
 {
+  pandemonium_database::recordKernelDeactivation();
 }
 
 void pandemonium_gui::slotHighlightTimeout(void)
@@ -218,6 +224,13 @@ void pandemonium_gui::slotHighlightTimeout(void)
 
   palette.setColor(m_ui.kernel_pid->backgroundRole(), color);
   m_ui.kernel_pid->setPalette(palette);
+}
+
+void pandemonium_gui::slotKernelDatabaseTimeout(void)
+{
+  pandemonium_database::createdb();
+  m_ui.kernel_pid->setText
+    (QString::number(pandemonium_database::kernelProcessId()));
 }
 
 void pandemonium_gui::slotListSearchUrls(void)

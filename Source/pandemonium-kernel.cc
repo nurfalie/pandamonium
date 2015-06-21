@@ -36,17 +36,21 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotControlTimeout(void)));
-  m_controlTimer.start(1500);
+  m_controlTimer.start(2500);
+  pandemonium_database::recordKernelProcessId
+    (QCoreApplication::applicationPid());
 }
 
 pandemonium_kernel::~pandemonium_kernel()
 {
   pandemonium_database::recordKernelDeactivation
     (QCoreApplication::applicationPid());
+  QCoreApplication::quit();
 }
 
 void pandemonium_kernel::slotControlTimeout(void)
 {
-  pandemonium_database::recordKernelProcessId
-    (QCoreApplication::applicationPid());
+  if(pandemonium_database::
+     shouldTerminateKernel(QCoreApplication::applicationPid()))
+    deleteLater();
 }

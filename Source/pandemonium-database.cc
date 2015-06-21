@@ -104,9 +104,9 @@ bool pandemonium_database::isKernelActive(void)
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("SELECT COUNT(*) FROM pandemonium_kernel_command");
+	query.setForwardOnly(true);
 
-	if(query.exec())
+	if(query.exec("SELECT COUNT(*) FROM pandemonium_kernel_command"))
 	  if(query.next())
 	    if(query.value(0).toLongLong() > 0)
 	      active = true;
@@ -118,6 +118,81 @@ bool pandemonium_database::isKernelActive(void)
 
   QSqlDatabase::removeDatabase(pair.second);
   return active;
+}
+
+bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
+{
+  QPair<QSqlDatabase, QString> pair;
+  bool terminate = false;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_kernel_command.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT command FROM pandemonium_kernel_command "
+		      "WHERE kernel_process_id = ?");
+	query.bindValue(0, process_id);
+
+	if(query.exec())
+	  {
+	    if(query.next())
+	      {
+		if(query.value(0).toString().trimmed() == "terminate")
+		  terminate = true;
+	      }
+	    else
+	      terminate = true;
+	  }
+	else
+	  terminate = true;
+      }
+    else
+      terminate = true;
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return terminate;
+}
+
+qint64 pandemonium_database::kernelProcessId(void)
+{
+  QPair<QSqlDatabase, QString> pair;
+  qint64 process_id = 0;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_kernel_command.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT kernel_process_id FROM "
+		      "pandemonium_kernel_command"))
+	  if(query.next())
+	    process_id = query.value(0).toLongLong();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return process_id;
 }
 
 void pandemonium_database::addSearchUrl(const QString &str)
@@ -235,10 +310,15 @@ void pandemonium_database::recordKernelDeactivation(const qint64 process_id)
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("DELETE FROM pandemonium_kernel_command WHERE "
-		      "kernel_process_id = ?");
-	query.bindValue(0, process_id);
-	query.exec();
+	if(process_id == 0)
+	  query.exec("DELETE FROM pandemonium_kernel_command");
+	else
+	  {
+	    query.prepare("DELETE FROM pandemonium_kernel_command WHERE "
+			  "kernel_process_id = ?");
+	    query.bindValue(0, process_id);
+	    query.exec();
+	  }
       }
 
     pair.first.close();
