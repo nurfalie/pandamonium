@@ -9,7 +9,7 @@ win32 {
 QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
                           -Wextra -Wpointer-arith \
                           -Wstack-protector -Wstrict-overflow=5 \
-                          -fstack-protector-all -fwrapv -pie
+                          -fwrapv -pie
 }
 else {
 QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
