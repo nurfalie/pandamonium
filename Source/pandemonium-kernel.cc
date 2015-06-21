@@ -53,8 +53,8 @@ pandemonium_kernel::~pandemonium_kernel()
 
 void pandemonium_kernel::prepareWebEngine(void)
 {
-  QWebSettings::globalSettings()->setLocalStoragePath("");
   QWebSettings::globalSettings()->setIconDatabasePath("");
+  QWebSettings::globalSettings()->setLocalStoragePath("");
   QWebSettings::globalSettings()->setMaximumPagesInCache(0);
   QWebSettings::globalSettings()->setObjectCacheCapacities(0, 0, 0);
   QWebSettings::globalSettings()->setOfflineStoragePath("");
