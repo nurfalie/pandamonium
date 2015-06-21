@@ -26,7 +26,9 @@
 */
 
 #include <QNetworkReply>
+#include <QWebElement>
 #include <QWebFrame>
+#include <QtDebug>
 
 #include "pandemonium-database.h"
 #include "pandemonium-kernel-url.h"
@@ -64,12 +66,42 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
     {
       QList<QString> list;
       QMultiMap<QString, QString> map(mainFrame->QWebFrame::metaData());
+      QString description("");
 
-      list << map.values("description")
-	   << map.values("keywords");
-      pandemonium_database::saveUrlMetaData(list,
-					    m_webView.title(),
-					    m_urlToLoad);
+      list << map.values("description") << map.values("keywords");
+
+      while(!list.isEmpty())
+	description.append(list.takeFirst());
+
+      pandemonium_database::saveUrlMetaData
+	(description, m_webView.title(), m_urlToLoad);
+
+      /*
+      ** Locate all HTTP and HTTPS links on m_urlToLoad that are like
+      ** m_urlToLoad.
+      */
+
+      foreach(QWebElement element, mainFrame->findAllElements("a").toList())
+	{
+	  QString href(element.attribute("href"));
+
+	  if(!href.isEmpty())
+	    {
+	      QUrl baseUrl(mainFrame->baseUrl());
+	      QUrl url(href);
+
+	      url = baseUrl.resolved(url);
+
+	      if(url.scheme().toLower().trimmed() == "http" ||
+		 url.scheme().toLower().trimmed() == "https")
+		if(url.toString().startsWith(m_urlToLoad.toString()))
+		  {
+		    /*
+		    ** Record the URL. We will have someone visit it.
+		    */
+		  }
+	    }
+	}
     }
 }
 

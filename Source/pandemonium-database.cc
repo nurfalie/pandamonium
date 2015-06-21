@@ -471,11 +471,43 @@ void pandemonium_database::saveDepth(const QString &depth,
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::saveUrlMetaData(const QList<QString> description,
+void pandemonium_database::saveUrlMetaData(const QString &description,
 					   const QString &title,
 					   const QUrl &url)
 {
-  Q_UNUSED(description);
-  Q_UNUSED(title);
-  Q_UNUSED(url);
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_discovered_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("INSERT OR REPLACE INTO pandemonium_discovered_urls"
+		      "(description, title, url)"
+		      "VALUES(?, ?, ?)");
+
+	if(description.trimmed().isEmpty())
+	  query.bindValue(0, url.toString());
+	else
+	  query.bindValue(0, description.trimmed());
+
+	if(title.trimmed().isEmpty())
+	  query.bindValue(1, url.toString());
+	else
+	  query.bindValue(1, title.trimmed());
+
+	query.bindValue(2, url.toString());
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
