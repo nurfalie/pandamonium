@@ -63,7 +63,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
   if(!ok)
     return;
 
-  pandemonium_database::markUrlAsVisited(m_urlToLoad);
+  pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
 
   QWebFrame *mainFrame = m_webView.page()->mainFrame();
 
@@ -100,11 +100,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	      if(url.scheme().toLower().trimmed() == "http" ||
 		 url.scheme().toLower().trimmed() == "https")
 		if(url.toString().startsWith(m_url.toString()))
-		  {
-		    /*
-		    ** Record the URL. We will have someone visit it.
-		    */
-		  }
+		  pandemonium_database::markUrlAsVisited(url, false);
 	    }
 	}
     }

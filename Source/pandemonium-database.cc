@@ -305,7 +305,8 @@ void pandemonium_database::createdb(void)
     }
 }
 
-void pandemonium_database::markUrlAsVisited(const QUrl &url)
+void pandemonium_database::markUrlAsVisited
+(const QUrl &url, const bool visited)
 {
   QPair<QSqlDatabase, QString> pair;
 
@@ -323,7 +324,7 @@ void pandemonium_database::markUrlAsVisited(const QUrl &url)
 		      "(url, visited) "
 		      "VALUES(?, ?)");
 	query.bindValue(0, url.toString());
-	query.bindValue(1, 1);
+	query.bindValue(1, visited ? 1 : 0);
 	query.exec();
       }
 
