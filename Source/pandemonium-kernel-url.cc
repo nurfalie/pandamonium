@@ -60,7 +60,7 @@ pandemonium_kernel_url::pandemonium_kernel_url
 	  SLOT(slotSslErrors(QNetworkReply *, const QList<QSslError> &)));
   m_webView.page()->networkAccessManager()->setProxy
     (pandemonium_common::proxy());
-  m_webView.load(m_urlToLoad);
+  m_webView.setUrl(m_urlToLoad);
   m_abortTimer.start();
 }
 
@@ -142,7 +142,7 @@ void pandemonium_kernel_url::slotLoadNext(void)
 	m_urlToLoad = url;
 	m_webView.page()->networkAccessManager()->setProxy
 	  (pandemonium_common::proxy());
-	m_webView.load(m_urlToLoad);
+	m_webView.setUrl(m_urlToLoad);
       }
 }
 
