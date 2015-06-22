@@ -26,6 +26,131 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
+         <widget class="QGroupBox" name="groupBox">
+          <property name="title">
+           <string>&amp;Kernel</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <item>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>&amp;Kernel</string>
+               </property>
+               <property name="buddy">
+                <cstring>kernel_path</cstring>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="kernel_path"/>
+             </item>
+             <item row="0" column="2">
+              <widget class="QPushButton" name="select_kernel_path">
+               <property name="text">
+                <string>Select</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Kernel Process ID</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QPushButton" name="activate_kernel">
+               <property name="text">
+                <string>Activate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QPushButton" name="deactivate_kernel">
+               <property name="text">
+                <string>Deactivate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <layout class="QHBoxLayout" name="horizontalLayout_3">
+               <item>
+                <widget class="QLineEdit" name="kernel_pid">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="watch_kernel">
+                 <property name="toolTip">
+                  <string>Restart the kernel if it has aborted.</string>
+                 </property>
+                 <property name="text">
+                  <string>&amp;Watch</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="horizontalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>40</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9">
+             <item>
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>&amp;Load Interval</string>
+               </property>
+               <property name="buddy">
+                <cstring>load_interval</cstring>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QDoubleSpinBox" name="load_interval">
+               <property name="minimum">
+                <double>2.500000000000000</double>
+               </property>
+               <property name="maximum">
+                <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="proxy_information">
           <property name="title">
            <string>&amp;Proxy</string>
@@ -181,75 +306,6 @@
            </item>
           </layout>
          </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_5">
-            <property name="text">
-             <string>&amp;Kernel</string>
-            </property>
-            <property name="buddy">
-             <cstring>kernel_path</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="kernel_path"/>
-          </item>
-          <item row="0" column="2">
-           <widget class="QPushButton" name="select_kernel_path">
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_6">
-            <property name="text">
-             <string>Kernel Process ID</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="activate_kernel">
-            <property name="text">
-             <string>Activate</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="deactivate_kernel">
-            <property name="text">
-             <string>Deactivate</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_3">
-            <item>
-             <widget class="QLineEdit" name="kernel_pid">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
         </item>
         <item>
          <widget class="QTableWidget" name="search_urls">
@@ -512,6 +568,13 @@
  </widget>
  <tabstops>
   <tabstop>tab_3</tabstop>
+  <tabstop>kernel_path</tabstop>
+  <tabstop>select_kernel_path</tabstop>
+  <tabstop>kernel_pid</tabstop>
+  <tabstop>watch_kernel</tabstop>
+  <tabstop>activate_kernel</tabstop>
+  <tabstop>deactivate_kernel</tabstop>
+  <tabstop>load_interval</tabstop>
   <tabstop>proxy_information</tabstop>
   <tabstop>proxy_type</tabstop>
   <tabstop>proxy_address</tabstop>
@@ -519,11 +582,6 @@
   <tabstop>proxy_user</tabstop>
   <tabstop>proxy_password</tabstop>
   <tabstop>save_proxy_information</tabstop>
-  <tabstop>kernel_path</tabstop>
-  <tabstop>select_kernel_path</tabstop>
-  <tabstop>kernel_pid</tabstop>
-  <tabstop>activate_kernel</tabstop>
-  <tabstop>deactivate_kernel</tabstop>
   <tabstop>search_urls</tabstop>
   <tabstop>list_search_urls</tabstop>
   <tabstop>add_search_url</tabstop>

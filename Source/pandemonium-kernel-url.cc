@@ -103,7 +103,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	}
     }
 
-  QTimer::singleShot(1500, this, SLOT(slotLoadNext(void)));
+  QTimer::singleShot(15000, this, SLOT(slotLoadNext(void)));
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)
@@ -121,7 +121,7 @@ void pandemonium_kernel_url::slotLoadNext(void)
 void pandemonium_kernel_url::slotReplyFinished(QNetworkReply *reply)
 {
   if(reply)
-    reply->deleteLater();
+    QTimer::singleShot(2500, reply, SLOT(deleteLater(void)));
 }
 
 void pandemonium_kernel_url::slotSslErrors(QNetworkReply *reply,
