@@ -88,6 +88,43 @@ QPair<QSqlDatabase, QString> pandemonium_database::database(void)
   return pair;
 }
 
+QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
+{
+  QPair<QSqlDatabase, QString> pair;
+  QUrl new_url;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_visited_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	/*
+	** Oh no! Not a parameter.
+	*/
+
+	query.prepare
+	  (QString("SELECT url FROM pandemonium_visited_urls "
+		   "WHERE url LIKE '%1%%' AND visited = 0").
+	   arg(url.toString()));
+
+	if(query.exec())
+	  if(query.next())
+	    new_url = QUrl::fromUserInput(query.value(0).toString());
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return new_url;
+}
+
 bool pandemonium_database::isKernelActive(void)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -320,9 +357,18 @@ void pandemonium_database::markUrlAsVisited
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("INSERT OR REPLACE INTO pandemonium_visited_urls"
-		      "(url, visited) "
-		      "VALUES(?, ?)");
+	if(visited)
+	  query.prepare("INSERT OR REPLACE INTO pandemonium_visited_urls"
+			"(url, visited) "
+			"VALUES(?, ?)");
+	else
+	  {
+	    query.exec("PRAGMA synchronous = OFF");
+	    query.prepare("INSERT INTO pandemonium_visited_urls"
+			  "(url, visited) "
+			  "VALUES(?, ?)");
+	  }
+
 	query.bindValue(0, url.toString());
 	query.bindValue(1, visited ? 1 : 0);
 	query.exec();

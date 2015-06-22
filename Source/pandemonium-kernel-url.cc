@@ -60,9 +60,7 @@ pandemonium_kernel_url::~pandemonium_kernel_url()
 
 void pandemonium_kernel_url::slotLoadFinished(bool ok)
 {
-  if(!ok)
-    return;
-
+  Q_UNUSED(ok);
   pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
 
   QWebFrame *mainFrame = m_webView.page()->mainFrame();
@@ -104,6 +102,20 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	    }
 	}
     }
+
+  QTimer::singleShot(1500, this, SLOT(slotLoadNext(void)));
+}
+
+void pandemonium_kernel_url::slotLoadNext(void)
+{
+  QUrl url(pandemonium_database::unvisitedChildUrl(m_url));
+
+  if(!url.isEmpty())
+    if(url.isValid())
+      {
+	m_urlToLoad = url;
+	m_webView.setUrl(m_urlToLoad);
+      }
 }
 
 void pandemonium_kernel_url::slotReplyFinished(QNetworkReply *reply)
