@@ -59,11 +59,15 @@ pandemonium_kernel::~pandemonium_kernel()
 void pandemonium_kernel::prepareWebEngine(void)
 {
   QWebSettings::globalSettings()->setAttribute
+    (QWebSettings::AcceleratedCompositingEnabled, false);
+  QWebSettings::globalSettings()->setAttribute
     (QWebSettings::AutoLoadImages, false);
   QWebSettings::globalSettings()->setAttribute
     (QWebSettings::JavascriptEnabled, false);
   QWebSettings::globalSettings()->setAttribute
     (QWebSettings::PluginsEnabled, false);
+  QWebSettings::globalSettings()->setAttribute
+    (QWebSettings::PrintElementBackgrounds, false);
   QWebSettings::globalSettings()->setAttribute
     (QWebSettings::PrivateBrowsingEnabled, true);
   QWebSettings::globalSettings()->setIconDatabasePath("");
