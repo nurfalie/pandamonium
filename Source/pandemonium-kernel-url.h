@@ -29,6 +29,7 @@
 #define _pandemonium_kernel_url_h_
 
 #include <QObject>
+#include <QTimer>
 #include <QUrl>
 #include <QWebView>
 
@@ -45,12 +46,15 @@ class pandemonium_kernel_url: public QObject
   ~pandemonium_kernel_url();
 
  private:
+  QTimer m_abortTimer;
   QUrl m_url;
   QUrl m_urlToLoad;
   QWebView m_webView;
+  bool m_isLoaded;
   int m_depth;
 
  private slots:
+  void slotAbortTimeout(void);
   void slotLoadFinished(bool ok);
   void slotLoadNext(void);
   void slotReplyFinished(QNetworkReply *reply);

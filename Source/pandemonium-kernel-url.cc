@@ -38,8 +38,14 @@
 pandemonium_kernel_url::pandemonium_kernel_url
 (const QUrl &url, const int depth, QObject *parent):QObject(parent)
 {
+  m_abortTimer.setInterval(10000);
   m_depth = depth;
+  m_isLoaded = false;
   m_url = m_urlToLoad = url;
+  connect(&m_abortTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotAbortTimeout(void)));
   connect(&m_webView,
 	  SIGNAL(loadFinished(bool)),
 	  this,
@@ -55,15 +61,23 @@ pandemonium_kernel_url::pandemonium_kernel_url
   m_webView.page()->networkAccessManager()->setProxy
     (pandemonium_common::proxy());
   m_webView.load(m_urlToLoad);
+  m_abortTimer.start();
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
 {
 }
 
+void pandemonium_kernel_url::slotAbortTimeout(void)
+{
+  m_webView.stop();
+}
+
 void pandemonium_kernel_url::slotLoadFinished(bool ok)
 {
   Q_UNUSED(ok);
+  m_abortTimer.stop();
+  m_isLoaded = true;
   pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
 
   QWebFrame *mainFrame = m_webView.page()->mainFrame();
@@ -122,6 +136,8 @@ void pandemonium_kernel_url::slotLoadNext(void)
   if(!url.isEmpty())
     if(url.isValid())
       {
+	m_abortTimer.start();
+	m_isLoaded = false;
 	m_urlToLoad = url;
 	m_webView.page()->networkAccessManager()->setProxy
 	  (pandemonium_common::proxy());
