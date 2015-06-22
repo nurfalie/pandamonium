@@ -26,6 +26,7 @@
 */
 
 #include <QCryptographicHash>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QUrl>
 #include <QtDebug>
@@ -36,9 +37,9 @@
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;
 
-QList<QPair<QString, int> > pandemonium_database::searchUrls(void)
+QList<QPair<QUrl, int> > pandemonium_database::searchUrls(void)
 {
-  QList<QPair<QString, int> > list;
+  QList<QPair<QUrl, int> > list;
   QPair<QSqlDatabase, QString> pair;
 
   {
@@ -57,9 +58,9 @@ QList<QPair<QString, int> > pandemonium_database::searchUrls(void)
 		      "FROM pandemonium_search_urls"))
 	  while(query.next())
 	    {
-	      QPair<QString, int> pair;
+	      QPair<QUrl, int> pair;
 
-	      pair.first = query.value(1).toString();
+	      pair.first = QUrl::fromEncoded(query.value(1).toByteArray());
 	      pair.second = query.value(0).toInt();
 	      list << pair;
 	    }
@@ -108,13 +109,13 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
 	*/
 
 	query.prepare
-	  (QString("SELECT url FROM pandemonium_visited_urls "
+	  (QString("SELECT url, visited FROM pandemonium_visited_urls "
 		   "WHERE url LIKE '%1%%' AND visited = 0").
-	   arg(url.toString()));
+	   arg(url.toEncoded().constData()));
 
 	if(query.exec())
 	  if(query.next())
-	    new_url = QUrl::fromUserInput(query.value(0).toString());
+	    new_url = QUrl::fromEncoded(query.value(0).toByteArray());
       }
 
     pair.first.close();
@@ -267,7 +268,7 @@ void pandemonium_database::addSearchUrl(const QString &str)
 	query.prepare("INSERT OR REPLACE INTO pandemonium_search_urls"
 		      "(url, url_hash) "
 		      "VALUES(?, ?)");
-	query.bindValue(0, url.toString());
+	query.bindValue(0, url.toEncoded());
 	query.bindValue(1, hash.result().toHex().constData());
 	query.exec();
       }
@@ -369,7 +370,7 @@ void pandemonium_database::markUrlAsVisited
 			  "VALUES(?, ?)");
 	  }
 
-	query.bindValue(0, url.toString());
+	query.bindValue(0, url.toEncoded());
 	query.bindValue(1, visited ? 1 : 0);
 	query.exec();
       }
@@ -539,16 +540,16 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
 		      "VALUES(?, ?, ?)");
 
 	if(description.trimmed().isEmpty())
-	  query.bindValue(0, url.toString());
+	  query.bindValue(0, url.toEncoded());
 	else
 	  query.bindValue(0, description.trimmed());
 
 	if(title.trimmed().isEmpty())
-	  query.bindValue(1, url.toString());
+	  query.bindValue(1, url.toEncoded());
 	else
 	  query.bindValue(1, title.trimmed());
 
-	query.bindValue(2, url.toString());
+	query.bindValue(2, url.toEncoded());
 	query.exec();
       }
 

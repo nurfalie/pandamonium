@@ -39,7 +39,7 @@ class pandemonium_kernel_url: public QObject
   Q_OBJECT
 
  public:
-  pandemonium_kernel_url(const QString &url,
+  pandemonium_kernel_url(const QUrl &url,
 			 const int depth,
 			 QObject *parent);
   ~pandemonium_kernel_url();

@@ -82,16 +82,15 @@ void pandemonium_kernel::slotControlTimeout(void)
 
 void pandemonium_kernel::slotRovingTimeout(void)
 {
-  QList<QPair<QString, int> > list(pandemonium_database::searchUrls());
+  QList<QPair<QUrl, int> > list(pandemonium_database::searchUrls());
 
   while(!list.isEmpty())
     {
-      QPair<QString, int> pair(list.takeFirst());
-      QUrl url(QUrl::fromUserInput(pair.first));
+      QPair<QUrl, int> pair(list.takeFirst());
 
-      if(url.isEmpty())
+      if(pair.first.isEmpty())
 	continue;
-      else if(!url.isValid())
+      else if(!pair.first.isValid())
 	continue;
 
       if(!m_searchUrls.contains(pair.first))

@@ -35,10 +35,10 @@
 #include "pandemonium-kernel-url.h"
 
 pandemonium_kernel_url::pandemonium_kernel_url
-(const QString &url, const int depth, QObject *parent):QObject(parent)
+(const QUrl &url, const int depth, QObject *parent):QObject(parent)
 {
   m_depth = depth;
-  m_url = m_urlToLoad = QUrl::fromUserInput(url);
+  m_url = m_urlToLoad = url;
   connect(&m_webView,
 	  SIGNAL(loadFinished(bool)),
 	  this,
@@ -103,7 +103,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	}
     }
 
-  QTimer::singleShot(1500, this, SLOT(slotLoadNext(void)));
+  QTimer::singleShot(500, this, SLOT(slotLoadNext(void)));
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)
