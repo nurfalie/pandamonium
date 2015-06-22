@@ -128,6 +128,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
   interval = qBound(2.500, interval, 100.00);
   QTimer::singleShot
     (static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
+  QWebSettings::globalSettings()->clearMemoryCaches();
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)

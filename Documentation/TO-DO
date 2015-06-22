@@ -6,3 +6,6 @@ Completed Items
 4.   Set the engine's proxy.
 
 Remaining Items
+
+1.   Create a global query object to process pandemonium_visited_urls.db.
+2.   Store all site words.

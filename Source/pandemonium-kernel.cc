@@ -91,21 +91,42 @@ void pandemonium_kernel::slotControlTimeout(void)
 void pandemonium_kernel::slotRovingTimeout(void)
 {
   QList<QPair<QUrl, int> > list(pandemonium_database::searchUrls());
+  QList<QUrl> urls;
 
-  while(!list.isEmpty())
+  for(int i = 0; i < list.size(); i++)
     {
-      QPair<QUrl, int> pair(list.takeFirst());
+      QPair<QUrl, int> pair(list.at(i));
 
       if(pair.first.isEmpty())
 	continue;
       else if(!pair.first.isValid())
 	continue;
 
+      urls << pair.first;
+
       if(!m_searchUrls.contains(pair.first))
 	{
 	  QPointer<pandemonium_kernel_url> url = new pandemonium_kernel_url
 	    (pair.first, pair.second, this);
 	  m_searchUrls[pair.first] = url;
+	}
+    }
+
+  QMutableHashIterator<QUrl, QPointer<pandemonium_kernel_url> >
+    it(m_searchUrls);
+
+  while(it.hasNext())
+    {
+      it.next();
+
+      if(!urls.contains(it.key()))
+	{
+	  qDebug() << "Removing search URL " << it.key() << ".";
+
+	  if(it.value())
+	    it.value()->deleteLater();
+
+	  it.remove();
 	}
     }
 }
