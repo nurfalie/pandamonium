@@ -118,12 +118,12 @@
                 <string>&amp;Load Interval</string>
                </property>
                <property name="buddy">
-                <cstring>load_interval</cstring>
+                <cstring>kernel_load_interval</cstring>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QDoubleSpinBox" name="load_interval">
+              <widget class="QDoubleSpinBox" name="kernel_load_interval">
                <property name="minimum">
                 <double>2.500000000000000</double>
                </property>
@@ -574,7 +574,7 @@
   <tabstop>watch_kernel</tabstop>
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>
-  <tabstop>load_interval</tabstop>
+  <tabstop>kernel_load_interval</tabstop>
   <tabstop>proxy_information</tabstop>
   <tabstop>proxy_type</tabstop>
   <tabstop>proxy_address</tabstop>

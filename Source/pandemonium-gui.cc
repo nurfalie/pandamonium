@@ -65,6 +65,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeactivateKernel(void)));
+  connect(m_ui.kernel_load_interval,
+	  SIGNAL(valueChanged(const QString &)),
+	  this,
+	  SLOT(slotLoadIntervalChanged(const QString &)));
   connect(m_ui.kernel_path,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -105,9 +109,11 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   statusBar()->clearMessage();
 
   /*
-  ** Restore kernel path.
+  ** Restore kernel settings.
   */
 
+  m_ui.kernel_load_interval->setValue
+    (settings.value("pandemonium_kernel_load_interval").toDouble());
   m_ui.kernel_path->setText
     (settings.value("pandemonium_kernel_path").toString());
 
@@ -306,6 +312,13 @@ void pandemonium_gui::slotListSearchUrls(void)
 
   QSqlDatabase::removeDatabase(pair.second);
   QApplication::restoreOverrideCursor();
+}
+
+void pandemonium_gui::slotLoadIntervalChanged(const QString &text)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_kernel_load_interval", text);
 }
 
 void pandemonium_gui::slotProxyInformationToggled(bool state)

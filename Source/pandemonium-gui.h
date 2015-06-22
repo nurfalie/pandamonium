@@ -56,6 +56,7 @@ class pandemonium_gui: public QMainWindow
   void slotHighlightTimeout(void);
   void slotKernelDatabaseTimeout(void);
   void slotListSearchUrls(void);
+  void slotLoadIntervalChanged(const QString &text);
   void slotProxyInformationToggled(bool state);
   void slotRemoveSelectedSearchUrls(void);
   void slotSaveProxyInformation(void);
