@@ -106,7 +106,13 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	}
     }
 
-  QTimer::singleShot(15000, this, SLOT(slotLoadNext(void)));
+  QSettings settings;
+  double interval = settings.value("pandemonium_kernel_load_interval").
+    toDouble();
+
+  interval = qBound(2.500, interval, 100.00);
+  QTimer::singleShot
+    (static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)

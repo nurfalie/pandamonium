@@ -77,6 +77,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotListSearchUrls(void)));
+  connect(m_ui.monitor_kernel,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotMonitorKernel(bool state)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -116,6 +120,8 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
     (settings.value("pandemonium_kernel_load_interval").toDouble());
   m_ui.kernel_path->setText
     (settings.value("pandemonium_kernel_path").toString());
+  m_ui.monitor_kernel->setChecked
+    (settings.value("pandemonium_monitor_kernel").toBool());
 
   /*
   ** Restore proxy settings.
@@ -208,6 +214,7 @@ void pandemonium_gui::slotAddSearchUrl(void)
 
 void pandemonium_gui::slotDeactivateKernel(void)
 {
+  m_ui.monitor_kernel->setChecked(false);
   pandemonium_database::recordKernelDeactivation();
 }
 
@@ -249,6 +256,10 @@ void pandemonium_gui::slotHighlightTimeout(void)
 void pandemonium_gui::slotKernelDatabaseTimeout(void)
 {
   pandemonium_database::createdb();
+
+  if(m_ui.monitor_kernel->isChecked())
+    slotActivateKernel();
+
   m_ui.kernel_pid->setText
     (QString::number(pandemonium_database::kernelProcessId()));
 }
@@ -319,6 +330,13 @@ void pandemonium_gui::slotLoadIntervalChanged(const QString &text)
   QSettings settings;
 
   settings.setValue("pandemonium_kernel_load_interval", text);
+}
+
+void pandemonium_gui::slotMonitorKernel(bool state)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_monitor_kernel", state);
 }
 
 void pandemonium_gui::slotProxyInformationToggled(bool state)
