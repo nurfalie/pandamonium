@@ -1,6 +1,6 @@
 CONFIG += qt release thread warn_on
 LANGUAGE = C++
-QT += sql widgets
+QT += network sql widgets
 TEMPLATE = app
 
 QMAKE_CLEAN += pandemonium

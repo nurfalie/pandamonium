@@ -34,12 +34,38 @@ extern "C"
 }
 
 #include <QDir>
+#include <QNetworkProxy>
+#include <QSettings>
 
 #define PANDEMONIUM_VERSION_STR "2015.07.04"
 
 class pandemonium_common
 {
  public:
+  static QNetworkProxy proxy(void)
+  {
+    QNetworkProxy proxy;
+    QSettings settings;
+    int index = settings.value("pandemonium_proxy_type").toInt();
+
+    proxy.setHostName(settings.value("pandemonium_proxy_address").toString());
+    proxy.setPassword
+      (settings.value("pandemonium_proxy_password").toString());
+    proxy.setPort
+      (static_cast<quint16> (settings.value("pandemonium_proxy_port").
+			     toInt()));
+
+    if(index == 0)
+      proxy.setType(QNetworkProxy::HttpProxy);
+    else if(index == 1)
+      proxy.setType(QNetworkProxy::Socks5Proxy);
+    else if(index == 1)
+      proxy.setType(QNetworkProxy::NoProxy);
+
+    proxy.setUser(settings.value("pandemonium_proxy_user").toString());
+    return proxy;
+  }
+
   static QString homePath(void)
   {
     QByteArray homepath(qgetenv("PANDEMONIUM_HOME"));
