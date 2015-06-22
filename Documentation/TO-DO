@@ -4,8 +4,8 @@ Completed Items
 2.   Interrupt loads.
 3.   Recover from network glitches.
 4.   Set the engine's proxy.
+5.   Store all site words.
 
 Remaining Items
 
 1.   Create a global query object to process pandemonium_visited_urls.db.
-2.   Store all site words.

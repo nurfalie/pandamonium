@@ -85,17 +85,8 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 
   if(mainFrame)
     {
-      QList<QString> list;
-      QMultiMap<QString, QString> map(mainFrame->QWebFrame::metaData());
-      QString description("");
-
-      list << map.values("description") << map.values("keywords");
-
-      while(!list.isEmpty())
-	description.append(list.takeFirst());
-
       pandemonium_database::saveUrlMetaData
-	(description, m_webView.title(), m_urlToLoad);
+	(mainFrame->toPlainText(), m_webView.title(), m_urlToLoad);
 
       /*
       ** Locate all HTTP and HTTPS links on m_urlToLoad that are like
