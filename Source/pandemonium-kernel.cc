@@ -78,6 +78,8 @@ void pandemonium_kernel::slotControlTimeout(void)
   if(pandemonium_database::
      shouldTerminateKernel(QApplication::applicationPid()))
     deleteLater();
+
+  QWebSettings::globalSettings()->clearMemoryCaches();
 }
 
 void pandemonium_kernel::slotRovingTimeout(void)
