@@ -31,6 +31,7 @@
 #include <QWebFrame>
 #include <QtDebug>
 
+#include "pandemonium-common.h"
 #include "pandemonium-database.h"
 #include "pandemonium-kernel-url.h"
 
@@ -51,6 +52,8 @@ pandemonium_kernel_url::pandemonium_kernel_url
 	  SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
 	  this,
 	  SLOT(slotSslErrors(QNetworkReply *, const QList<QSslError> &)));
+  m_webView.page()->networkAccessManager()->setProxy
+    (pandemonium_common::proxy());
   m_webView.load(m_urlToLoad);
 }
 
@@ -114,7 +117,9 @@ void pandemonium_kernel_url::slotLoadNext(void)
     if(url.isValid())
       {
 	m_urlToLoad = url;
-	m_webView.setUrl(m_urlToLoad);
+	m_webView.page()->networkAccessManager()->setProxy
+	  (pandemonium_common::proxy());
+	m_webView.load(m_urlToLoad);
       }
 }
 
