@@ -59,7 +59,7 @@ class pandemonium_common
       proxy.setType(QNetworkProxy::HttpProxy);
     else if(index == 1)
       proxy.setType(QNetworkProxy::Socks5Proxy);
-    else if(index == 1)
+    else
       proxy.setType(QNetworkProxy::NoProxy);
 
     proxy.setUser(settings.value("pandemonium_proxy_user").toString());
