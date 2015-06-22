@@ -52,6 +52,7 @@ class pandemonium_kernel_url: public QObject
 
  private slots:
   void slotLoadFinished(bool ok);
+  void slotReplyFinished(QNetworkReply *reply);
   void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
 };
 

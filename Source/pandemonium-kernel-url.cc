@@ -26,6 +26,7 @@
 */
 
 #include <QNetworkReply>
+#include <QTimer>
 #include <QWebElement>
 #include <QWebFrame>
 #include <QtDebug>
@@ -42,6 +43,10 @@ pandemonium_kernel_url::pandemonium_kernel_url
 	  SIGNAL(loadFinished(bool)),
 	  this,
 	  SLOT(slotLoadFinished(bool)));
+  connect(m_webView.page()->networkAccessManager(),
+	  SIGNAL(finished(QNetworkReply *)),
+	  this,
+	  SLOT(slotReplyFinished(QNetworkReply *)));
   connect(m_webView.page()->networkAccessManager(),
 	  SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
 	  this,
@@ -78,7 +83,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 
       /*
       ** Locate all HTTP and HTTPS links on m_urlToLoad that are like
-      ** m_urlToLoad.
+      ** m_url.
       */
 
       foreach(QWebElement element, mainFrame->findAllElements("a").toList())
@@ -94,7 +99,7 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 
 	      if(url.scheme().toLower().trimmed() == "http" ||
 		 url.scheme().toLower().trimmed() == "https")
-		if(url.toString().startsWith(m_urlToLoad.toString()))
+		if(url.toString().startsWith(m_url.toString()))
 		  {
 		    /*
 		    ** Record the URL. We will have someone visit it.
@@ -103,6 +108,12 @@ void pandemonium_kernel_url::slotLoadFinished(bool ok)
 	    }
 	}
     }
+}
+
+void pandemonium_kernel_url::slotReplyFinished(QNetworkReply *reply)
+{
+  if(reply)
+    QTimer::singleShot(2500, reply, SLOT(deleteLater(void)));
 }
 
 void pandemonium_kernel_url::slotSslErrors(QNetworkReply *reply,
