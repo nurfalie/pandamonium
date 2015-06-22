@@ -80,7 +80,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   connect(m_ui.monitor_kernel,
 	  SIGNAL(toggled(bool)),
 	  this,
-	  SLOT(slotMonitorKernel(bool state)));
+	  SLOT(slotMonitorKernel(bool)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
