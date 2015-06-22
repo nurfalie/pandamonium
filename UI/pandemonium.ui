@@ -84,16 +84,6 @@
                 </widget>
                </item>
                <item>
-                <widget class="QCheckBox" name="watch_kernel">
-                 <property name="toolTip">
-                  <string>Restart the kernel if it has aborted.</string>
-                 </property>
-                 <property name="text">
-                  <string>&amp;Watch</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <spacer name="horizontalSpacer_3">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -129,6 +119,16 @@
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="monitor_kernel">
+               <property name="toolTip">
+                <string>Restart the kernel if it has aborted.</string>
+               </property>
+               <property name="text">
+                <string>&amp;Monitor Kernel</string>
                </property>
               </widget>
              </item>
@@ -571,7 +571,6 @@
   <tabstop>kernel_path</tabstop>
   <tabstop>select_kernel_path</tabstop>
   <tabstop>kernel_pid</tabstop>
-  <tabstop>watch_kernel</tabstop>
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>
   <tabstop>kernel_load_interval</tabstop>
