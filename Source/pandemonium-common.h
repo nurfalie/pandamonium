@@ -46,7 +46,7 @@ class pandemonium_common
   {
     QNetworkProxy proxy;
     QSettings settings;
-    int index = settings.value("pandemonium_proxy_type").toInt();
+    int index = settings.value("pandemonium_proxy_type", -1).toInt();
 
     proxy.setHostName(settings.value("pandemonium_proxy_address").toString());
     proxy.setPassword
