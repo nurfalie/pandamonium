@@ -70,7 +70,8 @@ pandemonium_kernel_url::~pandemonium_kernel_url()
 
 void pandemonium_kernel_url::slotAbortTimeout(void)
 {
-  m_webView.stop();
+  if(!m_isLoaded)
+    m_webView.stop();
 }
 
 void pandemonium_kernel_url::slotLoadFinished(bool ok)
