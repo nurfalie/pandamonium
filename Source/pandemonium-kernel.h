@@ -29,11 +29,16 @@
 #define _pandemonium_kernel_h_
 
 #include <QHash>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QObject>
 #include <QPointer>
 #include <QTimer>
 
 #include "pandemonium-kernel-url.h"
+
+class QNetworkAccessManager;
 
 class pandemonium_kernel: public QObject
 {
@@ -42,12 +47,13 @@ class pandemonium_kernel: public QObject
  public:
   pandemonium_kernel(void);
   ~pandemonium_kernel();
+  static QNetworkReply *get(const QNetworkRequest &request);
 
  private:
   QHash<QUrl, QPointer<pandemonium_kernel_url> > m_searchUrls;
+  QNetworkAccessManager *m_networkAccessManager;
   QTimer m_controlTimer;
   QTimer m_rovingTimer;
-  void prepareWebEngine(void);
 
  private slots:
   void slotControlTimeout(void);

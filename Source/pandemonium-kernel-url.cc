@@ -27,12 +27,11 @@
 
 #include <QNetworkReply>
 #include <QTimer>
-#include <QWebElement>
-#include <QWebFrame>
 #include <QtDebug>
 
 #include "pandemonium-common.h"
 #include "pandemonium-database.h"
+#include "pandemonium-kernel.h"
 #include "pandemonium-kernel-url.h"
 
 pandemonium_kernel_url::pandemonium_kernel_url
@@ -46,80 +45,123 @@ pandemonium_kernel_url::pandemonium_kernel_url
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAbortTimeout(void)));
-  connect(&m_webView,
-	  SIGNAL(loadFinished(bool)),
-	  this,
-	  SLOT(slotLoadFinished(bool)));
-  connect(m_webView.page()->networkAccessManager(),
-	  SIGNAL(finished(QNetworkReply *)),
-	  this,
-	  SLOT(slotReplyFinished(QNetworkReply *)));
-  connect(m_webView.page()->networkAccessManager(),
-	  SIGNAL(sslErrors(QNetworkReply *, const QList<QSslError> &)),
-	  this,
-	  SLOT(slotSslErrors(QNetworkReply *, const QList<QSslError> &)));
-  m_webView.page()->networkAccessManager()->setProxy
-    (pandemonium_common::proxy());
-  m_webView.setUrl(m_urlToLoad);
   m_abortTimer.start();
+
+  QNetworkReply *reply = pandemonium_kernel::get(QNetworkRequest(m_url));
+
+  reply->setParent(this);
+  connectReplySignals(reply);
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
 {
 }
 
-void pandemonium_kernel_url::slotAbortTimeout(void)
+void pandemonium_kernel_url::connectReplySignals(QNetworkReply *reply)
 {
-  if(!m_isLoaded)
-    m_webView.stop();
+  if(!reply)
+    return;
+
+  connect(reply,
+	  SIGNAL(downloadProgress(qint64, qint64)),
+	  this,
+	  SLOT(slotDownloadProgress(qint64, qint64)));
+  connect(reply,
+	  SIGNAL(finished(void)),
+	  this,
+	  SLOT(slotReplyFinished(void)));
+  connect(reply,
+	  SIGNAL(sslErrors(const QList<QSslError> &)),
+	  this,
+	  SLOT(slotSslErrors(const QList<QSslError> &)));
 }
 
-void pandemonium_kernel_url::slotLoadFinished(bool ok)
+void pandemonium_kernel_url::parseContent(void)
 {
-  Q_UNUSED(ok);
-  m_abortTimer.stop();
-  m_isLoaded = true;
-  pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
+  /*
+  ** Let's discover all links.
+  */
 
-  QWebFrame *mainFrame = m_webView.page()->mainFrame();
+  QString title("");
+  int s = -1;
 
-  if(mainFrame)
+  if((s = m_content.indexOf("<title>")) >= 0)
     {
-      pandemonium_database::saveUrlMetaData
-	(mainFrame->toPlainText(), m_webView.title(), m_urlToLoad);
+      int e = m_content.indexOf("</title>");
+
+      if(e > s)
+	title = m_content.mid(s + 7, e - s - 7);
+    }
+
+  s = m_content.indexOf("<a");
+
+  while(s >= 0)
+    {
+      QByteArray a;
+      int e = m_content.indexOf("</a>", s);
+
+      if(e > s)
+	a = m_content.mid(s, e - s + 4);
+      else
+	break;
 
       /*
-      ** Locate all HTTP and HTTPS links on m_urlToLoad that are like
-      ** m_url.
+      ** a = <a ...>...</a>
       */
 
-      foreach(QWebElement element, mainFrame->findAllElements("a").toList())
+      s = m_content.indexOf("<a", e);
+
+      if(a.contains("href"))
 	{
-	  QString href(element.attribute("href"));
+	  QByteArray href;
+	  QUrl url;
+	  int e = -1;
+	  int s = a.indexOf("href");
 
-	  if(!href.isEmpty())
+	  s = a.indexOf("\"", s);
+	  e = a.indexOf("\"", s + 1);
+	  href = a.mid(s + 1, e - s - 1);
+	  url = QUrl(href);
+
+	  if(href.startsWith("/"))
 	    {
-	      QUrl baseUrl(mainFrame->baseUrl());
-	      QUrl url(href);
+	      url = m_urlToLoad;
+	      url = url.resolved(QUrl(href));
+	    }
+	  else if(href.startsWith("//"))
+	    url.setScheme(m_urlToLoad.scheme());
 
-	      url = baseUrl.resolved(url);
-
-	      if(url.scheme().toLower().trimmed() == "http" ||
-		 url.scheme().toLower().trimmed() == "https")
-		if(url.toString().startsWith(m_url.toString()))
-		  pandemonium_database::markUrlAsVisited(url, false);
+	  if(url.toString().startsWith(m_urlToLoad.toString()))
+	    {
+	      /*
+	      ** Fine URL.
+	      */
 	    }
 	}
     }
+}
 
-  QSettings settings;
-  double interval = settings.value("pandemonium_kernel_load_interval").
-    toDouble();
+void pandemonium_kernel_url::slotAbortTimeout(void)
+{
+  if(!m_isLoaded)
+    {
+      QNetworkReply *reply = findChild<QNetworkReply *> ();
 
-  interval = qBound(2.500, interval, 100.00);
-  QTimer::singleShot
-    (static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
-  QWebSettings::globalSettings()->clearMemoryCaches();
+      if(reply)
+	reply->deleteLater();
+    }
+}
+
+void pandemonium_kernel_url::slotDownloadProgress
+(qint64 bytesReceived, qint64 bytesTotal)
+{
+  Q_UNUSED(bytesReceived);
+  Q_UNUSED(bytesTotal);
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
+
+  if(reply)
+    m_content.append(reply->readAll());
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)
@@ -128,26 +170,69 @@ void pandemonium_kernel_url::slotLoadNext(void)
 
   if(!url.isEmpty())
     if(url.isValid())
-      {
-	m_abortTimer.start();
-	m_isLoaded = false;
-	m_urlToLoad = url;
-	m_webView.page()->networkAccessManager()->setProxy
-	  (pandemonium_common::proxy());
-	m_webView.setUrl(m_urlToLoad);
-      }
+      if(url.scheme().toLower().trimmed() == "http" ||
+	 url.scheme().toLower().trimmed() == "https")
+	{
+	  m_abortTimer.start();
+	  m_content.clear();
+	  m_isLoaded = false;
+	  m_urlToLoad = url;
+
+	  QNetworkReply *reply =
+	    pandemonium_kernel::get(QNetworkRequest(m_urlToLoad));
+
+	  reply->setParent(this);
+	  connectReplySignals(reply);
+	}
 }
 
-void pandemonium_kernel_url::slotReplyFinished(QNetworkReply *reply)
+void pandemonium_kernel_url::slotReplyFinished(void)
 {
+  m_abortTimer.stop();
+  m_isLoaded = true;
+  pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
+  bool redirect = false;
+
   if(reply)
-    QTimer::singleShot(2500, reply, SLOT(deleteLater(void)));
+    {
+      QUrl redirectUrl
+	(reply->attribute(QNetworkRequest::
+			  RedirectionTargetAttribute).toUrl());
+
+      reply->deleteLater();
+
+      if(!redirectUrl.isEmpty())
+	if(redirectUrl.isValid())
+	  {
+	    redirect = true;
+	    redirectUrl = m_url.resolved(redirectUrl);
+	    reply = pandemonium_kernel::get(QNetworkRequest(redirectUrl));
+	    reply->setParent(this);
+	    connectReplySignals(reply);
+	  }
+    }
+
+  if(!redirect)
+    {
+      parseContent();
+
+      QSettings settings;
+      double interval = settings.value("pandemonium_kernel_load_interval").
+	toDouble();
+
+      interval = qBound(2.500, interval, 100.00);
+      QTimer::singleShot
+	(static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
+    }
 }
 
-void pandemonium_kernel_url::slotSslErrors(QNetworkReply *reply,
-					   const QList<QSslError> &errors)
+void pandemonium_kernel_url::slotSslErrors(const QList<QSslError> &errors)
 {
   Q_UNUSED(errors);
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
 
   if(reply)
     reply->ignoreSslErrors();

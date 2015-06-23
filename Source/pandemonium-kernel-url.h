@@ -29,9 +29,9 @@
 #define _pandemonium_kernel_url_h_
 
 #include <QObject>
+#include <QSslError>
 #include <QTimer>
 #include <QUrl>
-#include <QWebView>
 
 class QNetworkReply;
 
@@ -46,19 +46,21 @@ class pandemonium_kernel_url: public QObject
   ~pandemonium_kernel_url();
 
  private:
+  QByteArray m_content;
   QTimer m_abortTimer;
   QUrl m_url;
   QUrl m_urlToLoad;
-  QWebView m_webView;
   bool m_isLoaded;
   int m_depth;
+  void connectReplySignals(QNetworkReply *reply);
+  void parseContent(void);
 
  private slots:
   void slotAbortTimeout(void);
-  void slotLoadFinished(bool ok);
+  void slotDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
   void slotLoadNext(void);
-  void slotReplyFinished(QNetworkReply *reply);
-  void slotSslErrors(QNetworkReply *reply, const QList<QSslError> &errors);
+  void slotReplyFinished(void);
+  void slotSslErrors(const QList<QSslError> &errors);
 };
 
 #endif

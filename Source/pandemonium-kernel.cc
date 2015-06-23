@@ -26,14 +26,20 @@
 */
 
 #include <QApplication>
-#include <QWebSettings>
+#include <QNetworkAccessManager>
 #include <QtDebug>
 
+#include "pandemonium-common.h"
 #include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
 
+static pandemonium_kernel *s_kernel = 0;
+
 pandemonium_kernel::pandemonium_kernel(void):QObject()
 {
+  s_kernel = this;
+  m_networkAccessManager = new QNetworkAccessManager(this);
+  m_networkAccessManager->setProxy(pandemonium_common::proxy());
   connect(&m_controlTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -46,37 +52,19 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
   m_rovingTimer.start(2500);
   pandemonium_database::createdb();
   pandemonium_database::recordKernelProcessId(QApplication::applicationPid());
-  prepareWebEngine();
 }
 
 pandemonium_kernel::~pandemonium_kernel()
 {
+  s_kernel = 0;
   pandemonium_database::recordKernelDeactivation
     (QApplication::applicationPid());
   QApplication::quit();
 }
 
-void pandemonium_kernel::prepareWebEngine(void)
+QNetworkReply *pandemonium_kernel::get(const QNetworkRequest &request)
 {
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::AcceleratedCompositingEnabled, false);
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::AutoLoadImages, false);
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::JavascriptEnabled, false);
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::PluginsEnabled, false);
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::PrintElementBackgrounds, false);
-  QWebSettings::globalSettings()->setAttribute
-    (QWebSettings::PrivateBrowsingEnabled, true);
-  QWebSettings::globalSettings()->setIconDatabasePath("");
-  QWebSettings::globalSettings()->setLocalStoragePath("");
-  QWebSettings::globalSettings()->setMaximumPagesInCache(0);
-  QWebSettings::globalSettings()->setObjectCacheCapacities(0, 0, 0);
-  QWebSettings::globalSettings()->setOfflineStoragePath("");
-  QWebSettings::globalSettings()->setOfflineWebApplicationCachePath("");
-  QWebSettings::globalSettings()->setOfflineWebApplicationCacheQuota(0);
+  return s_kernel->m_networkAccessManager->get(request);
 }
 
 void pandemonium_kernel::slotControlTimeout(void)
@@ -85,7 +73,7 @@ void pandemonium_kernel::slotControlTimeout(void)
      shouldTerminateKernel(QApplication::applicationPid()))
     deleteLater();
 
-  QWebSettings::globalSettings()->clearMemoryCaches();
+  m_networkAccessManager->setProxy(pandemonium_common::proxy());
 }
 
 void pandemonium_kernel::slotRovingTimeout(void)
