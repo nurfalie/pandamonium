@@ -105,11 +105,11 @@ void pandemonium_kernel_url::parseContent(void)
       else
 	break;
 
+      s = m_content.indexOf("<a", e);
+
       /*
       ** a = <a ...>...</a>
       */
-
-      s = m_content.indexOf("<a", e);
 
       if(a.contains("href"))
 	{
