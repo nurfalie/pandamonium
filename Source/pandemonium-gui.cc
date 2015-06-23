@@ -315,6 +315,8 @@ void pandemonium_gui::slotListSearchUrls(void)
 		      this,
 		      SLOT(slotDepthChanged(const QString &)));
 	    }
+
+	m_ui.search_urls->resizeColumnToContents(0);
       }
 
     pair.first.close();

@@ -89,7 +89,7 @@ void pandemonium_kernel_url::parseContent(void)
     {
       int e = m_content.indexOf("</title>");
 
-      if(e > s)
+      if(e >= s + 7)
 	title = m_content.mid(s + 7, e - s - 7);
     }
 
@@ -100,7 +100,7 @@ void pandemonium_kernel_url::parseContent(void)
       QByteArray a;
       int e = m_content.indexOf("</a>", s);
 
-      if(e > s)
+      if(e >= s - 4)
 	a = m_content.mid(s, e - s + 4);
       else
 	break;
@@ -132,11 +132,7 @@ void pandemonium_kernel_url::parseContent(void)
 	    url.setScheme(m_urlToLoad.scheme());
 
 	  if(url.toString().startsWith(m_urlToLoad.toString()))
-	    {
-	      /*
-	      ** Fine URL.
-	      */
-	    }
+	    pandemonium_database::markUrlAsVisited(url, false);
 	}
     }
 }
