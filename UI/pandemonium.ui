@@ -115,7 +115,7 @@
              <item>
               <widget class="QDoubleSpinBox" name="kernel_load_interval">
                <property name="minimum">
-                <double>2.500000000000000</double>
+                <double>0.500000000000000</double>
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>

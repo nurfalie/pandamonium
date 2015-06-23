@@ -160,12 +160,16 @@ void pandemonium_kernel_url::parseContent(void)
 	    pandemonium_database::markUrlAsVisited(url, false);
 	}
     }
+
+  m_content.clear();
 }
 
 void pandemonium_kernel_url::slotAbortTimeout(void)
 {
   if(!m_isLoaded)
     {
+      m_content.clear();
+
       QNetworkReply *reply = findChild<QNetworkReply *> ();
 
       if(reply)
@@ -243,7 +247,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
       double interval = settings.value("pandemonium_kernel_load_interval").
 	toDouble();
 
-      interval = qBound(2.500, interval, 100.00);
+      interval = qBound(0.50, interval, 100.00);
       QTimer::singleShot
 	(static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
     }
