@@ -26,6 +26,7 @@
 */
 
 #include <QNetworkReply>
+#include <QTextDocument>
 #include <QTimer>
 #include <QtDebug>
 
@@ -33,6 +34,11 @@
 #include "pandemonium-database.h"
 #include "pandemonium-kernel.h"
 #include "pandemonium-kernel-url.h"
+
+static bool sortStringListByLength(const QString &a, const QString &b)
+{
+  return a.length() > b.length();
+}
 
 pandemonium_kernel_url::pandemonium_kernel_url
 (const QUrl &url, const int depth, QObject *parent):QObject(parent)
@@ -82,8 +88,25 @@ void pandemonium_kernel_url::parseContent(void)
   ** Let's discover all links.
   */
 
+  QString description("");
   QString title("");
+  QStringList words;
+  QTextDocument textDocument;
   int s = -1;
+
+  textDocument.setHtml(m_content);
+  words = textDocument.toPlainText().
+    split(QRegExp("\\W+"), QString::SkipEmptyParts);
+  qSort(words.begin(), words.end(), sortStringListByLength);
+
+  while(!words.isEmpty())
+    if(!description.contains(words.first()))
+      {
+	description.append(words.takeFirst());
+	description.append(" ");
+      }
+    else
+      words.takeFirst();
 
   if((s = m_content.indexOf("<title>")) >= 0)
     {
