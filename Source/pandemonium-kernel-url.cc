@@ -25,7 +25,6 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <QNetworkReply>
 #include <QTextDocument>
 #include <QTimer>
 #include <QtDebug>
@@ -72,6 +71,10 @@ void pandemonium_kernel_url::connectReplySignals(QNetworkReply *reply)
 	  SIGNAL(downloadProgress(qint64, qint64)),
 	  this,
 	  SLOT(slotDownloadProgress(qint64, qint64)));
+  connect(reply,
+	  SIGNAL(error(QNetworkReply::NetworkError)),
+	  this,
+	  SLOT(slotError(QNetworkReply::NetworkError)));
   connect(reply,
 	  SIGNAL(finished(void)),
 	  this,
@@ -187,6 +190,17 @@ void pandemonium_kernel_url::slotDownloadProgress
 
   if(reply)
     m_content.append(reply->readAll());
+}
+
+void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
+{
+  Q_UNUSED(code);
+  m_content.clear();
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
+
+  if(reply)
+    reply->deleteLater();
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)

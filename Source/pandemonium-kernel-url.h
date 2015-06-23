@@ -29,6 +29,7 @@
 #define _pandemonium_kernel_url_h_
 
 #include <QObject>
+#include <QNetworkReply>
 #include <QSslError>
 #include <QTimer>
 #include <QUrl>
@@ -58,6 +59,7 @@ class pandemonium_kernel_url: public QObject
  private slots:
   void slotAbortTimeout(void);
   void slotDownloadProgress(qint64 bytesReceived, qint64 bytesTotal);
+  void slotError(QNetworkReply::NetworkError code);
   void slotLoadNext(void);
   void slotReplyFinished(void);
   void slotSslErrors(const QList<QSslError> &errors);
