@@ -125,7 +125,7 @@
              <item>
               <widget class="QCheckBox" name="monitor_kernel">
                <property name="toolTip">
-                <string>Superficially monitor the kernel. If the kernel is not active, activate it. Please note that deactivating the kernel will disable this option.
+                <string>Silently monitor the kernel. If the kernel is not active, activate it. Please note that deactivating the kernel will disable this option.
 </string>
                </property>
                <property name="text">

@@ -108,6 +108,8 @@ void pandemonium_kernel_url::parseContent(void)
     else
       words.takeFirst();
 
+  pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
+
   if((s = m_content.indexOf("<title>")) >= 0)
     {
       int e = m_content.indexOf("</title>");
@@ -148,13 +150,13 @@ void pandemonium_kernel_url::parseContent(void)
 
 	  if(href.startsWith("/"))
 	    {
-	      url = m_urlToLoad;
+	      url = m_url;
 	      url = url.resolved(QUrl(href));
 	    }
 	  else if(href.startsWith("//"))
-	    url.setScheme(m_urlToLoad.scheme());
+	    url.setScheme(m_url.scheme());
 
-	  if(url.toString().startsWith(m_urlToLoad.toString()))
+	  if(url.toString().startsWith(m_url.toString()))
 	    pandemonium_database::markUrlAsVisited(url, false);
 	}
     }
