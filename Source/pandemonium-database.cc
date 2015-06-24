@@ -409,6 +409,7 @@ void pandemonium_database::createdb(void)
 	    else if(fileName == "pandemonium_search_urls.db")
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
+		 "meta_data_only INTEGER NOT NULL DEFAULT 1, "
 		 "search_depth INTEGER NOT NULL DEFAULT -1, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");

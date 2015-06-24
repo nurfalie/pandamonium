@@ -112,7 +112,8 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SLOT(slotSelectKernelPath(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
-  m_ui.search_urls->setColumnHidden(2, true); // url_hash
+  m_ui.search_urls->setColumnHidden
+    (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
   QSettings settings;
 
@@ -381,30 +382,36 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT search_depth, url, url_hash "
+	if(query.exec("SELECT meta_data_only, search_depth, url, url_hash "
 		      "FROM pandemonium_search_urls "
 		      "ORDER BY url"))
 	  while(query.next())
 	    {
+	      QCheckBox *checkBox = new QCheckBox();
 	      QComboBox *comboBox = new QComboBox();
 	      QTableWidgetItem *item = 0;
 	      int index = 0;
 
+	      checkBox->setChecked(query.value(1).toInt());
+	      checkBox->setToolTip
+		(tr("If checked, only meta-data words will be saved. "
+		    "Otherwise, all site words will be saved."));
 	      comboBox->addItem("-1");
-	      comboBox->setProperty("url_hash", query.value(2));
-	      index = comboBox->findText(query.value(0).toString());
+	      comboBox->setProperty("url_hash", query.value(3));
+	      index = comboBox->findText(query.value(1).toString());
 
 	      if(index >= 0)
 		comboBox->setCurrentIndex(index);
 
 	      m_ui.search_urls->setRowCount(row + 1);
-	      m_ui.search_urls->setCellWidget(row, 0, comboBox);
-	      item = new QTableWidgetItem(query.value(1).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.search_urls->setItem(row, 1, item);
+	      m_ui.search_urls->setCellWidget(row, 0, checkBox);
+	      m_ui.search_urls->setCellWidget(row, 1, comboBox);
 	      item = new QTableWidgetItem(query.value(2).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.search_urls->setItem(row, 2, item);
+	      item = new QTableWidgetItem(query.value(3).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_ui.search_urls->setItem(row, 3, item);
 	      row += 1;
 	      connect(comboBox,
 		      SIGNAL(currentIndexChanged(const QString &)),
@@ -413,6 +420,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 	    }
 
 	m_ui.search_urls->resizeColumnToContents(0);
+	m_ui.search_urls->resizeColumnToContents(1);
       }
 
     pair.first.close();

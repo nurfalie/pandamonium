@@ -323,6 +323,11 @@
           </attribute>
           <column>
            <property name="text">
+            <string>Meta-Data Only</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Search Depth</string>
            </property>
           </column>
