@@ -311,30 +311,6 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item>
-           <widget class="QCheckBox" name="periodically_list_search_urls">
-            <property name="text">
-             <string>&amp;Periodically List</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_12">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
          <widget class="QTableWidget" name="search_urls">
           <property name="alternatingRowColors">
            <bool>true</bool>
@@ -376,6 +352,13 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
+           <widget class="QCheckBox" name="periodically_list_search_urls">
+            <property name="text">
+             <string>&amp;Periodically Refresh Table</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <spacer name="horizontalSpacer_4">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -389,16 +372,16 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="list_search_urls">
+           <widget class="QPushButton" name="add_search_url">
             <property name="text">
-             <string>List</string>
+             <string>New URL</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="add_search_url">
+           <widget class="QPushButton" name="list_search_urls">
             <property name="text">
-             <string>New URL</string>
+             <string>Refresh</string>
             </property>
            </widget>
           </item>
@@ -408,19 +391,6 @@
              <string>Remove Selected</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -439,31 +409,14 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <widget class="QCheckBox" name="periodically_list_discovered_urls">
             <property name="text">
-             <string>&amp;Periodically List</string>
+             <string>&amp;Periodically Refresh Table</string>
             </property>
            </widget>
           </item>
-          <item>
-           <spacer name="horizontalSpacer_13">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <spacer name="horizontalSpacer_6">
             <property name="orientation">
@@ -496,19 +449,6 @@
              <string>Toggle None</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -620,7 +560,7 @@
           <item>
            <widget class="QPushButton" name="list_discovered_urls">
             <property name="text">
-             <string>List</string>
+             <string>Refresh</string>
             </property>
            </widget>
           </item>
@@ -637,19 +577,6 @@
              <string>Remove Selected</string>
             </property>
            </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>
@@ -702,10 +629,10 @@
   <tabstop>proxy_user</tabstop>
   <tabstop>proxy_password</tabstop>
   <tabstop>save_proxy_information</tabstop>
-  <tabstop>periodically_list_search_urls</tabstop>
   <tabstop>search_urls</tabstop>
-  <tabstop>list_search_urls</tabstop>
+  <tabstop>periodically_list_search_urls</tabstop>
   <tabstop>add_search_url</tabstop>
+  <tabstop>list_search_urls</tabstop>
   <tabstop>remove_search_urls</tabstop>
   <tabstop>periodically_list_discovered_urls</tabstop>
   <tabstop>toggle_all</tabstop>

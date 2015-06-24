@@ -101,6 +101,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotSavePageLimit(const QString &)));
+  connect(m_ui.periodically_list_discovered_urls,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSavePeriodic(bool)));
+  connect(m_ui.periodically_list_search_urls,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotSavePeriodic(bool)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -127,7 +135,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SLOT(slotToggleDiscovered(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
-  m_tableListTimer.start(10000);
+  m_tableListTimer.setInterval(10000);
   m_ui.search_urls->setColumnHidden
     (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
@@ -151,6 +159,12 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 
   if(index >= 0)
     m_ui.page_limit->setCurrentIndex(index);
+
+  m_ui.periodically_list_discovered_urls->setChecked
+    (settings.value("pandemonium_periodically_list_discovered_urls").
+     toBool());
+  m_ui.periodically_list_search_urls->setChecked
+    (settings.value("pandemonium_periodically_list_search_urls").toBool());
 
   /*
   ** Restore kernel settings.
@@ -562,6 +576,32 @@ void pandemonium_gui::slotSavePageLimit(const QString &text)
   QSettings settings;
 
   settings.setValue("pandemonium_page_limit", text);
+}
+
+void pandemonium_gui::slotSavePeriodic(bool state)
+{
+  QSettings settings;
+  QString str("");
+
+  if(m_ui.periodically_list_discovered_urls ==
+     qobject_cast<QCheckBox *> (sender()))
+    {
+      if(state)
+	{
+	  m_discoveredLinksLastDateTime = 0;
+
+	  if(!m_tableListTimer.isActive())
+	    m_tableListTimer.start();
+	}
+      else
+	m_tableListTimer.stop();
+
+      str = "pandemonium_periodically_list_discovered_urls";
+    }
+  else
+    str = "pandemonium_periodically_list_search_urls";
+
+  settings.setValue(str, state);
 }
 
 void pandemonium_gui::slotSaveProxyInformation(void)
