@@ -471,7 +471,7 @@ void pandemonium_gui::slotMetaDataOnly(bool state)
 	query.bindValue(1, checkBox->property("url_hash"));
 	query.exec();
       }
-  
+
     pair.first.close();
     pair.first = QSqlDatabase();
   }
