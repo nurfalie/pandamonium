@@ -189,15 +189,11 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
       {
 	QSqlQuery query(pair.first);
 
-	/*
-	** Oh no! Not a parameter.
-	*/
-
 	query.setForwardOnly(true);
 	query.prepare
-	  (QString("SELECT url, visited FROM pandemonium_visited_urls "
-		   "WHERE url LIKE '%1%%' AND visited = 0").
-	   arg(url.toEncoded().constData()));
+	  ("SELECT url, visited FROM pandemonium_visited_urls "
+	   "WHERE url LIKE ? AND visited = 0");
+	query.bindValue(0, (url.toEncoded() + "%").constData());
 
 	if(query.exec())
 	  if(query.next())
