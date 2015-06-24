@@ -151,7 +151,7 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
 	query.setForwardOnly(true);
 	query.prepare
 	  (QString("SELECT url FROM pandemonium_discovered_urls "
-		   "ORDER BY time_discovered LIMIT %1 OFFSET %2 ").
+		   "ORDER BY time_discovered DESC LIMIT %1 OFFSET %2 ").
 	   arg(limit).
 	   arg(offset));
 

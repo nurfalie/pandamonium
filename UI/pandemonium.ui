@@ -308,6 +308,30 @@
          </widget>
         </item>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QCheckBox" name="periodically_list_search_urls">
+            <property name="text">
+             <string>&amp;Periodically List</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_12">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QTableWidget" name="search_urls">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
@@ -407,6 +431,30 @@
            <string>Statistics</string>
           </property>
          </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_10">
+          <item>
+           <widget class="QCheckBox" name="periodically_list_discovered_urls">
+            <property name="text">
+             <string>&amp;Periodically List</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_13">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -639,10 +687,12 @@
   <tabstop>proxy_user</tabstop>
   <tabstop>proxy_password</tabstop>
   <tabstop>save_proxy_information</tabstop>
+  <tabstop>periodically_list_search_urls</tabstop>
   <tabstop>search_urls</tabstop>
   <tabstop>list_search_urls</tabstop>
   <tabstop>add_search_url</tabstop>
   <tabstop>remove_search_urls</tabstop>
+  <tabstop>periodically_list_discovered_urls</tabstop>
   <tabstop>all_toggled</tabstop>
   <tabstop>none_toggled</tabstop>
   <tabstop>discovered_urls</tabstop>
