@@ -137,7 +137,7 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
     pair = database();
     pair.first.setDatabaseName
       (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_visited_urls.db");
+       "pandemonium_discovered_urls.db");
 
     if(pair.first.open())
       {
@@ -149,8 +149,8 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
 
 	query.setForwardOnly(true);
 	query.prepare
-	  (QString("SELECT url FROM pandemonium_visited_urls "
-		   "WHERE visited = 1 ORDER BY 1 LIMIT %1 OFFSET %2 ").
+	  (QString("SELECT url FROM pandemonium_discovered_urls "
+		   "ORDER BY 1 LIMIT %1 OFFSET %2 ").
 	   arg(limit).
 	   arg(offset));
 
