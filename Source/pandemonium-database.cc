@@ -89,6 +89,42 @@ QPair<QSqlDatabase, QString> pandemonium_database::database(void)
   return pair;
 }
 
+QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
+{
+  QPair<QSqlDatabase, QString> pair;
+  QPair<quint64, quint64> numbers;
+  QUrl new_url;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_visited_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	if(query.exec("SELECT COUNT(*), 'u' FROM pandemonium_visited_urls "
+		      "WHERE visited = 0 UNION "
+		      "SELECT COUNT(*), 'v' FROM pandemonium_visited_urls "
+		      "WHERE visited = 1 ORDER BY 2"))
+	  {
+	    query.next();
+	    numbers.first = query.value(0).toULongLong();
+	    query.next();
+	    numbers.second = query.value(0).toULongLong();
+	  }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return numbers;
+}
+
 QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
 {
   QPair<QSqlDatabase, QString> pair;

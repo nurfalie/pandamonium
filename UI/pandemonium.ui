@@ -441,6 +441,13 @@
          </layout>
         </item>
         <item>
+         <widget class="QLabel" name="discovered_statistics">
+          <property name="text">
+           <string>Statistics</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTableWidget" name="discovered_urls">
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>

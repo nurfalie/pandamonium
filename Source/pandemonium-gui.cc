@@ -73,6 +73,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveKernelPath(void)));
+  connect(m_ui.list_discovered_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotListDiscoveredUrls(void)));
   connect(m_ui.list_search_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -262,6 +266,21 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   m_ui.kernel_pid->setText
     (QString::number(pandemonium_database::kernelProcessId()));
+
+  QPair<quint64, quint64> numbers
+    (pandemonium_database::unvisitedAndVisitedNumbers());
+
+  m_ui.discovered_statistics->setText
+    (tr("Unvisited URLs: %1. Visited URLs: %2. Percent unvisited: %3%%.").
+     arg(numbers.first).arg(numbers.second).
+     arg(100 *
+	 static_cast<double> (numbers.first) / (qMax(static_cast<quint64> (1),
+						     numbers.first +
+						     numbers.second))));
+}
+
+void pandemonium_gui::slotListDiscoveredUrls(void)
+{
 }
 
 void pandemonium_gui::slotListSearchUrls(void)
