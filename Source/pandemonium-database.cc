@@ -242,6 +242,39 @@ bool pandemonium_database::isKernelActive(void)
   return active;
 }
 
+bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
+{
+  bool state = true;
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT meta_data_only "
+		      "FROM pandemonium_search_urls WHERE url = ?");
+	query.bindValue(0, url.toEncoded());
+
+	if(query.exec())
+	  if(query.next())
+	    state = query.value(0).toInt();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return state;
+}
+
 bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 {
   QPair<QSqlDatabase, QString> pair;

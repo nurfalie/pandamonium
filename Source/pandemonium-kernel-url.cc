@@ -94,13 +94,63 @@ void pandemonium_kernel_url::parseContent(void)
   QString description("");
   QString title("");
   QStringList words;
-  QTextDocument textDocument;
+  bool metaDataOnly = pandemonium_database::isUrlMetaDataOnly(m_url);
   int s = -1;
 
-  textDocument.setHtml(m_content);
-  words = textDocument.toPlainText().
-    split(QRegExp("\\W+"), QString::SkipEmptyParts);
-  qSort(words.begin(), words.end(), sortStringListByLength);
+  if(metaDataOnly)
+    {
+      QString content("");
+
+      s = m_content.indexOf("<meta");
+
+      while(s >= 0)
+	{
+	  QByteArray meta;
+	  int e = m_content.indexOf(">", s);
+
+	  if(e >= s - 1)
+	    meta = m_content.mid(s, e - s + 1);
+	  else
+	    break;
+
+	  QByteArray bytes(meta);
+
+	  bytes.replace(" ", "");
+
+	  if(bytes.contains("name=\"description\"") ||
+	     bytes.contains("name=\"keywords\""))
+	    {
+	      int s = meta.indexOf("content");
+
+	      if(s >= 0)
+		{
+		  int e = -1;
+
+		  s = meta.indexOf("\"", s);
+		  e = meta.indexOf("\"", s + 1);
+
+		  if(e >= s)
+		    {
+		      content.append(meta.mid(s + 1, e - s - 1));
+		      content.append(" ");
+		    }
+		}
+	    }
+
+	  s = m_content.indexOf("<meta", e);
+	}
+
+      words = content.split(QRegExp("\\W+"), QString::SkipEmptyParts);
+    }
+  else
+    {
+      QTextDocument textDocument;
+
+      textDocument.setHtml(m_content);
+      words = textDocument.toPlainText().
+	split(QRegExp("\\W+"), QString::SkipEmptyParts);
+      qSort(words.begin(), words.end(), sortStringListByLength);
+    }
 
   while(!words.isEmpty())
     if(!description.contains(words.first()))
@@ -111,7 +161,7 @@ void pandemonium_kernel_url::parseContent(void)
     else
       words.takeFirst();
 
-  description = qCompress(description.toUtf8(), 9);
+  description = qCompress(description.trimmed().toUtf8(), 9);
   pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
 
   if((s = m_content.indexOf("<title>")) >= 0)
@@ -119,7 +169,7 @@ void pandemonium_kernel_url::parseContent(void)
       int e = m_content.indexOf("</title>");
 
       if(e >= s + 7)
-	title = m_content.mid(s + 7, e - s - 7);
+	title = m_content.mid(s + 7, e - s - 7).trimmed();
     }
 
   s = m_content.indexOf("<a");

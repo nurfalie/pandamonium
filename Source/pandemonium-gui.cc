@@ -476,7 +476,8 @@ void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 {
   QList<QString> list;
   QModelIndexList indexes
-    (m_ui.search_urls->selectionModel()->selectedRows(2));
+    (m_ui.search_urls->selectionModel()->
+     selectedRows(m_ui.search_urls->columnCount() - 1));
 
   while(!indexes.isEmpty())
     {

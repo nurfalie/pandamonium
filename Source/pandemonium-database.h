@@ -42,6 +42,7 @@ class pandemonium_database
   static QPair<quint64, quint64> unvisitedAndVisitedNumbers(void);
   static QUrl unvisitedChildUrl(const QUrl &url);
   static bool isKernelActive(void);
+  static bool isUrlMetaDataOnly(const QUrl &url);
   static bool shouldTerminateKernel(const qint64 process_id);
   static qint64 kernelProcessId(void);
   static void addSearchUrl(const QString &str);
