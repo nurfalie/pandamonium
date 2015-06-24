@@ -397,6 +397,13 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
+         <widget class="QLabel" name="discovered_statistics">
+          <property name="text">
+           <string>Statistics</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
            <spacer name="horizontalSpacer_6">
@@ -439,13 +446,6 @@
            </spacer>
           </item>
          </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="discovered_statistics">
-          <property name="text">
-           <string>Statistics</string>
-          </property>
-         </widget>
         </item>
         <item>
          <widget class="QTableWidget" name="discovered_urls">

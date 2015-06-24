@@ -37,6 +37,7 @@ class pandemonium_database
 {
  public:
   static QList<QPair<QUrl, int> > searchUrls(void);
+  static QList<QUrl> visitedLinks(const quint64 offset);
   static QPair<QSqlDatabase, QString> database(void);
   static QPair<quint64, quint64> unvisitedAndVisitedNumbers(void);
   static QUrl unvisitedChildUrl(const QUrl &url);

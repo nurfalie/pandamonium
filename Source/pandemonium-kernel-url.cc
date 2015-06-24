@@ -111,6 +111,7 @@ void pandemonium_kernel_url::parseContent(void)
     else
       words.takeFirst();
 
+  description = qCompress(description.toUtf8(), 9);
   pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
 
   if((s = m_content.indexOf("<title>")) >= 0)

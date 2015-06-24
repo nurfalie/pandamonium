@@ -125,6 +125,49 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
   return numbers;
 }
 
+QList<QUrl> pandemonium_database::visitedLinks(const quint64 offset)
+{
+  QList<QUrl> list;
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_visited_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	/*
+	** Oh no! Not a parameter.
+	*/
+
+	query.prepare
+	  (QString("SELECT url FROM pandemonium_visited_urls "
+		   "WHERE visited = 1 LIMIT 5000 OFFSET %1 ORDER BY 1").
+	   arg(offset));
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      QUrl url(QUrl::fromEncoded(query.value(0).toByteArray()));
+
+	      if(!url.isEmpty())
+		if(url.isValid())
+		  list << url;
+	    }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return list;
+}
+
 QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
 {
   QPair<QSqlDatabase, QString> pair;

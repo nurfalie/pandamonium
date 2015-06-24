@@ -271,8 +271,10 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
     (pandemonium_database::unvisitedAndVisitedNumbers());
 
   m_ui.discovered_statistics->setText
-    (tr("Total URLs: %1. Unvisited URLs: %2. Visited URLs: %3. "
-	"Percent unvisited: %4%.").
+    (tr("<b>Total URLs:</b> %1. "
+	"<b>Unvisited URLs:</b> %2. "
+	"<b>Visited URLs:</b> %3. "
+	"<b>Percent unvisited:</b> %4%.").
      arg(numbers.first + numbers.second).
      arg(numbers.first).arg(numbers.second).
      arg(100 *
@@ -283,6 +285,32 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
 void pandemonium_gui::slotListDiscoveredUrls(void)
 {
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+  m_ui.discovered_urls->clearContents();
+  m_ui.discovered_urls->setRowCount(0);
+
+  QList<QUrl> list(pandemonium_database::
+		   visitedLinks(static_cast<quint64> (5000 *m_ui.page->
+						      currentIndex())));
+  int row = 0;
+
+  while(!list.isEmpty())
+    {
+      QUrl url(list.takeFirst());
+
+      if(url.isEmpty() || !url.isValid())
+	continue;
+
+      QCheckBox *checkBox = new QCheckBox();
+      QTableWidgetItem *item = new QTableWidgetItem(url.toString());
+
+      m_ui.discovered_urls->setRowCount(row + 1);
+      m_ui.discovered_urls->setCellWidget(row, 0, checkBox);
+      m_ui.discovered_urls->setItem(row, 1, item);
+      row += 1;
+    }
+
+  QApplication::restoreOverrideCursor();
 }
 
 void pandemonium_gui::slotListSearchUrls(void)
