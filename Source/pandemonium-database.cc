@@ -26,6 +26,7 @@
 */
 
 #include <QCryptographicHash>
+#include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QUrl>
@@ -150,7 +151,7 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
 	query.setForwardOnly(true);
 	query.prepare
 	  (QString("SELECT url FROM pandemonium_discovered_urls "
-		   "ORDER BY 1 LIMIT %1 OFFSET %2 ").
+		   "ORDER BY time_discovered LIMIT %1 OFFSET %2 ").
 	   arg(limit).
 	   arg(offset));
 
@@ -423,6 +424,7 @@ void pandemonium_database::createdb(void)
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_discovered_urls("
 		 "description TEXT NOT NULL, "
+		 "time_discovered INTEGER NOT NULL, "
 		 "title TEXT NOT NULL, "
 		 "url TEXT NOT NULL PRIMARY KEY)");
 	    else if(fileName == "pandemonium_kernel_command.db")
@@ -654,20 +656,22 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
 	QSqlQuery query(pair.first);
 
 	query.prepare("INSERT OR REPLACE INTO pandemonium_discovered_urls"
-		      "(description, title, url)"
-		      "VALUES(?, ?, ?)");
+		      "(description, time_discovered, title, url)"
+		      "VALUES(?, ?, ?, ?)");
 
 	if(description.trimmed().isEmpty())
 	  query.bindValue(0, url.toEncoded());
 	else
 	  query.bindValue(0, description.trimmed());
 
-	if(title.trimmed().isEmpty())
-	  query.bindValue(1, url.toEncoded());
-	else
-	  query.bindValue(1, title.trimmed());
+	query.bindValue(1, QDateTime::currentDateTime().toTime_t());
 
-	query.bindValue(2, url.toEncoded());
+	if(title.trimmed().isEmpty())
+	  query.bindValue(2, url.toEncoded());
+	else
+	  query.bindValue(2, title.trimmed());
+
+	query.bindValue(3, url.toEncoded());
 	query.exec();
       }
 

@@ -327,10 +327,12 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	"<b>Percent unvisited:</b> %4%.").
      arg(numbers.first + numbers.second).
      arg(numbers.first).arg(numbers.second).
-     arg(100 *
-	 static_cast<double> (numbers.first) / (qMax(static_cast<quint64> (1),
-						     numbers.first +
-						     numbers.second))));
+     arg(QString::
+	 number(100 *
+		static_cast<double> (numbers.first)
+		/ (qMax(static_cast<quint64> (1),
+			numbers.first +
+			numbers.second)), 'f', 2)));
 }
 
 void pandemonium_gui::slotListDiscoveredUrls(void)
@@ -392,10 +394,15 @@ void pandemonium_gui::slotListSearchUrls(void)
 	      QTableWidgetItem *item = 0;
 	      int index = 0;
 
-	      checkBox->setChecked(query.value(1).toInt());
+	      checkBox->setChecked(query.value(0).toInt());
+	      checkBox->setProperty("url_hash", query.value(3));
 	      checkBox->setToolTip
-		(tr("If checked, only meta-data words will be saved. "
+		(tr("If enabled, only meta-data words will be saved. "
 		    "Otherwise, all site words will be saved."));
+	      connect(checkBox,
+		      SIGNAL(toggled(bool)),
+		      this,
+		      SLOT(slotMetaDataOnly(bool)));
 	      comboBox->addItem("-1");
 	      comboBox->setProperty("url_hash", query.value(3));
 	      index = comboBox->findText(query.value(1).toString());
@@ -436,6 +443,40 @@ void pandemonium_gui::slotLoadIntervalChanged(const QString &text)
   QSettings settings;
 
   settings.setValue("pandemonium_kernel_load_interval", text);
+}
+
+void pandemonium_gui::slotMetaDataOnly(bool state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(!checkBox)
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandemonium_database::database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("UPDATE pandemonium_search_urls "
+		      "SET meta_data_only = ? "
+		      "WHERE url_hash = ?");
+	query.bindValue(0, state ? 1 : 0);
+	query.bindValue(1, checkBox->property("url_hash"));
+	query.exec();
+      }
+  
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
 
 void pandemonium_gui::slotMonitorKernel(bool state)

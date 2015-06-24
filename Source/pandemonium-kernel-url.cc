@@ -245,8 +245,8 @@ void pandemonium_kernel_url::slotDownloadProgress
 
 void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 {
-  Q_UNUSED(code);
   m_content.clear();
+  qDebug() << "Network error " << code << "!";
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
 
