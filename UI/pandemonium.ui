@@ -69,6 +69,9 @@
              </item>
              <item row="1" column="3">
               <widget class="QPushButton" name="deactivate_kernel">
+               <property name="toolTip">
+                <string>If pressed, kernel monitoring will be disabled.</string>
+               </property>
                <property name="text">
                 <string>Deactivate</string>
                </property>
@@ -333,6 +336,9 @@
         </item>
         <item>
          <widget class="QTableWidget" name="search_urls">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
@@ -472,14 +478,20 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="all_toggled">
+           <widget class="QPushButton" name="toggle_all">
+            <property name="toolTip">
+             <string>If pressed, the periodic populating of the table will be disabled.</string>
+            </property>
             <property name="text">
              <string>Toggle All</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="none_toggled">
+           <widget class="QPushButton" name="toggle_none">
+            <property name="toolTip">
+             <string>If pressed, the periodic populating of the table will be disabled.</string>
+            </property>
             <property name="text">
              <string>Toggle None</string>
             </property>
@@ -502,6 +514,9 @@
         </item>
         <item>
          <widget class="QTableWidget" name="discovered_urls">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
           <property name="selectionBehavior">
            <enum>QAbstractItemView::SelectRows</enum>
           </property>
@@ -693,8 +708,8 @@
   <tabstop>add_search_url</tabstop>
   <tabstop>remove_search_urls</tabstop>
   <tabstop>periodically_list_discovered_urls</tabstop>
-  <tabstop>all_toggled</tabstop>
-  <tabstop>none_toggled</tabstop>
+  <tabstop>toggle_all</tabstop>
+  <tabstop>toggle_none</tabstop>
   <tabstop>discovered_urls</tabstop>
   <tabstop>page_limit</tabstop>
   <tabstop>page</tabstop>

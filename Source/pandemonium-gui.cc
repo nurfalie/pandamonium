@@ -117,6 +117,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
+  connect(m_ui.toggle_all,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotToggleDiscovered(void)));
+  connect(m_ui.toggle_none,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotToggleDiscovered(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.start(10000);
@@ -619,5 +627,28 @@ void pandemonium_gui::slotTableListTimeout(void)
     {
       if(m_ui.periodically_list_discovered_urls->isChecked())
 	slotListDiscoveredUrls();
+    }
+}
+
+void pandemonium_gui::slotToggleDiscovered(void)
+{
+  m_tableListTimer.stop();
+  m_ui.periodically_list_discovered_urls->setChecked(false);
+
+  QPushButton *pushButton = qobject_cast<QPushButton *> (sender());
+  bool state = true;
+
+  if(m_ui.toggle_all == pushButton)
+    state = true;
+  else
+    state = false;
+
+  for(int i = 0; i < m_ui.discovered_urls->rowCount(); i++)
+    {
+      QCheckBox *checkBox = qobject_cast<QCheckBox *>
+	(m_ui.discovered_urls->cellWidget(i, 0));
+
+      if(checkBox)
+	checkBox->setChecked(state);
     }
 }

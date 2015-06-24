@@ -71,6 +71,7 @@ class pandemonium_gui: public QMainWindow
   void slotSaveKernelPath(void);
   void slotSelectKernelPath(void);
   void slotTableListTimeout(void);
+  void slotToggleDiscovered(void);
 };
 
 #endif
