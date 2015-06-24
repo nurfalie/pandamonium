@@ -146,7 +146,7 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 offset)
 
 	query.prepare
 	  (QString("SELECT url FROM pandemonium_visited_urls "
-		   "WHERE visited = 1 LIMIT 5000 OFFSET %1 ORDER BY 1").
+		   "WHERE visited = 1 ORDER BY 1 LIMIT 5000 OFFSET %1 ").
 	   arg(offset));
 
 	if(query.exec())
