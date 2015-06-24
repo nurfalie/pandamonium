@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QSqlQuery>
 #include <QtDebug>
+#include <QtMath>
 
 #include "pandemonium-common.h"
 #include "pandemonium-database.h"
@@ -85,6 +86,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotMonitorKernel(bool)));
+  connect(m_ui.page,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotPageChanged(int)));
+  connect(m_ui.page_limit,
+	  SIGNAL(currentIndexChanged(const QString &)),
+	  this,
+	  SLOT(slotSavePageLimit(const QString &)));
   connect(m_ui.proxy_information,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -117,6 +126,16 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   statusBar()->clearMessage();
 
   /*
+  ** Restore interface settings.
+  */
+
+  int index = m_ui.page_limit->findText
+    (settings.value("pandemonium_page_limit", "1000").toString());
+
+  if(index >= 0)
+    m_ui.page_limit->setCurrentIndex(index);
+
+  /*
   ** Restore kernel settings.
   */
 
@@ -136,8 +155,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   m_ui.proxy_password->setText(settings.value("pandemonium_proxy_password").
 			       toString());
   m_ui.proxy_port->setValue(settings.value("pandemonium_proxy_port").toInt());
-
-  int index = settings.value("pandemonium_proxy_type").toInt();
+  index = settings.value("pandemonium_proxy_type").toInt();
 
   if(index < 0 || index > 1)
     index = 0;
@@ -168,6 +186,37 @@ void pandemonium_gui::closeEvent(QCloseEvent *event)
 
   settings.setValue("pandemonium_mainwindow", saveGeometry());
   QMainWindow::closeEvent(event);
+}
+
+void pandemonium_gui::populateDiscovered(void)
+{
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+  m_ui.discovered_urls->clearContents();
+  m_ui.discovered_urls->scrollToTop();
+  m_ui.discovered_urls->setRowCount(0);
+
+  QList<QUrl> list;
+  int row = 0;
+  quint64 limit = static_cast<quint64> (m_ui.page_limit->currentText().
+					toInt());
+
+  list = pandemonium_database::
+    visitedLinks(limit,
+		 static_cast<quint64> (limit * m_ui.page->currentIndex()));
+  m_ui.discovered_urls->setRowCount(list.size());
+
+  while(!list.isEmpty())
+    {
+      QCheckBox *checkBox = new QCheckBox();
+      QTableWidgetItem *item = new QTableWidgetItem
+	(list.takeFirst().toString());
+
+      m_ui.discovered_urls->setCellWidget(row, 0, checkBox);
+      m_ui.discovered_urls->setItem(row, 1, item);
+      row += 1;
+    }
+
+  QApplication::restoreOverrideCursor();
 }
 
 void pandemonium_gui::saveKernelPath(const QString &path)
@@ -286,31 +335,29 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 void pandemonium_gui::slotListDiscoveredUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
-  m_ui.discovered_urls->clearContents();
-  m_ui.discovered_urls->setRowCount(0);
 
-  QList<QUrl> list(pandemonium_database::
-		   visitedLinks(static_cast<quint64> (5000 *m_ui.page->
-						      currentIndex())));
-  int row = 0;
+  QPair<quint64, quint64> numbers
+    (pandemonium_database::unvisitedAndVisitedNumbers());
+  int i = 1;
 
-  while(!list.isEmpty())
+  m_ui.page->clear();
+
+  do
     {
-      QUrl url(list.takeFirst());
+      m_ui.page->addItem(tr("Page %1").arg(i));
 
-      if(url.isEmpty() || !url.isValid())
-	continue;
+      if(i > qCeil(numbers.first / static_cast<quint64> (m_ui.
+							 page_limit->
+							 currentText().
+							 toInt())))
+	break;
 
-      QCheckBox *checkBox = new QCheckBox();
-      QTableWidgetItem *item = new QTableWidgetItem(url.toString());
-
-      m_ui.discovered_urls->setRowCount(row + 1);
-      m_ui.discovered_urls->setCellWidget(row, 0, checkBox);
-      m_ui.discovered_urls->setItem(row, 1, item);
-      row += 1;
+      i += 1;
     }
+  while(true);
 
   QApplication::restoreOverrideCursor();
+  populateDiscovered();
 }
 
 void pandemonium_gui::slotListSearchUrls(void)
@@ -390,6 +437,13 @@ void pandemonium_gui::slotMonitorKernel(bool state)
   settings.setValue("pandemonium_monitor_kernel", state);
 }
 
+void pandemonium_gui::slotPageChanged(int index)
+{
+  Q_UNUSED(index);
+  m_ui.page->repaint();
+  populateDiscovered();
+}
+
 void pandemonium_gui::slotProxyInformationToggled(bool state)
 {
   if(!state)
@@ -434,6 +488,13 @@ void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 void pandemonium_gui::slotSaveKernelPath(void)
 {
   saveKernelPath(m_ui.kernel_path->text());
+}
+
+void pandemonium_gui::slotSavePageLimit(const QString &text)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_page_limit", text);
 }
 
 void pandemonium_gui::slotSaveProxyInformation(void)

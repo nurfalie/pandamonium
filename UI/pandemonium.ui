@@ -476,7 +476,52 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>&amp;Limit</string>
+            </property>
+            <property name="buddy">
+             <cstring>page_limit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="page_limit">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+            <item>
+             <property name="text">
+              <string>1000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2500</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>5000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>7500</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>10000</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
            <widget class="QComboBox" name="page">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
             <item>
              <property name="text">
               <string>Page 1</string>
@@ -581,6 +626,7 @@
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>
   <tabstop>kernel_load_interval</tabstop>
+  <tabstop>monitor_kernel</tabstop>
   <tabstop>proxy_information</tabstop>
   <tabstop>proxy_type</tabstop>
   <tabstop>proxy_address</tabstop>
@@ -595,6 +641,7 @@
   <tabstop>all_toggled</tabstop>
   <tabstop>none_toggled</tabstop>
   <tabstop>discovered_urls</tabstop>
+  <tabstop>page_limit</tabstop>
   <tabstop>page</tabstop>
   <tabstop>export_toggled</tabstop>
   <tabstop>list_discovered_urls</tabstop>

@@ -105,6 +105,8 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
       {
 	QSqlQuery query(pair.first);
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT COUNT(*), 'u' FROM pandemonium_visited_urls "
 		      "WHERE visited = 0 UNION "
 		      "SELECT COUNT(*), 'v' FROM pandemonium_visited_urls "
@@ -125,7 +127,8 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
   return numbers;
 }
 
-QList<QUrl> pandemonium_database::visitedLinks(const quint64 offset)
+QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
+					       const quint64 offset)
 {
   QList<QUrl> list;
   QPair<QSqlDatabase, QString> pair;
@@ -144,9 +147,11 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 offset)
 	** Oh no! Not a parameter.
 	*/
 
+	query.setForwardOnly(true);
 	query.prepare
 	  (QString("SELECT url FROM pandemonium_visited_urls "
-		   "WHERE visited = 1 ORDER BY 1 LIMIT 5000 OFFSET %1 ").
+		   "WHERE visited = 1 ORDER BY 1 LIMIT %1 OFFSET %2 ").
+	   arg(limit).
 	   arg(offset));
 
 	if(query.exec())
@@ -187,6 +192,7 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
 	** Oh no! Not a parameter.
 	*/
 
+	query.setForwardOnly(true);
 	query.prepare
 	  (QString("SELECT url, visited FROM pandemonium_visited_urls "
 		   "WHERE url LIKE '%1%%' AND visited = 0").
@@ -252,7 +258,6 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 	QSqlQuery query(pair.first);
 
 	query.setForwardOnly(true);
-
 	query.prepare("SELECT command FROM pandemonium_kernel_command "
 		      "WHERE kernel_process_id = ?");
 	query.bindValue(0, process_id);
