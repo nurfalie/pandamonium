@@ -26,7 +26,9 @@
 */
 
 #include <QComboBox>
+#include <QDateTime>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QProcess>
 #include <QSettings>
@@ -41,6 +43,7 @@
 pandemonium_gui::pandemonium_gui(void):QMainWindow()
 {
   QDir().mkdir(pandemonium_common::homePath());
+  m_discoveredLinksLastDateTime = 0;
   m_ui.setupUi(this);
   connect(&m_highlightTimer,
 	  SIGNAL(timeout(void)),
@@ -50,6 +53,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotKernelDatabaseTimeout(void)));
+  connect(&m_tableListTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotTableListTimeout(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -112,6 +119,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SLOT(slotSelectKernelPath(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
+  m_tableListTimer.start(10000);
   m_ui.search_urls->setColumnHidden
     (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
@@ -212,6 +220,7 @@ void pandemonium_gui::populateDiscovered(void)
       QTableWidgetItem *item = new QTableWidgetItem
 	(list.takeFirst().toString());
 
+      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
       m_ui.discovered_urls->setCellWidget(row, 0, checkBox);
       m_ui.discovered_urls->setItem(row, 1, item);
       row += 1;
@@ -582,5 +591,33 @@ void pandemonium_gui::slotSelectKernelPath(void)
     {
       m_ui.kernel_path->setText(dialog.selectedFiles().value(0));
       saveKernelPath(dialog.selectedFiles().value(0));
+    }
+}
+
+void pandemonium_gui::slotTableListTimeout(void)
+{
+  QFileInfo fileInfo
+    (pandemonium_common::homePath() + QDir::separator() +
+     "pandemonium_discovered_urls.db");
+
+  if(fileInfo.exists())
+    {
+      if(fileInfo.lastModified().toTime_t() > m_discoveredLinksLastDateTime)
+	m_discoveredLinksLastDateTime = fileInfo.lastModified().toTime_t();
+      else
+	return;
+    }
+  else
+    m_discoveredLinksLastDateTime = 0;
+
+  if(m_ui.tab_widget->currentIndex() == 0)
+    {
+      if(m_ui.periodically_list_search_urls->isChecked())
+	slotListSearchUrls();
+    }
+  else
+    {
+      if(m_ui.periodically_list_discovered_urls->isChecked())
+	slotListDiscoveredUrls();
     }
 }

@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
-     <widget class="QTabWidget" name="tab_3">
+     <widget class="QTabWidget" name="tab_widget">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -672,7 +672,7 @@
   </action>
  </widget>
  <tabstops>
-  <tabstop>tab_3</tabstop>
+  <tabstop>tab_widget</tabstop>
   <tabstop>kernel_path</tabstop>
   <tabstop>select_kernel_path</tabstop>
   <tabstop>kernel_pid</tabstop>
