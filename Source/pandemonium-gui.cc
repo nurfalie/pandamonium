@@ -377,13 +377,13 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   if(numbers.first >= last_total)
     m_ui.discovery_rate->setText
-      (tr("<b>Approximate Discovery Rate:</b> %1 URLs/second.").
+      (tr("<b>Approximate Discovery Rate:</b> %1 URL(s)/second.").
        arg((numbers.first -
 	    last_total) / (qMax(static_cast<uint> (1),
 				time_now - time_then))));
   else
     m_ui.discovery_rate->setText
-      (tr("<b>Approximate Discovery Rate:</b> -%1 URLs/second.").
+      (tr("<b>Approximate Discovery Rate:</b> -%1 URL(s)/second.").
        arg((last_total -
 	    numbers.first) / (qMax(static_cast<uint> (1),
 				   time_now - time_then))));
