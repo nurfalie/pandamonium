@@ -365,11 +365,31 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   m_ui.discovered_statistics->setText
     (tr("<b>Total URLs:</b> %1. "
-	"<b>Unvisited URLs:</b> %2. "
+	"<b>Remaining URLs:</b> %2. "
 	"<b>Visited URLs:</b> %3.").
      arg(numbers.first + numbers.second).
      arg(numbers.first).arg(numbers.second));
   m_ui.percent_visited->setValue(100 - percent);
+
+  static quint64 last_total = 0;
+  static uint time_now = QDateTime::currentDateTime().toTime_t();
+  static uint time_then = 0;
+
+  if(numbers.first >= last_total)
+    m_ui.discovery_rate->setText
+      (tr("<b>Approximate Discovery Rate:</b> %1 URLs/second.").
+       arg((numbers.first -
+	    last_total) / (qMax(static_cast<uint> (1),
+				time_now - time_then))));
+  else
+    m_ui.discovery_rate->setText
+      (tr("<b>Approximate Discovery Rate:</b> -%1 URLs/second.").
+       arg((last_total -
+	    numbers.first) / (qMax(static_cast<uint> (1),
+				   time_now - time_then))));
+
+  last_total = numbers.first;
+  time_then = time_now;
 }
 
 void pandemonium_gui::slotListDiscoveredUrls(void)
