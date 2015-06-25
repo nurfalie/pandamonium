@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+    	<file>nuvola/bookmark_add.png</file>
+	<file>nuvola/configure.png</file>
+	<file>nuvola/editdelete.png</file>
+	<file>nuvola/exit.png</file>
+	<file>nuvola/fileexport.png</file>
+	<file>nuvola/fileopen.png</file>
+	<file>nuvola/reload.png</file>
+	<file>nuvola/run.png</file>
+	<file>nuvola/stop.png</file>
+	<file>nuvola/trashcan_empty.png</file>
+	<file>nuvola/www.png</file>
+    </qresource>
+</RCC>

@@ -29,5 +29,6 @@ SOURCES = Source/pandemonium-database.cc \
 	  Source/pandemonium-gui.cc \
           Source/pandemonium-gui-main.cc
 
+RESOURCES = Icons/icons.qrc
 PROJECTNAME = pandemonium
 TARGET = pandemonium
