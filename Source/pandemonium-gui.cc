@@ -113,6 +113,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyInformationToggled(bool)));
+  connect(m_ui.remove_all_discovered_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveAllDiscovered(void)));
   connect(m_ui.remove_search_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -397,6 +401,15 @@ void pandemonium_gui::slotListDiscoveredUrls(void)
 void pandemonium_gui::slotListSearchUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
+
+  QModelIndexList list
+    (m_ui.search_urls->selectionModel()->selectedRows(m_ui.search_urls->
+						      columnCount() - 1));
+  QStringList selected;
+
+  while(!list.isEmpty())
+    selected << list.takeFirst().data().toString();
+
   m_ui.search_urls->clearContents();
   m_ui.search_urls->setRowCount(0);
 
@@ -450,6 +463,18 @@ void pandemonium_gui::slotListSearchUrls(void)
 	      item = new QTableWidgetItem(query.value(3).toString());
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_ui.search_urls->setItem(row, 3, item);
+
+	      if(selected.contains(item->text()))
+		{
+		  QModelIndex index
+		    (m_ui.search_urls->model()->index(row, 0));
+
+		  m_ui.search_urls->selectionModel()->select
+		    (index,
+		     QItemSelectionModel::Rows |
+		     QItemSelectionModel::SelectCurrent);
+		}
+
 	      row += 1;
 	      connect(comboBox,
 		      SIGNAL(currentIndexChanged(const QString &)),
@@ -542,6 +567,13 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
       settings.remove("pandemonium_proxy_type");
       settings.remove("pandemonium_proxy_user");
     }
+}
+
+void pandemonium_gui::slotRemoveAllDiscovered(void)
+{
+  QFile::remove(pandemonium_common::homePath() + QDir::separator() +
+		"pandemonium_discovered_urls.db");
+  slotListDiscoveredUrls();
 }
 
 void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
