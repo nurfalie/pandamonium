@@ -366,11 +366,9 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   m_ui.discovered_statistics->setText
     (tr("<b>Total URLs:</b> %1. "
 	"<b>Unvisited URLs:</b> %2. "
-	"<b>Visited URLs:</b> %3. "
-	"<b>Percent unvisited:</b> %4%.").
+	"<b>Visited URLs:</b> %3.").
      arg(numbers.first + numbers.second).
-     arg(numbers.first).arg(numbers.second).
-     arg(QString::number(percent, 'f', 2)));
+     arg(numbers.first).arg(numbers.second));
   m_ui.percent_visited->setValue(100 - percent);
 }
 
