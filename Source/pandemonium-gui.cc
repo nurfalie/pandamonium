@@ -33,8 +33,8 @@
 #include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
+#include <QtCore/qmath.h>
 #include <QtDebug>
-#include <QtMath>
 
 #include "pandemonium-common.h"
 #include "pandemonium-database.h"
@@ -43,7 +43,7 @@
 pandemonium_gui::pandemonium_gui(void):QMainWindow()
 {
   QDir().mkdir(pandemonium_common::homePath());
-  m_discoveredLinksLastDateTime = 0;
+  m_parsedLinksLastDateTime = 0;
   m_ui.setupUi(this);
   connect(&m_highlightTimer,
 	  SIGNAL(timeout(void)),
@@ -81,10 +81,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(returnPressed(void)),
 	  this,
 	  SLOT(slotSaveKernelPath(void)));
-  connect(m_ui.list_discovered_urls,
+  connect(m_ui.list_parsed_urls,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotListDiscoveredUrls(void)));
+	  SLOT(slotListParsedUrls(void)));
   connect(m_ui.list_search_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -101,7 +101,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotSavePageLimit(const QString &)));
-  connect(m_ui.periodically_list_discovered_urls,
+  connect(m_ui.periodically_list_parsed_urls,
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotSavePeriodic(bool)));
@@ -117,10 +117,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
-  connect(m_ui.remove_all_discovered_urls,
+  connect(m_ui.remove_all_parsed_urls,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotRemoveAllDiscoveredUrls(void)));
+	  SLOT(slotRemoveAllParsedUrls(void)));
   connect(m_ui.remove_search_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -136,11 +136,11 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   connect(m_ui.toggle_all,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotToggleDiscovered(void)));
+	  SLOT(slotToggleParsed(void)));
   connect(m_ui.toggle_none,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotToggleDiscovered(void)));
+	  SLOT(slotToggleParsed(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.setInterval(10000);
@@ -168,8 +168,8 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   if(index >= 0)
     m_ui.page_limit->setCurrentIndex(index);
 
-  m_ui.periodically_list_discovered_urls->setChecked
-    (settings.value("pandemonium_periodically_list_discovered_urls").
+  m_ui.periodically_list_parsed_urls->setChecked
+    (settings.value("pandemonium_periodically_list_parsed_urls").
      toBool());
   m_ui.periodically_list_search_urls->setChecked
     (settings.value("pandemonium_periodically_list_search_urls").toBool());
@@ -227,22 +227,21 @@ void pandemonium_gui::closeEvent(QCloseEvent *event)
   QMainWindow::closeEvent(event);
 }
 
-void pandemonium_gui::populateDiscovered(void)
+void pandemonium_gui::populateParsed(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
-  m_ui.discovered_urls->clearContents();
-  m_ui.discovered_urls->scrollToTop();
-  m_ui.discovered_urls->setRowCount(0);
+  m_ui.parsed_urls->clearContents();
+  m_ui.parsed_urls->scrollToTop();
+  m_ui.parsed_urls->setRowCount(0);
 
   QList<QUrl> list;
   int row = 0;
   quint64 limit = static_cast<quint64> (m_ui.page_limit->currentText().
 					toInt());
 
-  list = pandemonium_database::
-    visitedLinks(limit,
-		 static_cast<quint64> (limit * m_ui.page->currentIndex()));
-  m_ui.discovered_urls->setRowCount(list.size());
+  list = pandemonium_database::parsedLinks
+    (limit, static_cast<quint64> (limit * m_ui.page->currentIndex()));
+  m_ui.parsed_urls->setRowCount(list.size());
 
   while(!list.isEmpty())
     {
@@ -251,8 +250,8 @@ void pandemonium_gui::populateDiscovered(void)
 	(list.takeFirst().toString());
 
       item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-      m_ui.discovered_urls->setCellWidget(row, 0, checkBox);
-      m_ui.discovered_urls->setItem(row, 1, item);
+      m_ui.parsed_urls->setCellWidget(row, 0, checkBox);
+      m_ui.parsed_urls->setItem(row, 1, item);
       row += 1;
     }
 
@@ -293,14 +292,14 @@ void pandemonium_gui::slotAddSearchUrl(void)
 {
   QString str("");
   bool ok = true;
-
+ 
   str = QInputDialog::getText
     (this, tr("pandemonium: New Search URL"), tr("&URL"),
      QLineEdit::Normal, QString(""), &ok);
-
+ 
   if(!ok)
     return;
-
+ 
   pandemonium_database::addSearchUrl(str);
   slotListSearchUrls();
 }
@@ -393,7 +392,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   time_then = time_now;
 }
 
-void pandemonium_gui::slotListDiscoveredUrls(void)
+void pandemonium_gui::slotListParsedUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
@@ -418,7 +417,7 @@ void pandemonium_gui::slotListDiscoveredUrls(void)
   while(true);
 
   QApplication::restoreOverrideCursor();
-  populateDiscovered();
+  populateParsed();
 }
 
 void pandemonium_gui::slotListSearchUrls(void)
@@ -569,7 +568,7 @@ void pandemonium_gui::slotPageChanged(int index)
 {
   Q_UNUSED(index);
   m_ui.page->repaint();
-  populateDiscovered();
+  populateParsed();
 }
 
 void pandemonium_gui::slotProxyInformationToggled(bool state)
@@ -592,11 +591,11 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
     }
 }
 
-void pandemonium_gui::slotRemoveAllDiscoveredUrls(void)
+void pandemonium_gui::slotRemoveAllParsedUrls(void)
 {
   QFile::remove(pandemonium_common::homePath() + QDir::separator() +
-		"pandemonium_discovered_urls.db");
-  slotListDiscoveredUrls();
+		"pandemonium_parsed_urls.db");
+  slotListParsedUrls();
 }
 
 void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
@@ -644,12 +643,12 @@ void pandemonium_gui::slotSavePeriodic(bool state)
   QSettings settings;
   QString str("");
 
-  if(m_ui.periodically_list_discovered_urls ==
+  if(m_ui.periodically_list_parsed_urls ==
      qobject_cast<QCheckBox *> (sender()))
     {
       if(state)
 	{
-	  m_discoveredLinksLastDateTime = 0;
+	  m_parsedLinksLastDateTime = 0;
 
 	  if(!m_tableListTimer.isActive())
 	    m_tableListTimer.start();
@@ -657,7 +656,7 @@ void pandemonium_gui::slotSavePeriodic(bool state)
       else
 	m_tableListTimer.stop();
 
-      str = "pandemonium_periodically_list_discovered_urls";
+      str = "pandemonium_periodically_list_parsed_urls";
     }
   else
     str = "pandemonium_periodically_list_search_urls";
@@ -707,17 +706,17 @@ void pandemonium_gui::slotTableListTimeout(void)
 {
   QFileInfo fileInfo
     (pandemonium_common::homePath() + QDir::separator() +
-     "pandemonium_discovered_urls.db");
+     "pandemonium_parsed_urls.db");
 
   if(fileInfo.exists())
     {
-      if(fileInfo.lastModified().toTime_t() > m_discoveredLinksLastDateTime)
-	m_discoveredLinksLastDateTime = fileInfo.lastModified().toTime_t();
+      if(fileInfo.lastModified().toTime_t() > m_parsedLinksLastDateTime)
+	m_parsedLinksLastDateTime = fileInfo.lastModified().toTime_t();
       else
 	return;
     }
   else
-    m_discoveredLinksLastDateTime = 0;
+    m_parsedLinksLastDateTime = 0;
 
   if(m_ui.tab_widget->currentIndex() == 0)
     {
@@ -726,15 +725,15 @@ void pandemonium_gui::slotTableListTimeout(void)
     }
   else
     {
-      if(m_ui.periodically_list_discovered_urls->isChecked())
-	slotListDiscoveredUrls();
+      if(m_ui.periodically_list_parsed_urls->isChecked())
+	slotListParsedUrls();
     }
 }
 
-void pandemonium_gui::slotToggleDiscovered(void)
+void pandemonium_gui::slotToggleParsed(void)
 {
   m_tableListTimer.stop();
-  m_ui.periodically_list_discovered_urls->setChecked(false);
+  m_ui.periodically_list_parsed_urls->setChecked(false);
 
   QPushButton *pushButton = qobject_cast<QPushButton *> (sender());
   bool state = true;
@@ -744,10 +743,10 @@ void pandemonium_gui::slotToggleDiscovered(void)
   else
     state = false;
 
-  for(int i = 0; i < m_ui.discovered_urls->rowCount(); i++)
+  for(int i = 0; i < m_ui.parsed_urls->rowCount(); i++)
     {
       QCheckBox *checkBox = qobject_cast<QCheckBox *>
-	(m_ui.discovered_urls->cellWidget(i, 0));
+	(m_ui.parsed_urls->cellWidget(i, 0));
 
       if(checkBox)
 	checkBox->setChecked(state);

@@ -321,6 +321,9 @@
           <property name="horizontalScrollMode">
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>150</number>
+          </attribute>
           <attribute name="horizontalHeaderMinimumSectionSize">
            <number>150</number>
           </attribute>
@@ -447,7 +450,7 @@
           <item>
            <widget class="QPushButton" name="purge_unvisited_visited_urls">
             <property name="toolTip">
-             <string>Remove all unvisited and visited URLs. The discovered URLs will not be removed.</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove pandemonium_visited_urls.db. The parsed URLs will not be removed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Purge</string>
@@ -459,7 +462,7 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QCheckBox" name="periodically_list_discovered_urls">
+           <widget class="QCheckBox" name="periodically_list_parsed_urls">
             <property name="text">
              <string>&amp;Periodically Refresh Table</string>
             </property>
@@ -501,7 +504,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QTableWidget" name="discovered_urls">
+         <widget class="QTableWidget" name="parsed_urls">
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
@@ -606,21 +609,21 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="list_discovered_urls">
+           <widget class="QPushButton" name="list_parsed_urls">
             <property name="text">
              <string>Refresh</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_all_discovered_urls">
+           <widget class="QPushButton" name="remove_all_parsed_urls">
             <property name="text">
              <string>Remove All</string>
             </property>
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_discovered_urls">
+           <widget class="QPushButton" name="remove_parsed_urls">
             <property name="text">
              <string>Remove Selected</string>
             </property>
@@ -640,7 +643,7 @@
      <x>0</x>
      <y>0</y>
      <width>700</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -683,16 +686,16 @@
   <tabstop>list_search_urls</tabstop>
   <tabstop>remove_search_urls</tabstop>
   <tabstop>purge_unvisited_visited_urls</tabstop>
-  <tabstop>periodically_list_discovered_urls</tabstop>
+  <tabstop>periodically_list_parsed_urls</tabstop>
   <tabstop>toggle_all</tabstop>
   <tabstop>toggle_none</tabstop>
-  <tabstop>discovered_urls</tabstop>
+  <tabstop>parsed_urls</tabstop>
   <tabstop>page_limit</tabstop>
   <tabstop>page</tabstop>
   <tabstop>export_toggled</tabstop>
-  <tabstop>list_discovered_urls</tabstop>
-  <tabstop>remove_all_discovered_urls</tabstop>
-  <tabstop>remove_discovered_urls</tabstop>
+  <tabstop>list_parsed_urls</tabstop>
+  <tabstop>remove_all_parsed_urls</tabstop>
+  <tabstop>remove_parsed_urls</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -47,8 +47,8 @@ class pandemonium_gui: public QMainWindow
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
   Ui_pandemonium_mainwindow m_ui;
-  uint m_discoveredLinksLastDateTime;
-  void populateDiscovered(void);
+  uint m_parsedLinksLastDateTime;
+  void populateParsed(void);
   void saveKernelPath(const QString &path);
 
  private slots:
@@ -58,14 +58,14 @@ class pandemonium_gui: public QMainWindow
   void slotDepthChanged(const QString &text);
   void slotHighlightTimeout(void);
   void slotKernelDatabaseTimeout(void);
-  void slotListDiscoveredUrls(void);
+  void slotListParsedUrls(void);
   void slotListSearchUrls(void);
   void slotLoadIntervalChanged(const QString &text);
   void slotMetaDataOnly(bool state);
   void slotMonitorKernel(bool state);
   void slotPageChanged(int index);
   void slotProxyInformationToggled(bool state);
-  void slotRemoveAllDiscoveredUrls(void);
+  void slotRemoveAllParsedUrls(void);
   void slotRemoveSelectedSearchUrls(void);
   void slotRemoveUnvisitedVisitedUrls(void);
   void slotSaveKernelPath(void);
@@ -74,7 +74,7 @@ class pandemonium_gui: public QMainWindow
   void slotSaveProxyInformation(void);
   void slotSelectKernelPath(void);
   void slotTableListTimeout(void);
-  void slotToggleDiscovered(void);
+  void slotToggleParsed(void);
 };
 
 #endif

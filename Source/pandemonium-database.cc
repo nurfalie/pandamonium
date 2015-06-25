@@ -128,8 +128,8 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
   return numbers;
 }
 
-QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
-					       const quint64 offset)
+QList<QUrl> pandemonium_database::parsedLinks(const quint64 limit,
+					      const quint64 offset)
 {
   QList<QUrl> list;
   QPair<QSqlDatabase, QString> pair;
@@ -138,7 +138,7 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
     pair = database();
     pair.first.setDatabaseName
       (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_discovered_urls.db");
+       "pandemonium_parsed_urls.db");
 
     if(pair.first.open())
       {
@@ -150,8 +150,8 @@ QList<QUrl> pandemonium_database::visitedLinks(const quint64 limit,
 
 	query.setForwardOnly(true);
 	query.prepare
-	  (QString("SELECT url FROM pandemonium_discovered_urls "
-		   "ORDER BY time_discovered DESC LIMIT %1 OFFSET %2 ").
+	  (QString("SELECT url FROM pandemonium_parsed_urls "
+		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2 ").
 	   arg(limit).
 	   arg(offset));
 
@@ -398,8 +398,8 @@ void pandemonium_database::createdb(void)
 {
   QList<QString> fileNames;
 
-  fileNames << "pandemonium_discovered_urls.db"
-	    << "pandemonium_kernel_command.db"
+  fileNames << "pandemonium_kernel_command.db"
+	    << "pandemonium_parsed_urls.db"
 	    << "pandemonium_search_urls.db"
 	    << "pandemonium_visited_urls.db";
 
@@ -416,14 +416,7 @@ void pandemonium_database::createdb(void)
 	  {
 	    QSqlQuery query(pair.first);
 
-	    if(fileName == "pandemonium_discovered_urls.db")
-	      query.exec
-		("CREATE TABLE IF NOT EXISTS pandemonium_discovered_urls("
-		 "description TEXT NOT NULL, "
-		 "time_discovered INTEGER NOT NULL, "
-		 "title TEXT NOT NULL, "
-		 "url TEXT NOT NULL PRIMARY KEY)");
-	    else if(fileName == "pandemonium_kernel_command.db")
+	    if(fileName == "pandemonium_kernel_command.db")
 	      {
 		query.exec
 		  ("CREATE TABLE IF NOT EXISTS pandemonium_kernel_command("
@@ -437,6 +430,13 @@ void pandemonium_database::createdb(void)
 		   "DELETE FROM pandemonium_kernel_command;"
 		   "END");
 	      }
+	    else if(fileName == "pandemonium_parsed_urls.db")
+	      query.exec
+		("CREATE TABLE IF NOT EXISTS pandemonium_parsed_urls("
+		 "description TEXT NOT NULL, "
+		 "time_inserted INTEGER NOT NULL, "
+		 "title TEXT NOT NULL, "
+		 "url TEXT NOT NULL PRIMARY KEY)");
 	    else if(fileName == "pandemonium_search_urls.db")
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
@@ -645,14 +645,14 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
     pair = database();
     pair.first.setDatabaseName
       (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_discovered_urls.db");
+       "pandemonium_parsed_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("INSERT OR REPLACE INTO pandemonium_discovered_urls"
-		      "(description, time_discovered, title, url)"
+	query.prepare("INSERT OR REPLACE INTO pandemonium_parsed_urls"
+		      "(description, time_inserted, title, url)"
 		      "VALUES(?, ?, ?, ?)");
 
 	if(description.trimmed().isEmpty())
