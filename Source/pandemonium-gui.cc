@@ -364,11 +364,12 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 						numbers.second));
 
   m_ui.discovered_statistics->setText
-    (tr("<b>Total URLs:</b> %1. "
-	"<b>Remaining URLs:</b> %2. "
-	"<b>Visited URLs:</b> %3.").
+    (tr("<b>Remaining URL(s):</b> %2. "
+	"<b>Total URL(s):</b> %1. "
+	"<b>Visited URL(s):</b> %3.").
+     arg(numbers.first).
      arg(numbers.first + numbers.second).
-     arg(numbers.first).arg(numbers.second));
+     arg(numbers.second));
   m_ui.percent_visited->setValue(100 - percent);
 
   static quint64 last_total = 0;
