@@ -65,8 +65,9 @@ class pandemonium_gui: public QMainWindow
   void slotMonitorKernel(bool state);
   void slotPageChanged(int index);
   void slotProxyInformationToggled(bool state);
-  void slotRemoveAllDiscovered(void);
+  void slotRemoveAllDiscoveredUrls(void);
   void slotRemoveSelectedSearchUrls(void);
+  void slotRemoveUnvisitedVisitedUrls(void);
   void slotSaveKernelPath(void);
   void slotSavePageLimit(const QString &text);
   void slotSavePeriodic(bool state);

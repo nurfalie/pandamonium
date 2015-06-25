@@ -113,10 +113,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyInformationToggled(bool)));
+  connect(m_ui.purge_unvisited_visited_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
   connect(m_ui.remove_all_discovered_urls,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotRemoveAllDiscovered(void)));
+	  SLOT(slotRemoveAllDiscoveredUrls(void)));
   connect(m_ui.remove_search_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -354,6 +358,10 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   QPair<quint64, quint64> numbers
     (pandemonium_database::unvisitedAndVisitedNumbers());
+  int percent = 100 *
+    static_cast<double> (numbers.first) / (qMax(static_cast<quint64> (1),
+						numbers.first +
+						numbers.second));
 
   m_ui.discovered_statistics->setText
     (tr("<b>Total URLs:</b> %1. "
@@ -362,12 +370,8 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	"<b>Percent unvisited:</b> %4%.").
      arg(numbers.first + numbers.second).
      arg(numbers.first).arg(numbers.second).
-     arg(QString::
-	 number(100 *
-		static_cast<double> (numbers.first)
-		/ (qMax(static_cast<quint64> (1),
-			numbers.first +
-			numbers.second)), 'f', 2)));
+     arg(QString::number(percent, 'f', 2)));
+  m_ui.percent_visited->setValue(100 - percent);
 }
 
 void pandemonium_gui::slotListDiscoveredUrls(void)
@@ -569,7 +573,7 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
     }
 }
 
-void pandemonium_gui::slotRemoveAllDiscovered(void)
+void pandemonium_gui::slotRemoveAllDiscoveredUrls(void)
 {
   QFile::remove(pandemonium_common::homePath() + QDir::separator() +
 		"pandemonium_discovered_urls.db");
@@ -596,6 +600,12 @@ void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
       pandemonium_database::removeSearchUrls(list);
       slotListSearchUrls();
     }
+}
+
+void pandemonium_gui::slotRemoveUnvisitedVisitedUrls(void)
+{
+  QFile::remove(pandemonium_common::homePath() + QDir::separator() +
+		"pandemonium_visited_urls.db");
 }
 
 void pandemonium_gui::slotSaveKernelPath(void)

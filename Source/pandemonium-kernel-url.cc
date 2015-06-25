@@ -246,12 +246,16 @@ void pandemonium_kernel_url::slotDownloadProgress
 void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 {
   m_content.clear();
-  qDebug() << "Network error " << code << "!";
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
 
   if(reply)
-    reply->deleteLater();
+    {
+      qDebug() << "Network error " << code << "!" << reply->url();
+      reply->deleteLater();
+    }
+  else
+    qDebug() << "Network error " << code << "!";
 }
 
 void pandemonium_kernel_url::slotLoadNext(void)
