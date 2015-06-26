@@ -674,6 +674,7 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <addaction name="action_Export_Configuration"/>
     <addaction name="action_Statistics_Window"/>
    </widget>
    <addaction name="menu_File"/>
@@ -695,6 +696,11 @@
   <action name="action_Statistics_Window">
    <property name="text">
     <string>&amp;Statistics Window</string>
+   </property>
+  </action>
+  <action name="action_Export_Configuration">
+   <property name="text">
+    <string>&amp;Export Configuration</string>
    </property>
   </action>
  </widget>

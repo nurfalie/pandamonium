@@ -45,10 +45,13 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 {
   QDir().mkdir(pandemonium_common::homePath());
   m_parsedLinksLastDateTime = 0;
-  m_statisticsMainWindow.setWindowFlags
+  m_exportMainWindow = new QMainWindow(this);
+  m_statisticsMainWindow = new QMainWindow(this);
+  m_statisticsMainWindow->setWindowFlags
     (windowFlags() | Qt::WindowStaysOnTopHint);
   m_ui.setupUi(this);
-  m_uiStatistics.setupUi(&m_statisticsMainWindow);
+  m_uiExport.setupUi(m_exportMainWindow);
+  m_uiStatistics.setupUi(m_statisticsMainWindow);
   connect(&m_highlightTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -61,6 +64,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTableListTimeout(void)));
+  connect(m_ui.action_Export_Configuration,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotExportConfiguration(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -149,9 +156,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotToggleParsed(void)));
+  connect(m_uiExport.action_Close,
+	  SIGNAL(triggered(void)),
+	  this,
+	  m_exportMainWindow,
+	  SLOT(close(void)));
   connect(m_uiStatistics.action_Close,
 	  SIGNAL(triggered(void)),
-	  &m_statisticsMainWindow,
+	  m_statisticsMainWindow,
 	  SLOT(close(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
@@ -232,7 +244,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   QApplication::setOverrideCursor(Qt::BusyCursor);
   slotListSearchUrls();
   QApplication::restoreOverrideCursor();
-  m_statisticsMainWindow.show();
+  m_statisticsMainWindow->show();
 }
 
 pandemonium_gui::~pandemonium_gui()
@@ -338,6 +350,11 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
     return;
 
   pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
+}
+
+void pandemonium_gui::slotExportConfiguration(void)
+{
+  m_exportMainWindow->show();
 }
 
 void pandemonium_gui::slotHighlightTimeout(void)
@@ -833,7 +850,7 @@ void pandemonium_gui::slotSelectKernelPath(void)
 
 void pandemonium_gui::slotShowStatisticsWindow(void)
 {
-  m_statisticsMainWindow.show();
+  m_statisticsMainWindow->show();
 }
 
 void pandemonium_gui::slotTableListTimeout(void)

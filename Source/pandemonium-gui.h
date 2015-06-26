@@ -45,8 +45,8 @@ class pandemonium_gui: public QMainWindow
   void closeEvent(QCloseEvent *event);
 
  private:
-  QMainWindow m_pandemoniumExportWindow;
-  QMainWindow m_statisticsMainWindow;
+  QMainWindow *m_exportMainWindow;
+  QMainWindow *m_statisticsMainWindow;
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
@@ -62,6 +62,7 @@ class pandemonium_gui: public QMainWindow
   void slotAddSearchUrl(void);
   void slotDeactivateKernel(void);
   void slotDepthChanged(const QString &text);
+  void slotExportConfiguration(void);
   void slotHighlightTimeout(void);
   void slotKernelDatabaseTimeout(void);
   void slotListParsedUrls(void);
