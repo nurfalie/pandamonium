@@ -368,6 +368,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   m_ui.kernel_pid->setText
     (QString::number(pandemonium_database::kernelProcessId()));
 
+  QLocale locale;
   QPair<quint64, quint64> numbers
     (pandemonium_database::unvisitedAndVisitedNumbers());
   int percent = 100 *
@@ -379,9 +380,9 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
     (tr("<b>Parsed URLs():</b> %1. "
 	"<b>Remaining URL(s):</b> %2. "
 	"<b>Total URL(s):</b> %3. ").
-     arg(numbers.second).
-     arg(numbers.first).
-     arg(numbers.first + numbers.second));
+     arg(locale.toString(numbers.second)).
+     arg(locale.toString(numbers.first)).
+     arg(locale.toString(numbers.first + numbers.second)));
   m_uiStatistics.percent_visited->setValue(100 - percent);
 
   static quint64 last_total = 0;
@@ -404,7 +405,6 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   last_total = numbers.first;
   time_then = time_now;
 
-  QLocale locale;
   QStringList list;
 
   list << (pandemonium_common::homePath() + QDir::separator() +
