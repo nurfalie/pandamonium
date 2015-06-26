@@ -113,7 +113,7 @@ class pandemonium_common
   }
 
   static const qint64 maximum_database_size = static_cast<qint64>
-    (2147483648);
+    (2147483648LL);
 
  private:
   pandemonium_common(void)
