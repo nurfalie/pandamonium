@@ -314,7 +314,7 @@ void pandemonium_gui::slotAddSearchUrl(void)
   bool ok = true;
 
   str = QInputDialog::getText
-    (this, tr("pandemonium: New Search URL"), tr("&URL"),
+    (this, tr("pandemonium: URL"), tr("&URL"),
      QLineEdit::Normal, QString(""), &ok);
 
   if(!ok)
