@@ -376,12 +376,12 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 						numbers.second));
 
   m_uiStatistics.discovered_statistics->setText
-    (tr("<b>Remaining URL(s):</b> %2. "
-	"<b>Total URL(s):</b> %1. "
-	"<b>Visited URL(s):</b> %3.").
+    (tr("<b>Parsed URLs():</b> %1. "
+	"<b>Remaining URL(s):</b> %2. "
+	"<b>Total URL(s):</b> %3. ").
+     arg(numbers.second).
      arg(numbers.first).
-     arg(numbers.first + numbers.second).
-     arg(numbers.second));
+     arg(numbers.first + numbers.second));
   m_uiStatistics.percent_visited->setValue(100 - percent);
 
   static quint64 last_total = 0;
@@ -421,8 +421,9 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
       percent = 
 	100 * (static_cast<double> (fileInfo.size()) /
 	       pandemonium_common::maximum_database_size);
-      toolTip = tr("%1 bytes consumed.").
-	arg(locale.toString(fileInfo.size()));
+      toolTip = tr("%1 of %2 bytes consumed.").
+	arg(locale.toString(fileInfo.size())).
+	arg(locale.toString(pandemonium_common::maximum_database_size));
 
       if(i == 0)
 	{
