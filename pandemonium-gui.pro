@@ -20,14 +20,15 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
 
 INCLUDEPATH +=
 
-FORMS = UI/pandemonium.ui
+FORMS = UI\\pandemonium.ui \
+        UI\\pandemonium_statistics.ui
 
-HEADERS = Source/pandemonium-common.h \
-	  Source/pandemonium-database.h \
-	  Source/pandemonium-gui.h
-SOURCES = Source/pandemonium-database.cc \
-	  Source/pandemonium-gui.cc \
-          Source/pandemonium-gui-main.cc
+HEADERS = Source\\pandemonium-common.h \
+	  Source\\pandemonium-database.h \
+	  Source\\pandemonium-gui.h
+SOURCES = Source\\pandemonium-database.cc \
+	  Source\\pandemonium-gui.cc \
+          Source\\pandemonium-gui-main.cc
 
 RESOURCES = Icons/icons.qrc
 PROJECTNAME = pandemonium

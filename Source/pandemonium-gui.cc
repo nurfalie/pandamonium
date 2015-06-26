@@ -33,6 +33,7 @@
 #include <QProcess>
 #include <QSettings>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QtCore/qmath.h>
 #include <QtDebug>
 
@@ -44,7 +45,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 {
   QDir().mkdir(pandemonium_common::homePath());
   m_parsedLinksLastDateTime = 0;
+  m_statisticsMainWindow.setWindowFlags
+    (windowFlags() | Qt::WindowStaysOnTopHint);
   m_ui.setupUi(this);
+  m_uiStatistics.setupUi(&m_statisticsMainWindow);
   connect(&m_highlightTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -60,7 +64,11 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
-	  SLOT(close(void)));
+	  SLOT(slotQuit(void)));
+  connect(m_ui.action_Statistics_Window,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotShowStatisticsWindow(void)));
   connect(m_ui.activate_kernel,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -113,10 +121,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyInformationToggled(bool)));
-  connect(m_ui.purge_unvisited_visited_urls,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
   connect(m_ui.remove_all_parsed_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -141,6 +145,14 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotToggleParsed(void)));
+  connect(m_uiStatistics.action_Close,
+	  SIGNAL(triggered(void)),
+	  &m_statisticsMainWindow,
+	  SLOT(close(void)));
+  connect(m_uiStatistics.purge_unvisited_visited_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.setInterval(10000);
@@ -213,6 +225,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   QApplication::setOverrideCursor(Qt::BusyCursor);
   slotListSearchUrls();
   QApplication::restoreOverrideCursor();
+  m_statisticsMainWindow.show();
 }
 
 pandemonium_gui::~pandemonium_gui()
@@ -292,14 +305,14 @@ void pandemonium_gui::slotAddSearchUrl(void)
 {
   QString str("");
   bool ok = true;
- 
+
   str = QInputDialog::getText
     (this, tr("pandemonium: New Search URL"), tr("&URL"),
      QLineEdit::Normal, QString(""), &ok);
- 
+
   if(!ok)
     return;
- 
+
   pandemonium_database::addSearchUrl(str);
   slotListSearchUrls();
 }
@@ -362,27 +375,27 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 						numbers.first +
 						numbers.second));
 
-  m_ui.discovered_statistics->setText
+  m_uiStatistics.discovered_statistics->setText
     (tr("<b>Remaining URL(s):</b> %2. "
 	"<b>Total URL(s):</b> %1. "
 	"<b>Visited URL(s):</b> %3.").
      arg(numbers.first).
      arg(numbers.first + numbers.second).
      arg(numbers.second));
-  m_ui.percent_visited->setValue(100 - percent);
+  m_uiStatistics.percent_visited->setValue(100 - percent);
 
   static quint64 last_total = 0;
   static uint time_now = QDateTime::currentDateTime().toTime_t();
   static uint time_then = 0;
 
   if(numbers.first >= last_total)
-    m_ui.discovery_rate->setText
+    m_uiStatistics.discovery_rate->setText
       (tr("<b>Approximate Discovery Rate:</b> %1 URL(s)/second.").
        arg((numbers.first -
 	    last_total) / (qMax(static_cast<uint> (1),
 				time_now - time_then))));
   else
-    m_ui.discovery_rate->setText
+    m_uiStatistics.discovery_rate->setText
       (tr("<b>Approximate Discovery Rate:</b> -%1 URL(s)/second.").
        arg((last_total -
 	    numbers.first) / (qMax(static_cast<uint> (1),
@@ -390,6 +403,38 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   last_total = numbers.first;
   time_then = time_now;
+
+  QLocale locale;
+  QStringList list;
+
+  list << (pandemonium_common::homePath() + QDir::separator() +
+	   "pandemonium_parsed_urls.db")
+       << (pandemonium_common::homePath() + QDir::separator() +
+	   "pandemonium_visited_urls.db");
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      QFileInfo fileInfo(list.at(i));
+      QString toolTip("");
+      int percent = 0;
+
+      percent = 
+	100 * (static_cast<double> (fileInfo.size()) /
+	       pandemonium_common::maximum_database_size);
+      toolTip = tr("%1 bytes consumed.").
+	arg(locale.toString(fileInfo.size()));
+
+      if(i == 0)
+	{
+	  m_uiStatistics.parsed_urls_capacity->setToolTip(toolTip);
+	  m_uiStatistics.parsed_urls_capacity->setValue(percent);
+	}
+      else
+	{
+	  m_uiStatistics.visited_urls_capacity->setToolTip(toolTip);
+	  m_uiStatistics.visited_urls_capacity->setValue(percent);
+	}
+    }
 }
 
 void pandemonium_gui::slotListParsedUrls(void)
@@ -450,58 +495,89 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT meta_data_only, search_depth, url, url_hash "
+	if(query.exec("SELECT meta_data_only, paused, "
+		      "search_depth, url, url_hash "
 		      "FROM pandemonium_search_urls "
 		      "ORDER BY url"))
 	  while(query.next())
 	    {
-	      QCheckBox *checkBox = new QCheckBox();
-	      QComboBox *comboBox = new QComboBox();
-	      QTableWidgetItem *item = 0;
-	      int index = 0;
-
-	      checkBox->setChecked(query.value(0).toInt());
-	      checkBox->setProperty("url_hash", query.value(3));
-	      checkBox->setToolTip
-		(tr("If enabled, only meta-data words will be saved. "
-		    "Otherwise, all site words will be saved."));
-	      connect(checkBox,
-		      SIGNAL(toggled(bool)),
-		      this,
-		      SLOT(slotMetaDataOnly(bool)));
-	      comboBox->addItem("-1");
-	      comboBox->setProperty("url_hash", query.value(3));
-	      index = comboBox->findText(query.value(1).toString());
-
-	      if(index >= 0)
-		comboBox->setCurrentIndex(index);
-
 	      m_ui.search_urls->setRowCount(row + 1);
-	      m_ui.search_urls->setCellWidget(row, 0, checkBox);
-	      m_ui.search_urls->setCellWidget(row, 1, comboBox);
-	      item = new QTableWidgetItem(query.value(2).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.search_urls->setItem(row, 2, item);
-	      item = new QTableWidgetItem(query.value(3).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_ui.search_urls->setItem(row, 3, item);
 
-	      if(selected.contains(item->text()))
+	      for(int i = 0; i < query.record().count(); i++)
 		{
-		  QModelIndex index
-		    (m_ui.search_urls->model()->index(row, 0));
+		  if(i == 0)
+		    {
+		      QCheckBox *checkBox = new QCheckBox();
 
-		  m_ui.search_urls->selectionModel()->select
-		    (index,
-		     QItemSelectionModel::Rows |
-		     QItemSelectionModel::SelectCurrent);
+		      checkBox->setChecked(query.value(i).toInt());
+		      checkBox->setProperty
+			("url_hash", query.value(query.record().count() - 1));
+		      checkBox->setToolTip
+			(tr("If enabled, only meta-data words will "
+			    "be saved. "
+			    "Otherwise, all site words will be saved."));
+		      connect(checkBox,
+			      SIGNAL(toggled(bool)),
+			      this,
+			      SLOT(slotMetaDataOnly(bool)));
+		      m_ui.search_urls->setCellWidget(row, i, checkBox);
+		    }
+		  else if(i == 1)
+		    {
+		      QCheckBox *checkBox = new QCheckBox();
+
+		      checkBox->setChecked(query.value(i).toInt());
+		      checkBox->setProperty
+			("url_hash", query.value(query.record().count() - 1));
+		      connect(checkBox,
+			      SIGNAL(toggled(bool)),
+			      this,
+			      SLOT(slotPause(bool)));
+		      m_ui.search_urls->setCellWidget(row, i, checkBox);
+		    }
+		  else if(i == 2)
+		    {
+		      QComboBox *comboBox = new QComboBox();
+		      int index = 0;
+
+		      comboBox->addItem("-1");
+		      comboBox->setProperty
+			("url_hash", query.value(query.record().count() - 1));
+		      index = comboBox->findText(query.value(i).toString());
+
+		      if(index >= 0)
+			comboBox->setCurrentIndex(index);
+
+		      connect(comboBox,
+			      SIGNAL(currentIndexChanged(const QString &)),
+			      this,
+			      SLOT(slotDepthChanged(const QString &)));
+		      m_ui.search_urls->setCellWidget(row, i, comboBox);
+		    }
+		  else
+		    {
+		      QTableWidgetItem *item = new QTableWidgetItem
+			(query.value(i).toString());
+
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		      m_ui.search_urls->setItem(row, i, item);
+
+		      if(i == query.record().count() - 1)
+			if(selected.contains(item->text()))
+			  {
+			    QModelIndex index
+			      (m_ui.search_urls->model()->index(row, 0));
+
+			    m_ui.search_urls->selectionModel()->select
+			      (index,
+			       QItemSelectionModel::Rows |
+			       QItemSelectionModel::SelectCurrent);
+			  }
+		    }
 		}
 
 	      row += 1;
-	      connect(comboBox,
-		      SIGNAL(currentIndexChanged(const QString &)),
-		      this,
-		      SLOT(slotDepthChanged(const QString &)));
 	    }
 
 	m_ui.search_urls->resizeColumnToContents(0);
@@ -571,6 +647,40 @@ void pandemonium_gui::slotPageChanged(int index)
   populateParsed();
 }
 
+void pandemonium_gui::slotPause(bool state)
+{
+  QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
+
+  if(!checkBox)
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandemonium_database::database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("UPDATE pandemonium_search_urls "
+		      "SET paused = ? "
+		      "WHERE url_hash = ?");
+	query.bindValue(0, state ? 1 : 0);
+	query.bindValue(1, checkBox->property("url_hash"));
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
 void pandemonium_gui::slotProxyInformationToggled(bool state)
 {
   if(!state)
@@ -589,6 +699,11 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
       settings.remove("pandemonium_proxy_type");
       settings.remove("pandemonium_proxy_user");
     }
+}
+
+void pandemonium_gui::slotQuit(void)
+{
+  QApplication::instance()->quit();
 }
 
 void pandemonium_gui::slotRemoveAllParsedUrls(void)
@@ -700,6 +815,11 @@ void pandemonium_gui::slotSelectKernelPath(void)
       m_ui.kernel_path->setText(dialog.selectedFiles().value(0));
       saveKernelPath(dialog.selectedFiles().value(0));
     }
+}
+
+void pandemonium_gui::slotShowStatisticsWindow(void)
+{
+  m_statisticsMainWindow.show();
 }
 
 void pandemonium_gui::slotTableListTimeout(void)

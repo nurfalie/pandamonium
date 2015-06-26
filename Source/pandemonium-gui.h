@@ -32,6 +32,7 @@
 #include <QTimer>
 
 #include "ui_pandemonium.h"
+#include "ui_pandemonium_statistics.h"
 
 class pandemonium_gui: public QMainWindow
 {
@@ -43,10 +44,12 @@ class pandemonium_gui: public QMainWindow
   void closeEvent(QCloseEvent *event);
 
  private:
+  QMainWindow m_statisticsMainWindow;
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
   Ui_pandemonium_mainwindow m_ui;
+  Ui_pandemonium_statistics m_uiStatistics;
   uint m_parsedLinksLastDateTime;
   void populateParsed(void);
   void saveKernelPath(const QString &path);
@@ -64,7 +67,9 @@ class pandemonium_gui: public QMainWindow
   void slotMetaDataOnly(bool state);
   void slotMonitorKernel(bool state);
   void slotPageChanged(int index);
+  void slotPause(bool state);
   void slotProxyInformationToggled(bool state);
+  void slotQuit(void);
   void slotRemoveAllParsedUrls(void);
   void slotRemoveSelectedSearchUrls(void);
   void slotRemoveUnvisitedVisitedUrls(void);
@@ -73,6 +78,7 @@ class pandemonium_gui: public QMainWindow
   void slotSavePeriodic(bool state);
   void slotSaveProxyInformation(void);
   void slotSelectKernelPath(void);
+  void slotShowStatisticsWindow(void);
   void slotTableListTimeout(void);
   void slotToggleParsed(void);
 };

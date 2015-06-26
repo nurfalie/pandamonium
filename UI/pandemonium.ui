@@ -359,6 +359,11 @@
           </column>
           <column>
            <property name="text">
+            <string>Paused</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
             <string>Search Depth</string>
            </property>
           </column>
@@ -442,126 +447,6 @@
         <string>Discovered &amp;URLs</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_10">
-          <item>
-           <widget class="QLabel" name="discovery_rate">
-            <property name="text">
-             <string>Approximate Discovery Rate</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_5">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_8">
-          <item>
-           <widget class="QLabel" name="discovered_statistics">
-            <property name="text">
-             <string>Statistics</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QProgressBar" name="percent_visited">
-            <property name="toolTip">
-             <string>Percent of URLs visited.</string>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="purge_unvisited_visited_urls">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove pandemonium_visited_urls.db. The parsed URLs will not be removed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>Purge</string>
-            </property>
-            <property name="icon">
-             <iconset resource="../Icons/icons.qrc">
-              <normaloff>:/nuvola/trashcan_empty.png</normaloff>:/nuvola/trashcan_empty.png</iconset>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_11">
-          <item>
-           <spacer name="horizontalSpacer_7">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Parsed Contents Database Capacity</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QProgressBar" name="parsed_capacity">
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="textDirection">
-             <enum>QProgressBar::TopToBottom</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QLabel" name="label_10">
-            <property name="text">
-             <string>Visited Contents Database Capacity</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QProgressBar" name="visited_capacity">
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_9">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
@@ -762,7 +647,7 @@
      <x>0</x>
      <y>0</y>
      <width>723</width>
-     <height>24</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -771,7 +656,14 @@
     </property>
     <addaction name="action_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_View">
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="action_Statistics_Window"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_View"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Quit">
@@ -784,6 +676,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="action_Statistics_Window">
+   <property name="text">
+    <string>&amp;Statistics Window</string>
    </property>
   </action>
  </widget>
@@ -808,7 +705,6 @@
   <tabstop>add_search_url</tabstop>
   <tabstop>list_search_urls</tabstop>
   <tabstop>remove_search_urls</tabstop>
-  <tabstop>purge_unvisited_visited_urls</tabstop>
   <tabstop>periodically_list_parsed_urls</tabstop>
   <tabstop>toggle_all</tabstop>
   <tabstop>toggle_none</tabstop>

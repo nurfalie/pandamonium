@@ -40,22 +40,39 @@ static bool sortStringListByLength(const QString &a, const QString &b)
 }
 
 pandemonium_kernel_url::pandemonium_kernel_url
-(const QUrl &url, const int depth, QObject *parent):QObject(parent)
+(const QUrl &url, const bool paused, const int depth, QObject *parent):
+  QObject(parent)
 {
   m_abortTimer.setInterval(10000);
   m_depth = depth;
   m_isLoaded = false;
+  m_paused = paused;
   m_url = m_urlToLoad = url;
   connect(&m_abortTimer,
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotAbortTimeout(void)));
+  connect(&m_loadNextTimer,
+	  SIGNAL(timeout(void)),
+	  this,
+	  SLOT(slotLoadNext(void)));
   m_abortTimer.start();
 
-  QNetworkReply *reply = pandemonium_kernel::get(QNetworkRequest(m_url));
+  if(!m_paused)
+    {
+      QNetworkReply *reply = pandemonium_kernel::get
+	(QNetworkRequest(m_url));
 
-  reply->setParent(this);
-  connectReplySignals(reply);
+      reply->setParent(this);
+      connectReplySignals(reply);
+    }
+
+  QSettings settings;
+  double interval = settings.value("pandemonium_kernel_load_interval").
+    toDouble();
+
+  interval = qBound(0.50, interval, 100.00);
+  m_loadNextTimer.setInterval(1000 * interval);
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
@@ -218,6 +235,15 @@ void pandemonium_kernel_url::parseContent(void)
   m_content.clear();
 }
 
+void pandemonium_kernel_url::setPaused(const bool paused)
+{
+  m_paused = paused;
+
+  if(!m_paused)
+    if(!m_loadNextTimer.isActive())
+      m_loadNextTimer.start();
+}
+
 void pandemonium_kernel_url::slotAbortTimeout(void)
 {
   if(!m_isLoaded)
@@ -245,7 +271,9 @@ void pandemonium_kernel_url::slotDownloadProgress
 
 void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 {
+  m_abortTimer.stop();
   m_content.clear();
+  m_isLoaded = true;
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
 
@@ -260,7 +288,13 @@ void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 
 void pandemonium_kernel_url::slotLoadNext(void)
 {
+  if(m_paused)
+    return;
+
   QUrl url(pandemonium_database::unvisitedChildUrl(m_url));
+
+  if(url.isEmpty() || !url.isValid())
+    url = m_url; // Restart.
 
   if(!url.isEmpty())
     if(url.isValid())
@@ -317,8 +351,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
 	toDouble();
 
       interval = qBound(0.50, interval, 100.00);
-      QTimer::singleShot
-	(static_cast<int> (1000 * interval), this, SLOT(slotLoadNext(void)));
+      m_loadNextTimer.start(1000 * interval);
     }
 }
 

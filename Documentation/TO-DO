@@ -1,6 +1,6 @@
 Completed Items
 
-1.   Allow query interval. 2.50 seconds and beyond?
+1.   Allow query interval. 0.50 seconds and beyond?
 2.   Interrupt loads.
 3.   Recover from network glitches.
 4.   Set the engine's proxy.

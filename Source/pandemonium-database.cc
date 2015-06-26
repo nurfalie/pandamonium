@@ -38,9 +38,9 @@
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;
 
-QList<QPair<QUrl, int> > pandemonium_database::searchUrls(void)
+QList<QList<QVariant> > pandemonium_database::searchUrls(void)
 {
-  QList<QPair<QUrl, int> > list;
+  QList<QList<QVariant> > list;
   QPair<QSqlDatabase, QString> pair;
 
   {
@@ -55,15 +55,16 @@ QList<QPair<QUrl, int> > pandemonium_database::searchUrls(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT search_depth, url "
+	if(query.exec("SELECT paused, search_depth, url "
 		      "FROM pandemonium_search_urls"))
 	  while(query.next())
 	    {
-	      QPair<QUrl, int> pair;
+	      QList<QVariant> values;
 
-	      pair.first = QUrl::fromEncoded(query.value(1).toByteArray());
-	      pair.second = query.value(0).toInt();
-	      list << pair;
+	      values << query.value(0).toInt();
+	      values << query.value(1).toInt();
+	      values << QUrl::fromEncoded(query.value(2).toByteArray());
+	      list << values;
 	    }
       }
 
@@ -441,6 +442,7 @@ void pandemonium_database::createdb(void)
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
 		 "meta_data_only INTEGER NOT NULL DEFAULT 1, "
+		 "paused INTEGER NOT NULL DEFAULT 0, "
 		 "search_depth INTEGER NOT NULL DEFAULT -1, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");
@@ -462,13 +464,18 @@ void pandemonium_database::createdb(void)
 void pandemonium_database::markUrlAsVisited
 (const QUrl &url, const bool visited)
 {
+  QFileInfo fileInfo
+    (pandemonium_common::homePath() + QDir::separator() +
+     "pandemonium_visited_urls.db");
+
+  if(fileInfo.size() >= pandemonium_common::maximum_database_size)
+    return;
+
   QPair<QSqlDatabase, QString> pair;
 
   {
     pair = database();
-    pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_visited_urls.db");
+    pair.first.setDatabaseName(fileInfo.absoluteFilePath());
 
     if(pair.first.open())
       {
@@ -639,13 +646,18 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
 					   const QString &title,
 					   const QUrl &url)
 {
+  QFileInfo fileInfo
+    (pandemonium_common::homePath() + QDir::separator() +
+     "pandemonium_parsed_urls.db");
+
+  if(fileInfo.size() >= pandemonium_common::maximum_database_size)
+    return;
+
   QPair<QSqlDatabase, QString> pair;
 
   {
     pair = database();
-    pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
+    pair.first.setDatabaseName(fileInfo.absoluteFilePath());
 
     if(pair.first.open())
       {
