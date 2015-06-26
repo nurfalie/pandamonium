@@ -32,6 +32,7 @@
 #include <QTimer>
 
 #include "ui_pandemonium.h"
+#include "ui_pandemonium_export.h"
 #include "ui_pandemonium_statistics.h"
 
 class pandemonium_gui: public QMainWindow
@@ -44,11 +45,13 @@ class pandemonium_gui: public QMainWindow
   void closeEvent(QCloseEvent *event);
 
  private:
+  QMainWindow m_pandemoniumExportWindow;
   QMainWindow m_statisticsMainWindow;
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
   Ui_pandemonium_mainwindow m_ui;
+  Ui_pandemonium_export m_uiExport;
   Ui_pandemonium_statistics m_uiStatistics;
   uint m_parsedLinksLastDateTime;
   void populateParsed(void);
