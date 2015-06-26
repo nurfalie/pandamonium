@@ -121,6 +121,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotProxyInformationToggled(bool)));
+  connect(m_ui.purge_unvisited_visited_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
   connect(m_ui.remove_all_parsed_urls,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -149,10 +153,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  &m_statisticsMainWindow,
 	  SLOT(close(void)));
-  connect(m_uiStatistics.purge_unvisited_visited_urls,
-	  SIGNAL(clicked(void)),
-	  this,
-	  SLOT(slotRemoveUnvisitedVisitedUrls(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.setInterval(10000);
@@ -375,42 +375,48 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   m_ui.kernel_pid->setText
     (QString::number(pandemonium_database::kernelProcessId()));
 
+  /*
+  ** Not for statistics.
+  */
+
+  m_uiStatistics.statistics->clearContents();
+  m_uiStatistics.statistics->setRowCount(0);
+
+  QList<qint64> values;
   QLocale locale;
   QPair<quint64, quint64> numbers
     (pandemonium_database::unvisitedAndVisitedNumbers());
+  QStringList statistics;
   int percent = 100 *
     static_cast<double> (numbers.first) / (qMax(static_cast<quint64> (1),
 						numbers.first +
 						numbers.second));
 
-  m_uiStatistics.discovered_statistics->setText
-    (tr("<b>Parsed URLs():</b> %1. "
-	"<b>Remaining URL(s):</b> %2. "
-	"<b>Total URL(s):</b> %3. ").
-     arg(locale.toString(numbers.second)).
-     arg(locale.toString(numbers.first)).
-     arg(locale.toString(numbers.first + numbers.second)));
-  m_uiStatistics.percent_visited->setValue(100 - percent);
+  statistics << "Parsed URL(s)"
+	     << "Percent Remaining"
+	     << "Remaining URL(s)"
+	     << "Total URL(s) Discovered";
+  values << pandemonium_database::parsedLinksCount()
+	 << static_cast<qint64> (percent)
+	 << numbers.first
+	 << numbers.first + numbers.second;
+  m_uiStatistics.statistics->setRowCount(statistics.size());
 
-  static quint64 last_total = 0;
-  static uint time_now = QDateTime::currentDateTime().toTime_t();
-  static uint time_then = 0;
+  for(int i = 0; i < statistics.size(); i++)
+    {
+      QTableWidgetItem *item = 0;
 
-  if(numbers.first >= last_total)
-    m_uiStatistics.discovery_rate->setText
-      (tr("<b>Approximate Discovery Rate:</b> %1 URL(s)/second.").
-       arg((numbers.first -
-	    last_total) / (qMax(static_cast<uint> (1),
-				time_now - time_then))));
-  else
-    m_uiStatistics.discovery_rate->setText
-      (tr("<b>Approximate Discovery Rate:</b> -%1 URL(s)/second.").
-       arg((last_total -
-	    numbers.first) / (qMax(static_cast<uint> (1),
-				   time_now - time_then))));
+      item = new QTableWidgetItem();
+      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+      item->setText(statistics.at(i));
+      m_uiStatistics.statistics->setItem(i, 0, item);
+      item = new QTableWidgetItem();
+      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+      item->setText(locale.toString(values.at(i)));
+      m_uiStatistics.statistics->setItem(i, 1, item);
+    }
 
-  last_total = numbers.first;
-  time_then = time_now;
+  m_uiStatistics.statistics->resizeColumnToContents(0);
 
   QStringList list;
 

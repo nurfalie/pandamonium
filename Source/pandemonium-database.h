@@ -45,6 +45,7 @@ class pandemonium_database
   static bool isUrlMetaDataOnly(const QUrl &url);
   static bool shouldTerminateKernel(const qint64 process_id);
   static qint64 kernelProcessId(void);
+  static qint64 parsedLinksCount(void);
   static void addSearchUrl(const QString &str);
   static void createdb(void);
   static void markUrlAsVisited(const QUrl &url, const bool visited);

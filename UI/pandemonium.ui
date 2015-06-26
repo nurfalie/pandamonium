@@ -470,6 +470,20 @@
            </spacer>
           </item>
           <item>
+           <widget class="QPushButton" name="purge_unvisited_visited_urls">
+            <property name="toolTip">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove pandemonium_visited_urls.db. The parsed URLs will not be removed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="text">
+             <string>Purge</string>
+            </property>
+            <property name="icon">
+             <iconset resource="../Icons/icons.qrc">
+              <normaloff>:/nuvola/trashcan_empty.png</normaloff>:/nuvola/trashcan_empty.png</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QPushButton" name="toggle_all">
             <property name="toolTip">
              <string>If pressed, the periodic populating of the table will be disabled.</string>
@@ -706,6 +720,7 @@
   <tabstop>list_search_urls</tabstop>
   <tabstop>remove_search_urls</tabstop>
   <tabstop>periodically_list_parsed_urls</tabstop>
+  <tabstop>purge_unvisited_visited_urls</tabstop>
   <tabstop>toggle_all</tabstop>
   <tabstop>toggle_none</tabstop>
   <tabstop>parsed_urls</tabstop>

@@ -351,6 +351,35 @@ qint64 pandemonium_database::kernelProcessId(void)
   return process_id;
 }
 
+
+qint64 pandemonium_database::parsedLinksCount(void)
+{
+  QPair<QSqlDatabase, QString> pair;
+  qint64 count = 0;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_parsed_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	if(query.exec("SELECT COUNT(*) FROM pandemonium_parsed_urls"))
+	  if(query.next())
+	    count = query.value(0).toLongLong();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return count;
+}
+
 void pandemonium_database::addSearchUrl(const QString &str)
 {
   QUrl url(QUrl::fromUserInput(str.trimmed()));
