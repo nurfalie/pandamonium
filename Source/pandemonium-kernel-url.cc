@@ -56,10 +56,11 @@ pandemonium_kernel_url::pandemonium_kernel_url
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotLoadNext(void)));
-  m_abortTimer.start();
 
   if(!m_paused)
     {
+      m_abortTimer.start();
+
       QNetworkReply *reply = pandemonium_kernel::get
 	(QNetworkRequest(m_url));
 
@@ -239,9 +240,13 @@ void pandemonium_kernel_url::setPaused(const bool paused)
 {
   m_paused = paused;
 
-  if(!m_paused)
-    if(!m_loadNextTimer.isActive())
-      m_loadNextTimer.start();
+  if(m_paused)
+    m_loadNextTimer.stop();
+  else
+    {
+      if(!m_loadNextTimer.isActive())
+	m_loadNextTimer.start();
+    }
 }
 
 void pandemonium_kernel_url::slotAbortTimeout(void)
@@ -351,7 +356,9 @@ void pandemonium_kernel_url::slotReplyFinished(void)
 	toDouble();
 
       interval = qBound(0.50, interval, 100.00);
-      m_loadNextTimer.start(1000 * interval);
+
+      if(interval != m_loadNextTimer.interval())
+	m_loadNextTimer.start(1000 * interval);
     }
 }
 

@@ -159,6 +159,13 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   m_ui.search_urls->setColumnHidden
     (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
+  QLocale locale;
+
+  m_uiStatistics.database_limits->setText
+    (tr("A limit of %1 bytes is imposed on "
+	"pandemonium_parsed_urls.db and pandemonium_visited_urls.db.").
+     arg(locale.toString(pandemonium_common::maximum_database_size)));
+
   QSettings settings;
 
   restoreGeometry(settings.value("pandemonium_mainwindow").toByteArray());
@@ -452,10 +459,10 @@ void pandemonium_gui::slotListParsedUrls(void)
     {
       m_ui.page->addItem(tr("Page %1").arg(i));
 
-      if(i > qCeil(numbers.first / static_cast<quint64> (m_ui.
-							 page_limit->
-							 currentText().
-							 toInt())))
+      if(i > qCeil(numbers.second / static_cast<quint64> (m_ui.
+							  page_limit->
+							  currentText().
+							  toInt())))
 	break;
 
       i += 1;
