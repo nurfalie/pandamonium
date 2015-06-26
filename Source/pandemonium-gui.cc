@@ -158,7 +158,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SLOT(slotToggleParsed(void)));
   connect(m_uiExport.action_Close,
 	  SIGNAL(triggered(void)),
-	  this,
 	  m_exportMainWindow,
 	  SLOT(close(void)));
   connect(m_uiStatistics.action_Close,
