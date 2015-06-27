@@ -448,13 +448,22 @@ void pandemonium_database::createdb(void)
 	    QSqlQuery query(pair.first);
 
 	    if(fileName == "pandemonium_export_definition.db")
-	      query.exec
-		("CREATE TABLE IF NOT EXISTS pandemonium_export_definition("
-		 "database_path TEXT NOT NULL PRIMARY KEY, "
-		 "database_table TEXT NOT NULL, "
-		 "field_description TEXT NOT NULL, "
-		 "field_title TEXT NOT NULL, "
-		 "field_url TEXT NOT NULL)");
+	      {
+		query.exec
+		  ("CREATE TABLE IF NOT EXISTS pandemonium_export_definition("
+		   "database_path TEXT NOT NULL PRIMARY KEY, "
+		   "database_table TEXT NOT NULL, "
+		   "field_description TEXT NOT NULL, "
+		   "field_title TEXT NOT NULL, "
+		   "field_url TEXT NOT NULL)");
+		query.exec
+		  ("CREATE TRIGGER IF NOT EXISTS "
+		   "pandemonium_export_definition_trigger "
+		   "BEFORE INSERT ON pandemonium_export_definition "
+		   "BEGIN "
+		   "DELETE FROM pandemonium_export_definition;"
+		   "END");
+	      }
 	    else if(fileName == "pandemonium_kernel_command.db")
 	      {
 		query.exec
