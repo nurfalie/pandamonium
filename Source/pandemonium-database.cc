@@ -60,7 +60,7 @@ QHash<QString, QString> pandemonium_database::exportDefinition(void)
 	  if(query.next())
 	    for(int i = 0; i < query.record().count(); i++)
 	      hash[query.record().fieldName(i)] =
-		query.value(0).toString();
+		query.value(i).toString();
       }
 
     pair.first.close();
