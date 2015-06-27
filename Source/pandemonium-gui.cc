@@ -248,7 +248,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   QApplication::setOverrideCursor(Qt::BusyCursor);
   slotListSearchUrls();
   QApplication::restoreOverrideCursor();
-  m_statisticsMainWindow->show();
 }
 
 pandemonium_gui::~pandemonium_gui()
@@ -285,6 +284,13 @@ void pandemonium_gui::populateParsed(void)
       QTableWidgetItem *item = new QTableWidgetItem
 	(list.takeFirst().toString());
 
+      checkBox->setToolTip
+	(tr("If pressed, the periodic populating of the "
+	    "table will be disabled."));
+      connect(checkBox,
+	      SIGNAL(clicked(bool)),
+	      this,
+	      SLOT(slotExportCheckBoxClicked(bool)));
       item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
       m_ui.parsed_urls->setCellWidget(row, 0, checkBox);
       m_ui.parsed_urls->setItem(row, 1, item);
@@ -396,6 +402,12 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
     return;
 
   pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
+}
+
+void pandemonium_gui::slotExportCheckBoxClicked(bool state)
+{
+  if(state)
+    m_ui.periodically_list_parsed_urls->setChecked(false);
 }
 
 void pandemonium_gui::slotExportDefinition(void)
