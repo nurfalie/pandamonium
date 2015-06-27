@@ -32,6 +32,7 @@
 #include <QInputDialog>
 #include <QProcess>
 #include <QSettings>
+#include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QtCore/qmath.h>
@@ -64,10 +65,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTableListTimeout(void)));
-  connect(m_ui.action_Export_Configuration,
+  connect(m_ui.action_Export_Definition,
 	  SIGNAL(triggered(void)),
 	  this,
-	  SLOT(slotExportConfiguration(void)));
+	  SLOT(slotExportDefinition(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -305,6 +306,10 @@ void pandemonium_gui::processExportDatabase(const QString &path)
       {
 	QStringList tables(pair.first.tables());
 
+	disconnect(m_uiExport.tables_table,
+		   SIGNAL(itemSelectionChanged(void)),
+		   this,
+		   SLOT(slotExportTableSelected(void)));
 	m_uiExport.tables_table->clearContents();
 	m_uiExport.tables_table->setRowCount(tables.size());
 
@@ -318,6 +323,10 @@ void pandemonium_gui::processExportDatabase(const QString &path)
 	  }
 
 	m_uiExport.tables_table->sortItems(0);
+	connect(m_uiExport.tables_table,
+		SIGNAL(itemSelectionChanged(void)),
+		this,
+		SLOT(slotExportTableSelected(void)));
       }
 
     pair.first.close();
@@ -389,9 +398,66 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
   pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
 }
 
-void pandemonium_gui::slotExportConfiguration(void)
+void pandemonium_gui::slotExportDefinition(void)
 {
   m_exportMainWindow->show();
+}
+
+void pandemonium_gui::slotExportTableSelected(void)
+{
+  int row = m_uiExport.tables_table->currentRow();
+
+  if(row < 0)
+    return;
+
+  QTableWidgetItem *item = m_uiExport.tables_table->item(row, 0);
+
+  if(!item)
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandemonium_database::database();
+    pair.first.setDatabaseName(m_uiExport.export_database_path->text());
+
+    if(pair.first.open())
+      {
+	m_uiExport.fields_table->clearContents();
+	m_uiExport.fields_table->setRowCount(0);
+
+	QSqlRecord record(pair.first.record(item->text()));
+
+	m_uiExport.fields_table->setRowCount(record.count());
+
+	for(int i = 0; i < record.count(); i++)
+	  {
+	    QComboBox *comboBox = 0;
+	    QTableWidgetItem *item = 0;
+
+	    item = new QTableWidgetItem();
+	    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	    item->setText(record.fieldName(i));
+	    m_uiExport.fields_table->setItem(i, 0, item);
+	    item = new QTableWidgetItem();
+	    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	    item->setText(QVariant::typeToName(record.field(i).type()));
+	    m_uiExport.fields_table->setItem(i, 1, item);
+	    comboBox = new QComboBox();
+	    comboBox->addItem("description");
+	    comboBox->addItem("title");
+	    comboBox->addItem("url");
+	    m_uiExport.fields_table->setCellWidget(i, 2, comboBox);
+	  }
+
+	m_uiExport.fields_table->sortItems(0);
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
 
 void pandemonium_gui::slotHighlightTimeout(void)
@@ -879,7 +945,11 @@ void pandemonium_gui::slotSelectExportDatabase(void)
 #endif
 
   if(dialog.exec() == QDialog::Accepted)
-    processExportDatabase(dialog.selectedFiles().value(0));
+    {
+      m_uiExport.export_database_path->setText
+		 (dialog.selectedFiles().value(0));
+      processExportDatabase(dialog.selectedFiles().value(0));
+    }
 }
 
 void pandemonium_gui::slotSelectKernelPath(void)
