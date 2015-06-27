@@ -141,6 +141,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRemoveSelectedSearchUrls(void)));
+  connect(m_ui.remove_selected_parsed_urls,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveSelectedParsedUrls(void)));
   connect(m_ui.save_proxy_information,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -857,6 +861,28 @@ void pandemonium_gui::slotRemoveAllParsedUrls(void)
   QFile::remove(pandemonium_common::homePath() + QDir::separator() +
 		"pandemonium_parsed_urls.db");
   slotListParsedUrls();
+}
+
+void pandemonium_gui::slotRemoveSelectedParsedUrls(void)
+{
+  QList<QString> list;
+  QModelIndexList indexes
+    (m_ui.parsed_urls->selectionModel()->
+     selectedRows(m_ui.parsed_urls->columnCount() - 1));
+
+  while(!indexes.isEmpty())
+    {
+      QModelIndex index(indexes.takeFirst());
+
+      if(index.isValid())
+	list << index.data().toString();
+    }
+
+  if(!list.isEmpty())
+    {
+      pandemonium_database::removeParsedUrls(list);
+      slotListParsedUrls();
+    }
 }
 
 void pandemonium_gui::slotRemoveSelectedSearchUrls(void)

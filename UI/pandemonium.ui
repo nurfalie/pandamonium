@@ -637,7 +637,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="remove_parsed_urls">
+           <widget class="QPushButton" name="remove_selected_parsed_urls">
             <property name="text">
              <string>Remove Selected</string>
             </property>
@@ -735,7 +735,7 @@
   <tabstop>export_toggled</tabstop>
   <tabstop>list_parsed_urls</tabstop>
   <tabstop>remove_all_parsed_urls</tabstop>
-  <tabstop>remove_parsed_urls</tabstop>
+  <tabstop>remove_selected_parsed_urls</tabstop>
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>

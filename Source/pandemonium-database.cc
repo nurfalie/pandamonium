@@ -624,6 +624,41 @@ void pandemonium_database::recordKernelProcessId(const qint64 process_id)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
+void pandemonium_database::removeParsedUrls(const QList<QString> &list)
+{
+  if(list.isEmpty())
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_parsed_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.exec("PRAGMA secure_delete = ON");
+
+	foreach(QString str, list)
+	  {
+	    query.prepare("DELETE FROM pandemonium_parsed_urls "
+			  "WHERE url = ?");
+	    query.bindValue(0, QUrl(str).toEncoded());
+	    query.exec();
+	  }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
 void pandemonium_database::removeSearchUrls(const QList<QString> &list)
 {
   if(list.isEmpty())

@@ -51,6 +51,7 @@ class pandemonium_database
   static void markUrlAsVisited(const QUrl &url, const bool visited);
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);
+  static void removeParsedUrls(const QList<QString> &list);
   static void removeSearchUrls(const QList<QString> &list);
   static void saveDepth(const QString &depth, const QVariant &url_hash);
   static void saveUrlMetaData(const QString &description,
