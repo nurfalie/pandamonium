@@ -42,7 +42,6 @@ class pandemonium_gui: public QMainWindow
  public:
   pandemonium_gui(void);
   ~pandemonium_gui();
-  void closeEvent(QCloseEvent *event);
 
  private:
   QMainWindow *m_exportMainWindow;
@@ -54,6 +53,8 @@ class pandemonium_gui: public QMainWindow
   Ui_pandemonium_export m_uiExport;
   Ui_pandemonium_statistics m_uiStatistics;
   uint m_parsedLinksLastDateTime;
+  void center(QWidget *child, QWidget *parent);
+  void closeEvent(QCloseEvent *event);
   void populateParsed(void);
   void processExportDatabase(const QString &path);
   void saveKernelPath(const QString &path);
@@ -81,6 +82,7 @@ class pandemonium_gui: public QMainWindow
   void slotRemoveSelectedParsedUrls(void);
   void slotRemoveSelectedSearchUrls(void);
   void slotRemoveUnvisitedVisitedUrls(void);
+  void slotSaveExportDefinition(void);
   void slotSaveKernelPath(void);
   void slotSavePageLimit(const QString &text);
   void slotSavePeriodic(bool state);

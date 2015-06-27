@@ -165,6 +165,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  m_exportMainWindow,
 	  SLOT(close(void)));
+  connect(m_uiExport.save,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSaveExportDefinition(void)));
   connect(m_uiExport.select,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -258,6 +262,30 @@ pandemonium_gui::~pandemonium_gui()
 {
 }
 
+void pandemonium_gui::center(QWidget *child, QWidget *parent)
+{
+  if(!child || !parent)
+    return;
+
+  QPoint p(0, 0);
+  int X = 0;
+  int Y = 0;
+
+  p = parent->pos();
+
+  if(parent->width() >= child->width())
+    X = p.x() + (parent->width() - child->width()) / 2;
+  else
+    X = p.x() - (child->width() - parent->width()) / 2;
+
+  if(parent->height() >= child->height())
+    Y = p.y() + (parent->height() - child->height()) / 2;
+  else
+    Y = p.y() - (child->height() - parent->height()) / 2;
+
+  child->move(X, Y);
+}
+
 void pandemonium_gui::closeEvent(QCloseEvent *event)
 {
   QSettings settings;
@@ -320,6 +348,8 @@ void pandemonium_gui::processExportDatabase(const QString &path)
 		   SIGNAL(itemSelectionChanged(void)),
 		   this,
 		   SLOT(slotExportTableSelected(void)));
+	m_uiExport.fields_table->clearContents();
+	m_uiExport.fields_table->setRowCount(0);
 	m_uiExport.tables_table->clearContents();
 	m_uiExport.tables_table->setRowCount(tables.size());
 
@@ -416,6 +446,7 @@ void pandemonium_gui::slotExportCheckBoxClicked(bool state)
 
 void pandemonium_gui::slotExportDefinition(void)
 {
+  center(m_exportMainWindow, this);
   m_exportMainWindow->show();
 }
 
@@ -460,9 +491,10 @@ void pandemonium_gui::slotExportTableSelected(void)
 	    item->setText(QVariant::typeToName(record.field(i).type()));
 	    m_uiExport.fields_table->setItem(i, 1, item);
 	    comboBox = new QComboBox();
-	    comboBox->addItem("description");
-	    comboBox->addItem("title");
-	    comboBox->addItem("url");
+	    comboBox->addItem("-");
+	    comboBox->addItem("field_description");
+	    comboBox->addItem("field_title");
+	    comboBox->addItem("field_url");
 	    m_uiExport.fields_table->setCellWidget(i, 2, comboBox);
 	  }
 
@@ -913,6 +945,32 @@ void pandemonium_gui::slotRemoveUnvisitedVisitedUrls(void)
 		"pandemonium_visited_urls.db");
 }
 
+void pandemonium_gui::slotSaveExportDefinition(void)
+{
+  QHash<QString, QString> hash;
+  QTableWidgetItem *item = 0;
+
+  hash["database_path"] = m_uiExport.export_database_path->text();
+  item = m_uiExport.tables_table->item
+    (m_uiExport.tables_table->currentRow(), 0);
+
+  if(item)
+    hash["database_table"] = item->text();
+
+  for(int i = 0; i < m_uiExport.fields_table->rowCount(); i++)
+    {
+      QComboBox *comboBox = qobject_cast<QComboBox *>
+	(m_uiExport.fields_table->cellWidget(i, 2));
+
+      item = m_uiExport.fields_table->item(i, 0);
+
+      if(!comboBox || !item)
+	continue;
+
+      hash[comboBox->currentText()] = item->text();
+    }
+}
+
 void pandemonium_gui::slotSaveKernelPath(void)
 {
   saveKernelPath(m_ui.kernel_path->text());
@@ -1014,6 +1072,7 @@ void pandemonium_gui::slotSelectKernelPath(void)
 
 void pandemonium_gui::slotShowStatisticsWindow(void)
 {
+  center(m_statisticsMainWindow, this);
   m_statisticsMainWindow->show();
 }
 

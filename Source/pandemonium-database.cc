@@ -451,11 +451,14 @@ void pandemonium_database::createdb(void)
 	      {
 		query.exec
 		  ("CREATE TABLE IF NOT EXISTS pandemonium_export_definition("
-		   "database_path TEXT NOT NULL PRIMARY KEY, "
+		   "database_path TEXT NOT NULL, "
 		   "database_table TEXT NOT NULL, "
 		   "field_description TEXT NOT NULL, "
 		   "field_title TEXT NOT NULL, "
-		   "field_url TEXT NOT NULL)");
+		   "field_url TEXT NOT NULL, "
+		   "PRIMARY KEY(database_path, "
+		   "database_table, field_description, field_title, "
+		   "fiel_url))");
 		query.exec
 		  ("CREATE TRIGGER IF NOT EXISTS "
 		   "pandemonium_export_definition_trigger "
