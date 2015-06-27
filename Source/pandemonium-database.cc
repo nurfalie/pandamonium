@@ -29,6 +29,7 @@
 #include <QDateTime>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QUrl>
 #include <QtDebug>
 
@@ -37,6 +38,38 @@
 
 QReadWriteLock pandemonium_database::s_dbIdLock;
 quint64 pandemonium_database::s_dbId = 0;
+
+QHash<QString, QString> pandemonium_database::exportDefinition(void)
+{
+  QHash<QString, QString> hash;
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_export_definition.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+
+	if(query.exec("SELECT * FROM pandemonium_export_definition"))
+	  if(query.next())
+	    for(int i = 0; i < query.record().count(); i++)
+	      hash[query.record().fieldName(i)] =
+		query.value(0).toString();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return hash;
+}
 
 QList<QList<QVariant> > pandemonium_database::searchUrls(void)
 {
