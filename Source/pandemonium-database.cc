@@ -273,6 +273,42 @@ bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
   return state;
 }
 
+bool pandemonium_database::saveExportDefinition
+(const QHash<QString, QString> &hash)
+{
+  QPair<QSqlDatabase, QString> pair;
+  bool ok = false;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_export_definition.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("INSERT OR REPLACE INTO pandemonium_export_definition("
+		      "database_path, database_table, "
+		      "field_description, field_title, field_url) "
+		      "VALUES(?, ?, ?, ?, ?)");
+	query.bindValue(0, hash["database_path"]);
+	query.bindValue(1, hash["database_table"]);
+	query.bindValue(2, hash["field_description"]);
+	query.bindValue(3, hash["field_title"]);
+	query.bindValue(4, hash["field_url"]);
+	ok = query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return ok;
+}
+
 bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -458,7 +494,7 @@ void pandemonium_database::createdb(void)
 		   "field_url TEXT NOT NULL, "
 		   "PRIMARY KEY(database_path, "
 		   "database_table, field_description, field_title, "
-		   "fiel_url))");
+		   "field_url))");
 		query.exec
 		  ("CREATE TRIGGER IF NOT EXISTS "
 		   "pandemonium_export_definition_trigger "

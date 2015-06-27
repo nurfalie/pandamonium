@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QSqlField>
@@ -969,6 +970,13 @@ void pandemonium_gui::slotSaveExportDefinition(void)
 
       hash[comboBox->currentText()] = item->text();
     }
+
+  if(!pandemonium_database::saveExportDefinition(hash))
+    QMessageBox::critical
+      (this, tr("pandemonium: Error"),
+       tr("An error occurred while attempting to save the "
+	  "export definition. Please verify that you have unique values "
+	  "for all of the database fields."));
 }
 
 void pandemonium_gui::slotSaveKernelPath(void)

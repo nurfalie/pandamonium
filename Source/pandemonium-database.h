@@ -43,6 +43,7 @@ class pandemonium_database
   static QUrl unvisitedChildUrl(const QUrl &url);
   static bool isKernelActive(void);
   static bool isUrlMetaDataOnly(const QUrl &url);
+  static bool saveExportDefinition(const QHash<QString, QString> &hash);
   static bool shouldTerminateKernel(const qint64 process_id);
   static qint64 kernelProcessId(void);
   static qint64 parsedLinksCount(void);
