@@ -428,7 +428,8 @@ void pandemonium_database::createdb(void)
 {
   QList<QString> fileNames;
 
-  fileNames << "pandemonium_kernel_command.db"
+  fileNames << "pandemonium_export_definition.db"
+	    << "pandemonium_kernel_command.db"
 	    << "pandemonium_parsed_urls.db"
 	    << "pandemonium_search_urls.db"
 	    << "pandemonium_visited_urls.db";
@@ -446,7 +447,15 @@ void pandemonium_database::createdb(void)
 	  {
 	    QSqlQuery query(pair.first);
 
-	    if(fileName == "pandemonium_kernel_command.db")
+	    if(fileName == "pandemonium_export_definition.db")
+	      query.exec
+		("CREATE TABLE IF NOT EXISTS pandemonium_export_definition("
+		 "database_path TEXT NOT NULL PRIMARY KEY, "
+		 "database_table TEXT NOT NULL, "
+		 "field_description TEXT NOT NULL, "
+		 "field_title TEXT NOT NULL, "
+		 "field_url TEXT NOT NULL)");
+	    else if(fileName == "pandemonium_kernel_command.db")
 	      {
 		query.exec
 		  ("CREATE TABLE IF NOT EXISTS pandemonium_kernel_command("

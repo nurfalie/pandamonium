@@ -160,6 +160,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  m_exportMainWindow,
 	  SLOT(close(void)));
+  connect(m_uiExport.select,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotSelectExportDatabase(void)));
   connect(m_uiStatistics.action_Close,
 	  SIGNAL(triggered(void)),
 	  m_statisticsMainWindow,
@@ -287,6 +291,40 @@ void pandemonium_gui::populateParsed(void)
     }
 
   QApplication::restoreOverrideCursor();
+}
+
+void pandemonium_gui::processExportDatabase(const QString &path)
+{
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandemonium_database::database();
+    pair.first.setDatabaseName(path);
+
+    if(pair.first.open())
+      {
+	QStringList tables(pair.first.tables());
+
+	m_uiExport.tables_table->clearContents();
+	m_uiExport.tables_table->setRowCount(tables.size());
+
+	for(int i = 0; i < tables.size(); i++)
+	  {
+	    QTableWidgetItem *item = new QTableWidgetItem();
+
+	    item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	    item->setText(tables.at(i));
+	    m_uiExport.tables_table->setItem(i, 0, item);
+	  }
+
+	m_uiExport.tables_table->sortItems(0);
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
 }
 
 void pandemonium_gui::saveKernelPath(const QString &path)
@@ -823,6 +861,25 @@ void pandemonium_gui::slotSaveProxyInformation(void)
     ("pandemonium_proxy_type", m_ui.proxy_type->currentIndex());
   settings.setValue
     ("pandemonium_proxy_user", m_ui.proxy_user->text());
+}
+
+void pandemonium_gui::slotSelectExportDatabase(void)
+{
+  QFileDialog dialog(m_exportMainWindow);
+
+  dialog.setWindowTitle(tr("pandemonium: Select Export Database"));
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setDirectory(QDir::homePath());
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setAcceptMode(QFileDialog::AcceptOpen);
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, false);
+#endif
+#endif
+
+  if(dialog.exec() == QDialog::Accepted)
+    processExportDatabase(dialog.selectedFiles().value(0));
 }
 
 void pandemonium_gui::slotSelectKernelPath(void)

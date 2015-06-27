@@ -55,6 +55,7 @@ class pandemonium_gui: public QMainWindow
   Ui_pandemonium_statistics m_uiStatistics;
   uint m_parsedLinksLastDateTime;
   void populateParsed(void);
+  void processExportDatabase(const QString &path);
   void saveKernelPath(const QString &path);
 
  private slots:
@@ -81,6 +82,7 @@ class pandemonium_gui: public QMainWindow
   void slotSavePageLimit(const QString &text);
   void slotSavePeriodic(bool state);
   void slotSaveProxyInformation(void);
+  void slotSelectExportDatabase(void);
   void slotSelectKernelPath(void);
   void slotShowStatisticsWindow(void);
   void slotTableListTimeout(void);

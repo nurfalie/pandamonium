@@ -25,12 +25,46 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="export_database"/>
+       <widget class="QLineEdit" name="export_database">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
     <item>
-     <widget class="QTableWidget" name="table">
+     <widget class="QTableWidget" name="tables_table">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>150</height>
+       </size>
+      </property>
+      <property name="alternatingRowColors">
+       <bool>true</bool>
+      </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::SingleSelection</enum>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <property name="horizontalScrollMode">
+       <enum>QAbstractItemView::ScrollPerPixel</enum>
+      </property>
+      <attribute name="horizontalHeaderStretchLastSection">
+       <bool>true</bool>
+      </attribute>
+      <column>
+       <property name="text">
+        <string>Table Name</string>
+       </property>
+      </column>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTableWidget" name="fields_table">
       <property name="alternatingRowColors">
        <bool>true</bool>
       </property>
@@ -122,6 +156,13 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>select</tabstop>
+  <tabstop>export_database</tabstop>
+  <tabstop>tables_table</tabstop>
+  <tabstop>fields_table</tabstop>
+  <tabstop>save</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
