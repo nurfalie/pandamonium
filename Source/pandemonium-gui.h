@@ -32,7 +32,7 @@
 #include <QTimer>
 
 #include "ui_pandemonium.h"
-#include "ui_pandemonium_export.h"
+#include "ui_pandemonium_export_definition.h"
 #include "ui_pandemonium_statistics.h"
 
 class pandemonium_gui: public QMainWindow

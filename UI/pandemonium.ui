@@ -697,10 +697,16 @@
    <property name="text">
     <string>&amp;Statistics Window</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
   </action>
   <action name="action_Export_Definition">
    <property name="text">
     <string>&amp;Export Definition</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
    </property>
   </action>
  </widget>
