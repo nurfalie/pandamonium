@@ -89,6 +89,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotDeactivateKernel(void)));
+  connect(m_ui.delete_exported_urls,
+	  SIGNAL(toggled(bool)),
+	  this,
+	  SLOT(slotDeleteExportedUrlsCheckBoxClicked(bool)));
   connect(m_ui.kernel_load_interval,
 	  SIGNAL(valueChanged(const QString &)),
 	  this,
@@ -204,6 +208,9 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   /*
   ** Restore interface settings.
   */
+
+  m_ui.delete_exported_urls->setChecked
+    (settings.value("pandemonium_delete_exported_urls").toBool());
 
   int index = m_ui.page_limit->findText
     (settings.value("pandemonium_page_limit", "1000").toString());
@@ -447,6 +454,13 @@ void pandemonium_gui::slotDeactivateKernel(void)
 {
   m_ui.monitor_kernel->setChecked(false);
   pandemonium_database::recordKernelDeactivation();
+}
+
+void pandemonium_gui::slotDeleteExportedUrlsCheckBoxClicked(bool state)
+{
+  QSettings settings;
+
+  settings.setValue("pandemonium_delete_exported_urls", state);
 }
 
 void pandemonium_gui::slotDepthChanged(const QString &text)

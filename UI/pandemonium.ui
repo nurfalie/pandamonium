@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>723</width>
+    <width>869</width>
     <height>600</height>
    </rect>
   </property>
@@ -450,6 +450,60 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>&amp;Limit</string>
+            </property>
+            <property name="buddy">
+             <cstring>page_limit</cstring>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="page_limit">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+            <item>
+             <property name="text">
+              <string>1000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>2500</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>5000</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>7500</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>10000</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="page">
+            <property name="sizeAdjustPolicy">
+             <enum>QComboBox::AdjustToContents</enum>
+            </property>
+            <item>
+             <property name="text">
+              <string>Page 1</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="periodically_list_parsed_urls">
             <property name="text">
              <string>&amp;Periodically Refresh Table</string>
@@ -537,57 +591,10 @@
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_6">
           <item>
-           <widget class="QLabel" name="label_8">
+           <widget class="QCheckBox" name="delete_exported_urls">
             <property name="text">
-             <string>&amp;Limit</string>
+             <string>&amp;Delete Exported URL(s)</string>
             </property>
-            <property name="buddy">
-             <cstring>page_limit</cstring>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="page_limit">
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContents</enum>
-            </property>
-            <item>
-             <property name="text">
-              <string>1000</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>2500</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>5000</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>7500</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>10000</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-          <item>
-           <widget class="QComboBox" name="page">
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContents</enum>
-            </property>
-            <item>
-             <property name="text">
-              <string>Page 1</string>
-             </property>
-            </item>
            </widget>
           </item>
           <item>
@@ -660,7 +667,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>723</width>
+     <width>869</width>
      <height>27</height>
     </rect>
    </property>
@@ -731,13 +738,14 @@
   <tabstop>add_search_url</tabstop>
   <tabstop>list_search_urls</tabstop>
   <tabstop>remove_search_urls</tabstop>
+  <tabstop>page_limit</tabstop>
+  <tabstop>page</tabstop>
   <tabstop>periodically_list_parsed_urls</tabstop>
   <tabstop>purge_unvisited_visited_urls</tabstop>
   <tabstop>toggle_all</tabstop>
   <tabstop>toggle_none</tabstop>
   <tabstop>parsed_urls</tabstop>
-  <tabstop>page_limit</tabstop>
-  <tabstop>page</tabstop>
+  <tabstop>delete_exported_urls</tabstop>
   <tabstop>export_toggled</tabstop>
   <tabstop>list_parsed_urls</tabstop>
   <tabstop>remove_all_parsed_urls</tabstop>
