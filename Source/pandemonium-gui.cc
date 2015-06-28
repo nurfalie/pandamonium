@@ -447,8 +447,45 @@ void pandemonium_gui::slotExportCheckBoxClicked(bool state)
 
 void pandemonium_gui::slotExportDefinition(void)
 {
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+
+  QHash<QString, QString> hash(pandemonium_database::exportDefinition());
+
+  m_uiExport.export_database_path->setText(hash.value("database_path"));
+  processExportDatabase(m_uiExport.export_database_path->text());
+
+  for(int i = 0; i < m_uiExport.tables_table->rowCount(); i++)
+    {
+      QTableWidgetItem *item = m_uiExport.tables_table->item(i, 0);
+
+      if(item)
+	if(hash.value("database_table") == item->text())
+	  {
+	    m_uiExport.tables_table->selectRow(i);
+	    break;
+	  }
+    }
+
+  for(int i = 0; i < m_uiExport.fields_table->rowCount(); i++)
+    {
+      QComboBox *comboBox = qobject_cast<QComboBox *>
+	(m_uiExport.fields_table->cellWidget(i, 2));
+      QTableWidgetItem *item = m_uiExport.fields_table->item(i, 0);
+
+      if(!comboBox || !item)
+	continue;
+
+      if(hash.value("field_description") == item->text())
+	comboBox->setCurrentIndex(1);
+      else if(hash.value("field_title") == item->text())
+	comboBox->setCurrentIndex(2);
+      else if(hash.value("field_url") == item->text())
+	comboBox->setCurrentIndex(3);
+    }
+
   center(m_exportMainWindow, this);
   m_exportMainWindow->show();
+  QApplication::restoreOverrideCursor();
 }
 
 void pandemonium_gui::slotExportTableSelected(void)

@@ -21,7 +21,7 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
 INCLUDEPATH +=
 
 FORMS = UI\\pandemonium.ui \
-	UI\\pandemonium_export.ui \
+	UI\\pandemonium_export_definition.ui \
         UI\\pandemonium_statistics.ui
 
 HEADERS = Source\\pandemonium-common.h \
