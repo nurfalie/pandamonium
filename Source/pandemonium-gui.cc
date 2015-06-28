@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QInputDialog>
+#include <QLCDNumber>
 #include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
@@ -646,16 +647,20 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   for(int i = 0; i < statistics.size(); i++)
     {
+      QLCDNumber *number = 0;
       QTableWidgetItem *item = 0;
 
       item = new QTableWidgetItem();
       item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
       item->setText(statistics.at(i));
       m_uiStatistics.statistics->setItem(i, 0, item);
-      item = new QTableWidgetItem();
-      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-      item->setText(locale.toString(values.at(i)));
-      m_uiStatistics.statistics->setItem(i, 1, item);
+      number = new QLCDNumber();
+      number->display(static_cast<int> (values.at(i)));
+      number->setAutoFillBackground(true);
+      number->setSegmentStyle(QLCDNumber::Flat);
+      number->setStyleSheet
+	("QLCDNumber{color:rgb(102, 255, 0); background-color:black;}");
+      m_uiStatistics.statistics->setCellWidget(i, 1, number);
     }
 
   m_uiStatistics.statistics->resizeColumnToContents(0);
