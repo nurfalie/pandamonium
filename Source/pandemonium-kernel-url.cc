@@ -73,7 +73,7 @@ pandemonium_kernel_url::pandemonium_kernel_url
     toDouble();
 
   interval = qBound(0.50, interval, 100.00);
-  m_loadNextTimer.setInterval(1000 * interval);
+  m_loadNextTimer.setInterval(static_cast<int> (1000 * interval));
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
@@ -358,7 +358,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
       interval = qBound(0.50, interval, 100.00);
 
       if(interval != m_loadNextTimer.interval())
-	m_loadNextTimer.start(1000 * interval);
+	m_loadNextTimer.start(static_cast<int> (1000 * interval));
     }
 }
 

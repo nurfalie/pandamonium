@@ -36,7 +36,6 @@
 #include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QtCore/qmath.h>
 #include <QtDebug>
 
 #include "pandemonium-common.h"
@@ -614,10 +613,12 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   QPair<quint64, quint64> numbers
     (pandemonium_database::unvisitedAndVisitedNumbers());
   QStringList statistics;
-  int percent = 100 *
-    static_cast<double> (numbers.first) / (qMax(static_cast<quint64> (1),
-						numbers.first +
-						numbers.second));
+  int percent = static_cast<int>
+    (100 *
+     static_cast<double> (numbers.first) /
+     static_cast<double> (qMax(static_cast<quint64> (1),
+			       numbers.first +
+			       numbers.second)));
 
   statistics << "Parsed URL(s)"
 	     << "Percent Remaining"
@@ -658,9 +659,10 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
       QString toolTip("");
       int percent = 0;
 
-      percent =
-	100 * (static_cast<double> (fileInfo.size()) /
-	       pandemonium_common::maximum_database_size);
+      percent = static_cast<int>
+	(100 * (static_cast<double> (fileInfo.size()) /
+		static_cast<double> (pandemonium_common::
+				     maximum_database_size)));
       toolTip = tr("%1 of %2 bytes consumed.").
 	arg(locale.toString(fileInfo.size())).
 	arg(locale.toString(pandemonium_common::maximum_database_size));
@@ -684,7 +686,7 @@ void pandemonium_gui::slotListParsedUrls(void)
 
   QPair<quint64, quint64> numbers
     (pandemonium_database::unvisitedAndVisitedNumbers());
-  int i = 1;
+  quint64 i = 1;
 
   m_ui.page->clear();
 
@@ -692,10 +694,10 @@ void pandemonium_gui::slotListParsedUrls(void)
     {
       m_ui.page->addItem(tr("Page %1").arg(i));
 
-      if(i > qCeil(numbers.second / static_cast<quint64> (m_ui.
-							  page_limit->
-							  currentText().
-							  toInt())))
+      if(i > numbers.second / static_cast<quint64> (m_ui.
+						    page_limit->
+						    currentText().
+						    toInt()))
 	break;
 
       i += 1;
