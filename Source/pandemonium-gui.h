@@ -53,6 +53,7 @@ class pandemonium_gui: public QMainWindow
   Ui_pandemonium_export m_uiExport;
   Ui_pandemonium_statistics m_uiStatistics;
   uint m_parsedLinksLastDateTime;
+  bool areYouSure(const QString &text);
   void center(QWidget *child, QWidget *parent);
   void closeEvent(QCloseEvent *event);
   void populateParsed(void);

@@ -263,6 +263,27 @@ pandemonium_gui::~pandemonium_gui()
 {
 }
 
+bool pandemonium_gui::areYouSure(const QString &text)
+{
+  QMessageBox mb(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  mb.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  mb.setIcon(QMessageBox::Question);
+  mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
+  mb.setText(text);
+  mb.setWindowModality(Qt::WindowModal);
+  mb.setWindowTitle(tr("pandemonium: Confirmation"));
+
+  if(mb.exec() != QMessageBox::Yes)
+    return false;
+  else
+    return true;
+}
+
 void pandemonium_gui::center(QWidget *child, QWidget *parent)
 {
   if(!child || !parent)
@@ -637,7 +658,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
       QString toolTip("");
       int percent = 0;
 
-      percent = 
+      percent =
 	100 * (static_cast<double> (fileInfo.size()) /
 	       pandemonium_common::maximum_database_size);
       toolTip = tr("%1 of %2 bytes consumed.").
@@ -928,6 +949,10 @@ void pandemonium_gui::slotQuit(void)
 
 void pandemonium_gui::slotRemoveAllParsedUrls(void)
 {
+  if(!areYouSure(tr("Are you sure that you wish to remove all of "
+		    "the parsed URL(s)?")))
+    return;
+
   QFile::remove(pandemonium_common::homePath() + QDir::separator() +
 		"pandemonium_parsed_urls.db");
   slotListParsedUrls();
@@ -935,10 +960,18 @@ void pandemonium_gui::slotRemoveAllParsedUrls(void)
 
 void pandemonium_gui::slotRemoveSelectedParsedUrls(void)
 {
-  QList<QString> list;
   QModelIndexList indexes
     (m_ui.parsed_urls->selectionModel()->
      selectedRows(m_ui.parsed_urls->columnCount() - 1));
+
+  if(indexes.isEmpty())
+    return;
+
+  if(!areYouSure(tr("Are you sure that you wish to remove the selected "
+		    "URL(s)?")))
+    return;
+
+  QList<QString> list;
 
   while(!indexes.isEmpty())
     {
@@ -979,6 +1012,10 @@ void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 
 void pandemonium_gui::slotRemoveUnvisitedVisitedUrls(void)
 {
+  if(!areYouSure(tr("Are you sure that you wish to remove "
+		    "pandemonium_visited_urls.db?")))
+    return;
+
   QFile::remove(pandemonium_common::homePath() + QDir::separator() +
 		"pandemonium_visited_urls.db");
 }
