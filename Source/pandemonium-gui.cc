@@ -94,6 +94,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(toggled(bool)),
 	  this,
 	  SLOT(slotDeleteExportedUrlsCheckBoxClicked(bool)));
+  connect(m_ui.export_toggled,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotExport(void)));
   connect(m_ui.kernel_load_interval,
 	  SIGNAL(valueChanged(const QString &)),
 	  this,
@@ -472,6 +476,10 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
     return;
 
   pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
+}
+
+void pandemonium_gui::slotExport(void)
+{
 }
 
 void pandemonium_gui::slotExportCheckBoxClicked(bool state)

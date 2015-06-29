@@ -66,6 +66,7 @@ class pandemonium_gui: public QMainWindow
   void slotDeactivateKernel(void);
   void slotDeleteExportedUrlsCheckBoxClicked(bool state);
   void slotDepthChanged(const QString &text);
+  void slotExport(void);
   void slotExportCheckBoxClicked(bool state);
   void slotExportDefinition(void);
   void slotExportTableSelected(void);
