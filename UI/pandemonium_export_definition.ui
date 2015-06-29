@@ -195,6 +195,10 @@
         <property name="text">
          <string>Save</string>
         </property>
+        <property name="icon">
+         <iconset resource="../Icons/icons.qrc">
+          <normaloff>:/nuvola/filesave.png</normaloff>:/nuvola/filesave.png</iconset>
+        </property>
        </widget>
       </item>
      </layout>
@@ -235,6 +239,8 @@
   <tabstop>fields_table</tabstop>
   <tabstop>save</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../Icons/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
