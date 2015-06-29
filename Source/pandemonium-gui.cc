@@ -994,8 +994,7 @@ void pandemonium_gui::slotRemoveAllParsedUrls(void)
 void pandemonium_gui::slotRemoveSelectedParsedUrls(void)
 {
   QModelIndexList indexes
-    (m_ui.parsed_urls->selectionModel()->
-     selectedRows(m_ui.parsed_urls->columnCount() - 1));
+    (m_ui.parsed_urls->selectionModel()->selectedRows(1)); // URL
 
   if(indexes.isEmpty())
     return;

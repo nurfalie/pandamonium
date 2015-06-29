@@ -179,7 +179,6 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
 {
   QPair<QSqlDatabase, QString> pair;
   QPair<quint64, quint64> numbers;
-  QUrl new_url;
 
   {
     pair = database();
