@@ -71,6 +71,57 @@ QHash<QString, QString> pandemonium_database::exportDefinition(void)
   return hash;
 }
 
+QList<QList<QVariant> > pandemonium_database::parsedLinks(const quint64 limit,
+							  const quint64 offset)
+{
+  QList<QList<QVariant> > list;
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_parsed_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	/*
+	** Oh no! Not a parameter.
+	*/
+
+	query.setForwardOnly(true);
+	query.prepare
+	  (QString("SELECT title, url FROM pandemonium_parsed_urls "
+		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2 ").
+	   arg(limit).
+	   arg(offset));
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      QUrl url(QUrl::fromEncoded(query.value(1).toByteArray()));
+
+	      if(!url.isEmpty())
+		if(url.isValid())
+		  {
+		    QList<QVariant> values;
+
+		    values << query.value(0).toString() << url;
+		    list << values;
+		  }
+	    }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  return list;
+}
+
 QList<QList<QVariant> > pandemonium_database::searchUrls(void)
 {
   QList<QList<QVariant> > list;
@@ -160,52 +211,6 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
 
   QSqlDatabase::removeDatabase(pair.second);
   return numbers;
-}
-
-QList<QUrl> pandemonium_database::parsedLinks(const quint64 limit,
-					      const quint64 offset)
-{
-  QList<QUrl> list;
-  QPair<QSqlDatabase, QString> pair;
-
-  {
-    pair = database();
-    pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
-
-    if(pair.first.open())
-      {
-	QSqlQuery query(pair.first);
-
-	/*
-	** Oh no! Not a parameter.
-	*/
-
-	query.setForwardOnly(true);
-	query.prepare
-	  (QString("SELECT url FROM pandemonium_parsed_urls "
-		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2 ").
-	   arg(limit).
-	   arg(offset));
-
-	if(query.exec())
-	  while(query.next())
-	    {
-	      QUrl url(QUrl::fromEncoded(query.value(0).toByteArray()));
-
-	      if(!url.isEmpty())
-		if(url.isValid())
-		  list << url;
-	    }
-      }
-
-    pair.first.close();
-    pair.first = QSqlDatabase();
-  }
-
-  QSqlDatabase::removeDatabase(pair.second);
-  return list;
 }
 
 QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)

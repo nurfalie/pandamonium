@@ -180,7 +180,6 @@ void pandemonium_kernel_url::parseContent(void)
       words.takeFirst();
 
   description = qCompress(description.trimmed().toUtf8(), 9);
-  pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
 
   if((s = m_content.indexOf("<title>")) >= 0)
     {
@@ -190,6 +189,7 @@ void pandemonium_kernel_url::parseContent(void)
 	title = m_content.mid(s + 7, e - s - 7).trimmed();
     }
 
+  pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
   s = m_content.indexOf("<a");
 
   while(s >= 0)
@@ -258,7 +258,10 @@ void pandemonium_kernel_url::slotAbortTimeout(void)
       QNetworkReply *reply = findChild<QNetworkReply *> ();
 
       if(reply)
-	reply->deleteLater();
+	{
+	  qDebug() << "Aborting " << reply->url() << "!";
+	  reply->deleteLater();
+	}
     }
 }
 

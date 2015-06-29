@@ -334,7 +334,7 @@ void pandemonium_gui::populateParsed(void)
   m_ui.parsed_urls->scrollToTop();
   m_ui.parsed_urls->setRowCount(0);
 
-  QList<QUrl> list;
+  QList<QList<QVariant> > list;
   int row = 0;
   quint64 limit = static_cast<quint64> (m_ui.page_limit->currentText().
 					toInt());
@@ -346,9 +346,10 @@ void pandemonium_gui::populateParsed(void)
   while(!list.isEmpty())
     {
       QCheckBox *checkBox = new QCheckBox();
-      QTableWidgetItem *item = new QTableWidgetItem
-	(list.takeFirst().toString());
+      QList<QVariant> values(list.takeFirst());
+      QTableWidgetItem *item = 0;
 
+      item = new QTableWidgetItem(values.value(1).toUrl().toString());
       checkBox->setToolTip
 	(tr("If pressed, the periodic populating of the "
 	    "table will be disabled."));
@@ -359,6 +360,9 @@ void pandemonium_gui::populateParsed(void)
       item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
       m_ui.parsed_urls->setCellWidget(row, 0, checkBox);
       m_ui.parsed_urls->setItem(row, 1, item);
+      item = new QTableWidgetItem(values.value(0).toString());
+      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+      m_ui.parsed_urls->setItem(row, 2, item);
       row += 1;
     }
 
