@@ -192,9 +192,9 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT COUNT(*), 'u' FROM pandemonium_visited_urls "
-		      "WHERE visited = 0 UNION "
-		      "SELECT COUNT(*), 'v' FROM pandemonium_visited_urls "
+	if(query.exec("SELECT COUNT(*) FROM pandemonium_visited_urls "
+		      "WHERE visited = 0 UNION ALL "
+		      "SELECT COUNT(*) FROM pandemonium_visited_urls "
 		      "WHERE visited = 1 ORDER BY 2"))
 	  {
 	    query.next();
