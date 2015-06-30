@@ -218,12 +218,12 @@ void pandemonium_kernel_url::parseContent(void)
 	  s = a.indexOf("\"", s);
 	  e = a.indexOf("\"", s + 1);
 	  href = a.mid(s + 1, e - s - 1);
-	  url = QUrl(href);
+	  url = QUrl::fromEncoded(href);
 
 	  if(href.startsWith("/"))
 	    {
 	      url = m_url;
-	      url = url.resolved(QUrl(href));
+	      url = url.resolved(QUrl::fromEncoded(href));
 	    }
 	  else if(href.startsWith("//"))
 	    url.setScheme(m_url.scheme());
