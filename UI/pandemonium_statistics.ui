@@ -59,19 +59,6 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QLabel" name="label_9">
-          <property name="text">
-           <string>Parsed Contents Database Capacity</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QProgressBar" name="parsed_urls_capacity">
           <property name="minimumSize">
            <size>
@@ -93,14 +80,10 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="label_10">
+         <widget class="QLabel" name="label_9">
           <property name="text">
-           <string>Visited Contents Database Capacity</string>
+           <string>Parsed Contents Database Capacity</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -110,6 +93,10 @@
           </property>
          </widget>
         </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QProgressBar" name="visited_urls_capacity">
           <property name="minimumSize">
@@ -126,6 +113,19 @@
           </property>
           <property name="orientation">
            <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_10">
+          <property name="text">
+           <string>Visited Contents Database Capacity</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
