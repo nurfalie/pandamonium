@@ -45,19 +45,22 @@
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="database_limits">
-      <property name="text">
-       <string>Limits</string>
-      </property>
-      <property name="wordWrap">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Parsed Contents Database Capacity</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
           <item>
@@ -110,10 +113,14 @@
           </item>
          </layout>
         </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
-         <widget class="QLabel" name="label_9">
+         <widget class="QLabel" name="label_10">
           <property name="text">
-           <string>Parsed Contents Database Capacity</string>
+           <string>Visited Contents Database Capacity</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -123,10 +130,6 @@
           </property>
          </widget>
         </item>
-       </layout>
-      </item>
-      <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
@@ -176,22 +179,19 @@
           </item>
          </layout>
         </item>
-        <item>
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>Visited Contents Database Capacity</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-          <property name="wordWrap">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
        </layout>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="database_limits">
+      <property name="text">
+       <string>Limits</string>
+      </property>
+      <property name="wordWrap">
+       <bool>true</bool>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
