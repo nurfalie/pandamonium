@@ -51,6 +51,7 @@ class pandemonium_database
   static qint64 parsedLinksCount(void);
   static void addSearchUrl(const QString &str);
   static void createdb(void);
+  static void exportUrl(const QString &str, const bool shouldDelete);
   static void markUrlAsVisited(const QUrl &url, const bool visited);
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);

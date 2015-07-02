@@ -557,7 +557,7 @@ void pandemonium_database::createdb(void)
 	    else if(fileName == "pandemonium_parsed_urls.db")
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandemonium_parsed_urls("
-		 "description TEXT NOT NULL, "
+		 "description TEXT NOT NULL, " // Not a BLOB?
 		 "time_inserted INTEGER NOT NULL, "
 		 "title TEXT NOT NULL, "
 		 "url TEXT NOT NULL PRIMARY KEY)");
@@ -582,6 +582,107 @@ void pandemonium_database::createdb(void)
 
       QSqlDatabase::removeDatabase(pair.second);
     }
+}
+
+void pandemonium_database::exportUrl
+(const QString &str, const bool shouldDelete)
+{
+  /*
+  ** First, let's retrieve the export definition.
+  */
+
+  QHash<QString, QString> hash(exportDefinition());
+
+  if(hash.isEmpty())
+    return;
+
+  /*
+  ** Now, let's retrieve the URL's data.
+  */
+
+  QPair<QSqlDatabase, QString> pair;
+  QStringList values;
+  bool ok = false;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_parsed_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.setForwardOnly(true);
+	query.prepare("SELECT description, title FROM "
+		      "pandemonium_parsed_urls WHERE url = ?");
+	query.bindValue(0, QUrl(str).toEncoded());
+
+	if(query.exec())
+	  if(query.next())
+	    {
+	      ok = true;
+	      values << query.value(0).toString().trimmed()
+		     << query.value(1).toString().trimmed()
+		     << str;
+	    }
+
+	if(!ok)
+	  qDebug() << str << QUrl(str).toEncoded() << query.lastError();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+
+  if(!ok)
+    return;
+  else
+    ok = false;
+
+  /*
+  ** Now, let's write the URL to the export database.
+  */
+
+  {
+    pair = database();
+    pair.first.setDatabaseName(hash.value("database_path"));
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare(QString("INSERT OR REPLACE INTO %1("
+			      "%2, %3, %4) VALUES(?, ?, ?)").
+		      arg(hash.value("database_table")).
+		      arg(hash.value("field_description")).
+		      arg(hash.value("field_title")).
+		      arg(hash.value("field_url")));
+	query.bindValue(0, values.value(0).toUtf8());
+	query.bindValue(1, values.value(1).toUtf8());
+	query.bindValue(2, QUrl::fromEncoded(str.toUtf8()).toEncoded());
+	ok = query.exec();
+
+	if(!ok)
+	  qDebug() << query.lastError();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+
+  /*
+  ** Finally, remove the URL.
+  */
+
+  if(ok)
+    if(shouldDelete)
+      removeParsedUrls(QStringList() << str);
 }
 
 void pandemonium_database::markUrlAsVisited
@@ -828,14 +929,14 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
 	if(description.trimmed().isEmpty())
 	  query.bindValue(0, url.toEncoded());
 	else
-	  query.bindValue(0, description.trimmed());
+	  query.bindValue(0, description.trimmed().toUtf8());
 
 	query.bindValue(1, QDateTime::currentDateTime().toTime_t());
 
 	if(title.trimmed().isEmpty())
 	  query.bindValue(2, url.toEncoded());
 	else
-	  query.bindValue(2, title.trimmed());
+	  query.bindValue(2, title.trimmed().toUtf8());
 
 	query.bindValue(3, url.toEncoded());
 	query.exec();

@@ -135,8 +135,8 @@ void pandemonium_kernel_url::parseContent(void)
 
 	  bytes.replace(" ", "");
 
-	  if(bytes.contains("name=\"description\"") ||
-	     bytes.contains("name=\"keywords\""))
+	  if(bytes.toLower().contains("name=\"description\"") ||
+	     bytes.toLower().contains("name=\"keywords\""))
 	    {
 	      int s = meta.indexOf("content");
 
@@ -178,8 +178,6 @@ void pandemonium_kernel_url::parseContent(void)
       }
     else
       words.takeFirst();
-
-  description = qCompress(description.trimmed().toUtf8(), 9);
 
   if((s = m_content.indexOf("<title>")) >= 0)
     {

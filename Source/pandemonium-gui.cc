@@ -33,6 +33,7 @@
 #include <QLCDNumber>
 #include <QMessageBox>
 #include <QProcess>
+#include <QProgressDialog>
 #include <QSettings>
 #include <QSqlField>
 #include <QSqlQuery>
@@ -484,6 +485,52 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
 
 void pandemonium_gui::slotExport(void)
 {
+  if(!areYouSure(tr("Have you prepared an export definition?")))
+    return;
+
+  m_ui.periodically_list_parsed_urls->setChecked(false);
+
+  QProgressDialog dialog(this);
+
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+  dialog.setAttribute(Qt::WA_MacMetalStyle, true);
+#endif
+#endif
+  dialog.setLabelText(tr("Exporting URLs..."));
+  dialog.setMaximum(m_ui.parsed_urls->rowCount());
+  dialog.setMinimum(0);
+  dialog.setWindowModality(Qt::ApplicationModal);
+  dialog.setWindowTitle(tr("Exporting URLs..."));
+  dialog.show();
+  dialog.update();
+
+  for(int i = 0; i < m_ui.parsed_urls->rowCount(); i++)
+    {
+      if(dialog.wasCanceled())
+	break;
+
+      dialog.setValue(i);
+#ifndef Q_OS_MAC
+      QApplication::processEvents();
+#endif
+
+      QCheckBox *checkBox = qobject_cast<QCheckBox *>
+	(m_ui.parsed_urls->cellWidget(i, 0));
+      QTableWidgetItem *item = m_ui.parsed_urls->item(i, 1);
+
+      if(!checkBox || !item)
+	continue;
+
+      if(!checkBox->isChecked())
+	continue;
+
+      pandemonium_database::exportUrl
+	(item->text(), m_ui.delete_exported_urls->isChecked());
+    }
+
+  if(m_ui.delete_exported_urls->isChecked())
+    slotListParsedUrls();
 }
 
 void pandemonium_gui::slotExportCheckBoxClicked(bool state)
