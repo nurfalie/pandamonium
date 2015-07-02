@@ -26,6 +26,7 @@ SOURCES = Source/pandemonium-database.cc \
 OBJECTIVE_HEADERS += Source/CocoaInitializer.h
 OBJECTIVE_SOURCES += Source/CocoaInitializer.mm
 
+ICON = Icons/pandemonium.icns
 RESOURCES = Icons/icons.qrc
 PROJECTNAME = pandemonium
 TARGET = pandemonium
