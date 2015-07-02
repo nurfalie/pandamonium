@@ -26,6 +26,11 @@
 */
 
 #include <QApplication>
+#ifdef Q_OS_MAC
+#if QT_VERSION < 0x050000
+#include <QMacStyle>
+#endif
+#endif
 #include <QSettings>
 
 #include <iostream>
