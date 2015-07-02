@@ -46,7 +46,7 @@
              <item row="0" column="0">
               <widget class="QLabel" name="label_5">
                <property name="text">
-                <string>&amp;Kernel</string>
+                <string>&amp;Kernel Executable Path</string>
                </property>
                <property name="buddy">
                 <cstring>kernel_path</cstring>
@@ -128,9 +128,19 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
+              <widget class="QCheckBox" name="monitor_kernel">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Silently monitor the kernel. If the kernel is not active, activate it. Please note that deactivating the kernel will disable this option.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>&amp;Monitor Kernel</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QLabel" name="label_7">
                <property name="text">
-                <string>&amp;Load Interval</string>
+                <string>&amp;Request Interval</string>
                </property>
                <property name="buddy">
                 <cstring>kernel_load_interval</cstring>
@@ -144,16 +154,6 @@
                </property>
                <property name="maximum">
                 <double>100.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="monitor_kernel">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Silently monitor the kernel. If the kernel is not active, activate it. Please note that deactivating the kernel will disable this option.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>&amp;Monitor Kernel</string>
                </property>
               </widget>
              </item>
@@ -557,10 +557,10 @@
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>150</number>
+           <number>200</number>
           </attribute>
           <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>150</number>
+           <number>200</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
@@ -742,8 +742,8 @@
   <tabstop>kernel_pid</tabstop>
   <tabstop>activate_kernel</tabstop>
   <tabstop>deactivate_kernel</tabstop>
-  <tabstop>kernel_load_interval</tabstop>
   <tabstop>monitor_kernel</tabstop>
+  <tabstop>kernel_load_interval</tabstop>
   <tabstop>proxy_information</tabstop>
   <tabstop>proxy_type</tabstop>
   <tabstop>proxy_address</tabstop>
