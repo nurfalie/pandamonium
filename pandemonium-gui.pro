@@ -18,7 +18,7 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
                           -fPIE -fstack-protector-all -fwrapv -pie
 }
 
-INCLUDEPATH += .
+INCLUDEPATH +=
 
 FORMS = UI\\pandemonium.ui \
 	UI\\pandemonium_export_definition.ui \

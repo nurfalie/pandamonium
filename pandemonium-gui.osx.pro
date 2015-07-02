@@ -9,7 +9,7 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
                           -Wstack-protector -Wstrict-overflow=5 \
                           -fPIE -fstack-protector-all -fwrapv
 
-INCLUDEPATH += .                          
+INCLUDEPATH +=
 LIBS += -framework AppKit -framework Cocoa
 
 FORMS = UI/pandemonium.ui \
