@@ -504,6 +504,9 @@ void pandemonium_gui::slotExport(void)
   dialog.setWindowTitle(tr("Exporting URLs..."));
   dialog.show();
   dialog.update();
+#ifndef Q_OS_MAC
+  QApplication::processEvents();
+#endif
 
   for(int i = 0; i < m_ui.parsed_urls->rowCount(); i++)
     {
