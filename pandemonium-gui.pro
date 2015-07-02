@@ -18,7 +18,7 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
                           -fPIE -fstack-protector-all -fwrapv -pie
 }
 
-INCLUDEPATH +=
+INCLUDEPATH += .
 
 FORMS = UI\\pandemonium.ui \
 	UI\\pandemonium_export_definition.ui \
@@ -34,19 +34,3 @@ SOURCES = Source\\pandemonium-database.cc \
 RESOURCES = Icons/icons.qrc
 PROJECTNAME = pandemonium
 TARGET = pandemonium
-
-macx {
-pandemonium.path        = /Applications/pandemonium.d/pandemonium.app
-pandemonium.files       = pandemonium.app/*
-macdeployqt.path	= pandemonium.app
-macdeployqt.extra	= $$[QT_INSTALL_BINS]/macdeployqt ./pandemonium.app -verbose=0 2>/dev/null; echo;
-preinstall.path         = /Applications/pandemonium.d
-preinstall.extra        = rm -rf /Applications/pandemonium.d/pandemonium.app/*
-postinstall.path	= /Applications/pandemonium.d
-postinstall.extra	= cp -r pandemonium.app /Applications/pandemonium.d/.
-
-INSTALLS	= preinstall \
-		  macdeployqt \
-		  pandemonium \
-		  postinstall
-}

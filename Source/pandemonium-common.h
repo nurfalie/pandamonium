@@ -37,6 +37,12 @@ extern "C"
 #include <QNetworkProxy>
 #include <QSettings>
 
+#ifdef Q_OS_MAC
+#if QT_VERSION >= 0x050000
+#include "CocoaInitializer.h"
+#endif
+#endif
+
 #define PANDEMONIUM_VERSION_STR "2015.07.04"
 
 class pandemonium_common
