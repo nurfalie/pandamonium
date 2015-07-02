@@ -497,11 +497,11 @@ void pandemonium_gui::slotExport(void)
   dialog.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-  dialog.setLabelText(tr("Exporting URLs..."));
+  dialog.setLabelText(tr("Exporting URL(s)..."));
   dialog.setMaximum(m_ui.parsed_urls->rowCount());
   dialog.setMinimum(0);
   dialog.setWindowModality(Qt::ApplicationModal);
-  dialog.setWindowTitle(tr("Exporting URLs..."));
+  dialog.setWindowTitle(tr("Exporting URL(s)..."));
   dialog.show();
   dialog.update();
 #ifndef Q_OS_MAC
