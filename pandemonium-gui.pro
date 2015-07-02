@@ -31,6 +31,11 @@ SOURCES = Source\\pandemonium-database.cc \
 	  Source\\pandemonium-gui.cc \
           Source\\pandemonium-gui-main.cc
 
+win32 {
+RC_FILE = pandemonium.rc
+}
+
 RESOURCES = Icons/icons.qrc
+
 PROJECTNAME = pandemonium
 TARGET = pandemonium
