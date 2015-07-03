@@ -25,6 +25,11 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+extern "C"
+{
+#include <math.h>
+}
+
 #include <QComboBox>
 #include <QDateTime>
 #include <QFileDialog>
@@ -39,6 +44,8 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QtDebug>
+
+#include <limits>
 
 #include "pandemonium-common.h"
 #include "pandemonium-database.h"
@@ -696,12 +703,27 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
      static_cast<double> (qMax(static_cast<quint64> (1),
 			       numbers.first +
 			       numbers.second)));
+  quint64 ldpm = 0;
+  uint t_now = QDateTime::currentDateTime().toTime_t() / 60;
 
-  statistics << "Parsed URL(s)"
+  /*
+  ** Static variables.
+  */
+
+  static quint64 links_before = 0;
+  static uint t_before = 0;
+
+  ldpm = qAbs(numbers.first + numbers.second - links_before) /
+    qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
+  links_before = numbers.first + numbers.second;
+  t_before = t_now;
+  statistics << "Links Discovered Per Minute"
+	     << "Parsed URL(s)"
 	     << "Percent Remaining"
 	     << "Remaining URL(s)"
 	     << "Total URL(s) Discovered";
-  values << pandemonium_database::parsedLinksCount()
+  values << ldpm
+	 << pandemonium_database::parsedLinksCount()
 	 << static_cast<qint64> (percent)
 	 << numbers.first
 	 << numbers.first + numbers.second;
@@ -717,6 +739,8 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
       item->setText(statistics.at(i));
       m_uiStatistics.statistics->setItem(i, 0, item);
       number = new QLCDNumber();
+      number->setDigitCount
+	(static_cast<int> (log10(std::numeric_limits<int>::max())));
       number->display(static_cast<int> (values.at(i)));
       number->setAutoFillBackground(true);
       number->setSegmentStyle(QLCDNumber::Flat);
