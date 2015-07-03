@@ -74,6 +74,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTableListTimeout(void)));
+  connect(m_ui.action_About,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotAbout(void)));
   connect(m_ui.action_Export_Definition,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -428,6 +432,27 @@ void pandemonium_gui::saveKernelPath(const QString &path)
 
   settings.setValue("pandemonium_kernel_path", path);
   m_ui.kernel_path->selectAll();
+}
+
+void pandemonium_gui::slotAbout(void)
+{
+  QMessageBox mb(this);
+
+  mb.setIconPixmap(QPixmap(":/nuvola/www.png"));
+  mb.setStandardButtons(QMessageBox::Ok);
+  mb.setText
+    (QString("<html>Version %1.<br>"
+	     "Qt %2.<br>"
+	     "Please visit <a href='https://github.com/textbrowser/"
+	     "pandemonium/blob/master/Documentation/RELEASE-NOTES.html'>"
+	     "https://github.com/textbrowser/"
+	     "pandemonium/blob/master/Documentation/RELEASE-NOTES.html</a> "
+	     "for release information.</html>").
+     arg(PANDEMONIUM_VERSION_STR).
+     arg(QT_VERSION_STR));
+  mb.setTextFormat(Qt::RichText);
+  mb.setWindowTitle(tr("pandemonium: About"));
+  mb.exec();
 }
 
 void pandemonium_gui::slotActivateKernel(void)
