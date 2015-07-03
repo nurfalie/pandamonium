@@ -739,8 +739,13 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   static quint64 links_before = 0;
   static uint t_before = 0;
 
-  ldpm = qAbs(numbers.first + numbers.second - links_before) /
-    qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
+  if(numbers.first + numbers.second > links_before)
+    ldpm = (numbers.first + numbers.second - links_before) /
+      qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
+  else
+    ldpm = (links_before - (numbers.first + numbers.second)) /
+      qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
+
   links_before = numbers.first + numbers.second;
   t_before = t_now;
   statistics << "Links Discovered Per Minute"
