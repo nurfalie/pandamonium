@@ -374,6 +374,7 @@ void pandemonium_gui::populateParsed(void)
       row += 1;
     }
 
+  m_ui.parsed_urls->resizeColumnToContents(0);
   QApplication::restoreOverrideCursor();
 }
 

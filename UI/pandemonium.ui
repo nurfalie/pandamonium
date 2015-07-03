@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>869</width>
-    <height>600</height>
+    <width>885</width>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -561,10 +561,10 @@
            <enum>QAbstractItemView::ScrollPerPixel</enum>
           </property>
           <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>200</number>
+           <number>150</number>
           </attribute>
           <attribute name="horizontalHeaderMinimumSectionSize">
-           <number>200</number>
+           <number>150</number>
           </attribute>
           <attribute name="horizontalHeaderStretchLastSection">
            <bool>true</bool>
@@ -689,8 +689,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>869</width>
-     <height>27</height>
+     <width>885</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
