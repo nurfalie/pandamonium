@@ -1,4 +1,4 @@
-Please use Qt 5.x and newer. Qt 4.8.7 is supported, however, QUrl::toEncoded()
+Please use Qt 5.x or newer. Qt 4.8.x is supported, however, QUrl::toEncoded()
 may not properly escape quotes!
 
 Non-OS X
