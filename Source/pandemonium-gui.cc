@@ -1303,13 +1303,13 @@ void pandemonium_gui::slotTabIndexChanged(int index)
 {
   if(index == 0)
     {
-      m_ui.kernel_box_grid_layout->addWidget
-	(m_ui.activate_kernel, 1, 2);
-      m_ui.kernel_box_grid_layout->addWidget
-	(m_ui.deactivate_kernel, 1, 3);
+      m_ui.kernel_box_grid_layout->addWidget(m_ui.kernel_pid, 1, 1);
+      m_ui.kernel_box_grid_layout->addWidget(m_ui.activate_kernel, 1, 2);
+      m_ui.kernel_box_grid_layout->addWidget(m_ui.deactivate_kernel, 1, 3);
     }
   else
     {
+      statusBar()->addWidget(m_ui.kernel_pid);
       statusBar()->addWidget(m_ui.activate_kernel);
       statusBar()->addWidget(m_ui.deactivate_kernel);
     }
