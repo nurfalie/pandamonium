@@ -25,11 +25,6 @@
 ** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extern "C"
-{
-#include <math.h>
-}
-
 #include <QComboBox>
 #include <QDateTime>
 #include <QFileDialog>
@@ -43,6 +38,7 @@ extern "C"
 #include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#include <QtCore/qmath.h>
 #include <QtDebug>
 
 #include <limits>
@@ -733,31 +729,28 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
      static_cast<double> (qMax(static_cast<quint64> (1),
 			       numbers.first +
 			       numbers.second)));
-  quint64 ldpm = 0;
-  uint t_now = QDateTime::currentDateTime().toTime_t() / 60;
+  qreal ldpm = 0.00;
+  uint t_now = QDateTime::currentDateTime().toTime_t();
 
   /*
   ** Static variables.
   */
 
-  static quint64 links_before = 0;
-  static uint t_before = 0;
+  static uint t_started = t_now;
 
-  if(numbers.first + numbers.second > links_before)
-    ldpm = (numbers.first + numbers.second - links_before) /
-      qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
-  else
-    ldpm = (links_before - (numbers.first + numbers.second)) /
-      qMax(static_cast<quint64> (1), static_cast<quint64> (t_now - t_before));
+  if(t_now > t_started)
+    ldpm = (numbers.first + numbers.second) /
+      qMax(static_cast<quint64> (1),
+	   static_cast<quint64> ((t_now - t_started) / 60));
 
-  links_before = numbers.first + numbers.second;
-  t_before = t_now;
-  statistics << "Links Discovered Per Minute"
+  statistics << "Interface Uptime (Minutes)"
+	     << "Links Discovered Per Minute"
 	     << "Parsed URL(s)"
 	     << "Percent Remaining"
 	     << "Remaining URL(s)"
 	     << "Total URL(s) Discovered";
-  values << ldpm
+  values << (t_now - t_started) / 60
+	 << ldpm
 	 << pandemonium_database::parsedLinksCount()
 	 << static_cast<qint64> (percent)
 	 << numbers.first
