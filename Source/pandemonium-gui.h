@@ -94,6 +94,7 @@ class pandemonium_gui: public QMainWindow
   void slotSelectExportDatabase(void);
   void slotSelectKernelPath(void);
   void slotShowStatisticsWindow(void);
+  void slotTabIndexChanged(int index);
   void slotTableListTimeout(void);
   void slotToggleParsed(void);
 };

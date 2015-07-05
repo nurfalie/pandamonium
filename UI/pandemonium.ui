@@ -46,7 +46,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <item>
-            <layout class="QGridLayout" name="gridLayout_2">
+            <layout class="QGridLayout" name="kernel_box_grid_layout">
              <item row="0" column="0">
               <widget class="QLabel" name="label_5">
                <property name="text">
@@ -80,6 +80,9 @@
              </item>
              <item row="1" column="2">
               <widget class="QPushButton" name="activate_kernel">
+               <property name="toolTip">
+                <string>Activate pandemonium's kernel.</string>
+               </property>
                <property name="text">
                 <string>Activate</string>
                </property>
@@ -92,7 +95,7 @@
              <item row="1" column="3">
               <widget class="QPushButton" name="deactivate_kernel">
                <property name="toolTip">
-                <string>If pressed, kernel monitoring will be disabled.</string>
+                <string>Deactivate pandemonium's kernel. If pressed, kernel monitoring will be disabled.</string>
                </property>
                <property name="text">
                 <string>Deactivate</string>

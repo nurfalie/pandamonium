@@ -43,7 +43,7 @@ extern "C"
 #endif
 #endif
 
-#define PANDEMONIUM_VERSION_STR "2015.07.04"
+#define PANDEMONIUM_VERSION_STR "2015.07.05"
 
 class pandemonium_common
 {

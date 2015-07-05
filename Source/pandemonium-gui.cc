@@ -174,6 +174,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotSelectKernelPath(void)));
+  connect(m_ui.tab_widget,
+	  SIGNAL(currentChanged(int)),
+	  this,
+	  SLOT(slotTabIndexChanged(int)));
   connect(m_ui.toggle_all,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -1293,6 +1297,22 @@ void pandemonium_gui::slotShowStatisticsWindow(void)
 {
   center(m_statisticsMainWindow, this);
   m_statisticsMainWindow->show();
+}
+
+void pandemonium_gui::slotTabIndexChanged(int index)
+{
+  if(index == 0)
+    {
+      m_ui.kernel_box_grid_layout->addWidget
+	(m_ui.activate_kernel, 1, 2);
+      m_ui.kernel_box_grid_layout->addWidget
+	(m_ui.deactivate_kernel, 1, 3);
+    }
+  else
+    {
+      statusBar()->addWidget(m_ui.activate_kernel);
+      statusBar()->addWidget(m_ui.deactivate_kernel);
+    }
 }
 
 void pandemonium_gui::slotTableListTimeout(void)
