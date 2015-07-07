@@ -56,6 +56,13 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   m_statisticsMainWindow->setWindowFlags
     (windowFlags() | Qt::WindowStaysOnTopHint);
   m_ui.setupUi(this);
+  m_sbWidget = new QWidget(this);
+  m_sb.setupUi(m_sbWidget);
+  statusBar()->addPermanentWidget(m_sbWidget, 100);
+  statusBar()->setStyleSheet("QStatusBar::item {"
+			     "border: none; "
+			     "}");
+  statusBar()->setMaximumHeight(m_sbWidget->height());
   m_uiExport.setupUi(m_exportMainWindow);
   m_uiStatistics.setupUi(m_statisticsMainWindow);
   connect(&m_highlightTimer,
@@ -70,6 +77,10 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(timeout(void)),
 	  this,
 	  SLOT(slotTableListTimeout(void)));
+  connect(m_sb.kernel,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotKernelToolButtonClicked(void)));
   connect(m_ui.action_About,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -699,6 +710,33 @@ void pandemonium_gui::slotHighlightTimeout(void)
 
   palette.setColor(m_ui.kernel_pid->backgroundRole(), color);
   m_ui.kernel_pid->setPalette(palette);
+
+  /*
+  ** The status bar!
+  */
+
+  QIcon icon(":/nuvola/online.png");
+  QPixmap pixmap;
+
+  if(m_ui.kernel_pid->text().toLongLong() > 0)
+    {
+      m_sb.kernel->setToolTip
+	(tr("The pandemonium kernel is online. "
+	    "Its process identifier is %1. Please press "
+	    "this tool button to deactivate the kernel.").
+	 arg(m_ui.kernel_pid->text()));
+      pixmap = icon.pixmap(QSize(16, 16), QIcon::Normal, QIcon::On);
+    }
+  else
+    {
+      m_sb.kernel->setToolTip
+	(tr("The pandemonium kernel is offline. "
+	    "Please press this tool button to activate the "
+	    "kernel."));
+      pixmap = icon.pixmap(QSize(16, 16), QIcon::Disabled, QIcon::Off);
+    }
+
+  m_sb.kernel->setIcon(pixmap);
 }
 
 void pandemonium_gui::slotKernelDatabaseTimeout(void)
@@ -811,6 +849,14 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	  m_uiStatistics.visited_urls_capacity->setValue(percent);
 	}
     }
+}
+
+void pandemonium_gui::slotKernelToolButtonClicked(void)
+{
+  if(m_ui.kernel_pid->text().toLongLong() > 0)
+    slotDeactivateKernel();
+  else
+    slotActivateKernel();
 }
 
 void pandemonium_gui::slotListParsedUrls(void)
@@ -1294,18 +1340,7 @@ void pandemonium_gui::slotShowStatisticsWindow(void)
 
 void pandemonium_gui::slotTabIndexChanged(int index)
 {
-  if(index == 0)
-    {
-      m_ui.kernel_box_grid_layout->addWidget(m_ui.kernel_pid, 1, 1);
-      m_ui.kernel_box_grid_layout->addWidget(m_ui.activate_kernel, 1, 2);
-      m_ui.kernel_box_grid_layout->addWidget(m_ui.deactivate_kernel, 1, 3);
-    }
-  else
-    {
-      statusBar()->addWidget(m_ui.kernel_pid);
-      statusBar()->addWidget(m_ui.activate_kernel);
-      statusBar()->addWidget(m_ui.deactivate_kernel);
-    }
+  Q_UNUSED(index);
 }
 
 void pandemonium_gui::slotTableListTimeout(void)

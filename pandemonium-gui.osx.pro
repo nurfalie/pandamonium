@@ -14,7 +14,8 @@ LIBS += -framework AppKit -framework Cocoa
 
 FORMS = UI/pandemonium.ui \
 	UI/pandemonium_export_definition.ui \
-        UI/pandemonium_statistics.ui        
+        UI/pandemonium_statistics.ui \
+	UI/pandemonium_statusbar.ui
 
 HEADERS = Source/pandemonium-common.h \
 	  Source/pandemonium-database.h \

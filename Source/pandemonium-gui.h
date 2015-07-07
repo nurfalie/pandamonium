@@ -34,6 +34,7 @@
 #include "ui_pandemonium.h"
 #include "ui_pandemonium_export_definition.h"
 #include "ui_pandemonium_statistics.h"
+#include "ui_pandemonium_statusbar.h"
 
 class pandemonium_gui: public QMainWindow
 {
@@ -49,9 +50,11 @@ class pandemonium_gui: public QMainWindow
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
+  QWidget *m_sbWidget;
   Ui_pandemonium_mainwindow m_ui;
   Ui_pandemonium_export m_uiExport;
   Ui_pandemonium_statistics m_uiStatistics;
+  Ui_pandemonium_statusbar m_sb;
   uint m_parsedLinksLastDateTime;
   bool areYouSure(const QString &text);
   void center(QWidget *child, QWidget *parent);
@@ -73,6 +76,7 @@ class pandemonium_gui: public QMainWindow
   void slotExportTableSelected(void);
   void slotHighlightTimeout(void);
   void slotKernelDatabaseTimeout(void);
+  void slotKernelToolButtonClicked(void);
   void slotListParsedUrls(void);
   void slotListSearchUrls(void);
   void slotLoadIntervalChanged(const QString &text);
