@@ -722,8 +722,8 @@ void pandemonium_gui::slotHighlightTimeout(void)
     {
       m_sb.kernel->setToolTip
 	(tr("The pandemonium kernel is online. "
-	    "Its process identifier is %1. Please press "
-	    "this tool button to deactivate the kernel.").
+	    "Its process identifier is %1. You may deactivate the "
+	    "kernel by pressing this tool button.").
 	 arg(m_ui.kernel_pid->text()));
       pixmap = icon.pixmap(QSize(16, 16), QIcon::Normal, QIcon::On);
     }
@@ -731,8 +731,7 @@ void pandemonium_gui::slotHighlightTimeout(void)
     {
       m_sb.kernel->setToolTip
 	(tr("The pandemonium kernel is offline. "
-	    "Please press this tool button to activate the "
-	    "kernel."));
+	    "You may activate the kernel by pressing this tool button."));
       pixmap = icon.pixmap(QSize(16, 16), QIcon::Disabled, QIcon::Off);
     }
 
