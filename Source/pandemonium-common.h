@@ -43,7 +43,7 @@ extern "C"
 #endif
 #endif
 
-#define PANDEMONIUM_VERSION_STR "2015.07.08"
+#define PANDEMONIUM_VERSION_STR "2015.07.22"
 
 class pandemonium_common
 {
@@ -83,7 +83,7 @@ class pandemonium_common
       return QDir::homePath() + QDir::separator() + ".pandemonium";
 #endif
     else
-      return homepath.constData();
+      return homepath.mid(0, pandemonium_home_maximum_length).constData();
   }
 
   static void prepareSignalHandler(void (*signal_handler) (int))
@@ -118,6 +118,7 @@ class pandemonium_common
       }
   }
 
+  static const int pandemonium_home_maximum_length = 256;
   static const qint64 maximum_database_size = static_cast<qint64>
     (2147483648LL);
 
