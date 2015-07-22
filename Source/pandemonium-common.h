@@ -82,8 +82,20 @@ class pandemonium_common
 #else
       return QDir::homePath() + QDir::separator() + ".pandemonium";
 #endif
-    else
-      return homepath.mid(0, pandemonium_home_maximum_length).constData();
+      else
+	{
+	  QFileInfo fileInfo
+	    (homepath.mid(0, pandemonium_home_maximum_length));
+
+	  if(!fileInfo.isReadable() || !fileInfo.isWritable())
+	    {
+	      qDebug() << "Assigning " << QDir::tempPath()
+		       << " as pandemonium's home!";
+	      return QDir::tempPath();
+	    }
+	  else
+	    return fileInfo.absoluteFilePath();
+	}
   }
 
   static void prepareSignalHandler(void (*signal_handler) (int))
