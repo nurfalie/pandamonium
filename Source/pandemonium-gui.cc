@@ -776,7 +776,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	   static_cast<quint64> ((t_now - t_started) / 60));
 
   statistics << "Interface Uptime (Minutes)"
-	     << "Links Discovered Per Minute"
+	     << "Pages Discovered Per Minute (PPM)"
 	     << "Parsed URL(s)"
 	     << "Percent Remaining"
 	     << "Remaining URL(s)"
