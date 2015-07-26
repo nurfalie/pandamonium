@@ -117,10 +117,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotExport(void)));
-  connect(m_ui.kernel_load_interval,
-	  SIGNAL(valueChanged(const QString &)),
-	  this,
-	  SLOT(slotLoadIntervalChanged(const QString &)));
   connect(m_ui.kernel_path,
 	  SIGNAL(returnPressed(void)),
 	  this,
@@ -225,6 +221,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   QSettings settings;
 
   restoreGeometry(settings.value("pandemonium_mainwindow").toByteArray());
+  settings.remove("pandemonium_kernel_load_interval");
   show();
   statusBar()->showMessage(tr("Creating databases..."));
   statusBar()->repaint();
@@ -256,8 +253,6 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   ** Restore kernel settings.
   */
 
-  m_ui.kernel_load_interval->setValue
-    (settings.value("pandemonium_kernel_load_interval").toDouble());
   m_ui.kernel_path->setText
     (settings.value("pandemonium_kernel_path").toString());
   m_ui.monitor_kernel->setChecked
@@ -524,7 +519,7 @@ void pandemonium_gui::slotDepthChanged(const QString &text)
   if(!comboBox)
     return;
 
-  pandemonium_database::saveDepth(text, comboBox->property("url_hash"));
+  pandemonium_database::saveSearchDepth(text, comboBox->property("url_hash"));
 }
 
 void pandemonium_gui::slotExport(void)
@@ -916,7 +911,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT meta_data_only, paused, "
+	if(query.exec("SELECT meta_data_only, paused, request_interval, "
 		      "search_depth, url, url_hash "
 		      "FROM pandemonium_search_urls "
 		      "ORDER BY url"))
@@ -957,6 +952,20 @@ void pandemonium_gui::slotListSearchUrls(void)
 		      m_ui.search_urls->setCellWidget(row, i, checkBox);
 		    }
 		  else if(i == 2)
+		    {
+		      QDoubleSpinBox *spinBox = new QDoubleSpinBox();
+
+		      spinBox->setMinimum(0.100);
+		      spinBox->setValue(query.value(i).toDouble());
+		      spinBox->setProperty
+			("url_hash", query.value(query.record().count() - 1));
+		      connect(spinBox,
+			      SIGNAL(valueChanged(const QString &)),
+			      this,
+			      SLOT(slotLoadIntervalChanged(const QString &)));
+		      m_ui.search_urls->setCellWidget(row, i, spinBox);
+		    }
+		  else if(i == 3)
 		    {
 		      QComboBox *comboBox = new QComboBox();
 		      int index = 0;
@@ -1003,6 +1012,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 	m_ui.search_urls->resizeColumnToContents(0);
 	m_ui.search_urls->resizeColumnToContents(1);
+	m_ui.search_urls->resizeColumnToContents(2);
       }
 
     pair.first.close();
@@ -1015,9 +1025,13 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 void pandemonium_gui::slotLoadIntervalChanged(const QString &text)
 {
-  QSettings settings;
+  QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox *> (sender());
 
-  settings.setValue("pandemonium_kernel_load_interval", text);
+  if(!spinBox)
+    return;
+
+  pandemonium_database::saveRequestInterval
+    (text, spinBox->property("url_hash"));
 }
 
 void pandemonium_gui::slotMetaDataOnly(bool state)

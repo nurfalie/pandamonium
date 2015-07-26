@@ -57,7 +57,10 @@ class pandemonium_database
   static void recordKernelProcessId(const qint64 process_id);
   static void removeParsedUrls(const QList<QString> &list);
   static void removeSearchUrls(const QList<QString> &list);
-  static void saveDepth(const QString &depth, const QVariant &url_hash);
+  static void saveRequestInterval(const QString &request_interval,
+				  const QVariant &url_hash);
+  static void saveSearchDepth(const QString &search_depth,
+			      const QVariant &url_hash);
   static void saveUrlMetaData(const QString &description,
 			      const QString &title,
 			      const QUrl &url);

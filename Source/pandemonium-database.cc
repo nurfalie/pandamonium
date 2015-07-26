@@ -566,6 +566,7 @@ void pandemonium_database::createdb(void)
 		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
 		 "meta_data_only INTEGER NOT NULL DEFAULT 1, "
 		 "paused INTEGER NOT NULL DEFAULT 0, "
+		 "request_interval REAL NOT NULL DEFAULT 0.50, "
 		 "search_depth INTEGER NOT NULL DEFAULT -1, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");
@@ -871,8 +872,38 @@ void pandemonium_database::removeSearchUrls(const QList<QString> &list)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::saveDepth(const QString &depth,
-				     const QVariant &url_hash)
+void pandemonium_database::saveRequestInterval(const QString &request_interval,
+					       const QVariant &url_hash)
+{
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandemonium_common::homePath() + QDir::separator() +
+       "pandemonium_search_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.prepare("UPDATE pandemonium_search_urls "
+		      "SET request_interval = ? "
+		      "WHERE url_hash = ?");
+	query.bindValue(0, request_interval.toDouble());
+	query.bindValue(1, url_hash.toString());
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
+void pandemonium_database::saveSearchDepth(const QString &search_depth,
+					   const QVariant &url_hash)
 {
   QPair<QSqlDatabase, QString> pair;
 
@@ -889,7 +920,7 @@ void pandemonium_database::saveDepth(const QString &depth,
 	query.prepare("UPDATE pandemonium_search_urls "
 		      "SET search_depth = ? "
 		      "WHERE url_hash = ?");
-	query.bindValue(0, depth.toInt());
+	query.bindValue(0, search_depth.toInt());
 	query.bindValue(1, url_hash.toString());
 	query.exec();
       }
