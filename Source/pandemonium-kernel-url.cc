@@ -40,13 +40,15 @@ static bool sortStringListByLength(const QString &a, const QString &b)
 }
 
 pandemonium_kernel_url::pandemonium_kernel_url
-(const QUrl &url, const bool paused, const int depth, QObject *parent):
+(const QUrl &url, const bool paused, const double request_interval,
+ const int search_depth, QObject *parent):
   QObject(parent)
 {
   m_abortTimer.setInterval(10000);
-  m_depth = depth;
   m_isLoaded = false;
   m_paused = paused;
+  m_requestInterval = qBound(0.100, request_interval, 100.00);
+  m_searchDepth = search_depth;
   m_url = m_urlToLoad = url;
   connect(&m_abortTimer,
 	  SIGNAL(timeout(void)),
@@ -68,12 +70,7 @@ pandemonium_kernel_url::pandemonium_kernel_url
       connectReplySignals(reply);
     }
 
-  QSettings settings;
-  double interval = settings.value("pandemonium_kernel_load_interval").
-    toDouble();
-
-  interval = qBound(0.50, interval, 100.00);
-  m_loadNextTimer.setInterval(static_cast<int> (1000 * interval));
+  m_loadNextTimer.setInterval(static_cast<int> (1000 * m_requestInterval));
 }
 
 pandemonium_kernel_url::~pandemonium_kernel_url()
@@ -247,6 +244,15 @@ void pandemonium_kernel_url::setPaused(const bool paused)
     }
 }
 
+void pandemonium_kernel_url::setRequestInterval(const double request_interval)
+{
+  m_requestInterval = qBound(0.100, request_interval, 100.00);
+
+  if(m_loadNextTimer.interval() !=
+     static_cast<int> (1000 * m_requestInterval))
+    m_loadNextTimer.start(static_cast<int> (1000 * m_requestInterval));
+}
+
 void pandemonium_kernel_url::slotAbortTimeout(void)
 {
   if(!m_isLoaded)
@@ -349,18 +355,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
     }
 
   if(!redirect)
-    {
-      parseContent();
-
-      QSettings settings;
-      double interval = settings.value("pandemonium_kernel_load_interval").
-	toDouble();
-
-      interval = qBound(0.50, interval, 100.00);
-
-      if(interval != m_loadNextTimer.interval())
-	m_loadNextTimer.start(static_cast<int> (1000 * interval));
-    }
+    parseContent();
 }
 
 void pandemonium_kernel_url::slotSslErrors(const QList<QSslError> &errors)

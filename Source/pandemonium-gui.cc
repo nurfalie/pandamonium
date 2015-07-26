@@ -207,7 +207,7 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 	  SLOT(close(void)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
-  m_tableListTimer.setInterval(10000);
+  m_tableListTimer.setInterval(5000);
   m_ui.search_urls->setColumnHidden
     (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
@@ -955,6 +955,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 		    {
 		      QDoubleSpinBox *spinBox = new QDoubleSpinBox();
 
+		      spinBox->setMaximum(100.00);
 		      spinBox->setMinimum(0.100);
 		      spinBox->setValue(query.value(i).toDouble());
 		      spinBox->setProperty

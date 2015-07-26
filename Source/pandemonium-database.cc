@@ -139,15 +139,16 @@ QList<QList<QVariant> > pandemonium_database::searchUrls(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT paused, search_depth, url "
+	if(query.exec("SELECT paused, request_interval, search_depth, url "
 		      "FROM pandemonium_search_urls"))
 	  while(query.next())
 	    {
 	      QList<QVariant> values;
 
 	      values << query.value(0).toInt();
-	      values << query.value(1).toInt();
-	      values << QUrl::fromEncoded(query.value(2).toByteArray());
+	      values << query.value(1).toDouble();
+	      values << query.value(2).toInt();
+	      values << QUrl::fromEncoded(query.value(3).toByteArray());
 	      list << values;
 	    }
       }

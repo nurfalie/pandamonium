@@ -43,10 +43,12 @@ class pandemonium_kernel_url: public QObject
  public:
   pandemonium_kernel_url(const QUrl &url,
 			 const bool paused,
-			 const int depth,
+			 const double request_interval,
+			 const int search_depth,
 			 QObject *parent);
   ~pandemonium_kernel_url();
   void setPaused(const bool paused);
+  void setRequestInterval(const double request_interval);
 
  private:
   QByteArray m_content;
@@ -56,7 +58,8 @@ class pandemonium_kernel_url: public QObject
   QUrl m_urlToLoad;
   bool m_isLoaded;
   bool m_paused;
-  int m_depth;
+  double m_requestInterval;
+  int m_searchDepth;
   void connectReplySignals(QNetworkReply *reply);
   void parseContent(void);
 
