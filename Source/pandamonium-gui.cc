@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,7 +22,7 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <QComboBox>
@@ -43,13 +43,13 @@
 
 #include <limits>
 
-#include "pandemonium-common.h"
-#include "pandemonium-database.h"
-#include "pandemonium-gui.h"
+#include "pandamonium-common.h"
+#include "pandamonium-database.h"
+#include "pandamonium-gui.h"
 
-pandemonium_gui::pandemonium_gui(void):QMainWindow()
+pandamonium_gui::pandamonium_gui(void):QMainWindow()
 {
-  QDir().mkdir(pandemonium_common::homePath());
+  QDir().mkdir(pandamonium_common::homePath());
   m_parsedLinksLastDateTime = 0;
   m_exportMainWindow = new QMainWindow(this);
   m_statisticsMainWindow = new QMainWindow(this);
@@ -215,18 +215,18 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
 
   m_uiStatistics.database_limits->setText
     (tr("A limit of %1 bytes is imposed on "
-	"pandemonium_parsed_urls.db and pandemonium_visited_urls.db.").
-     arg(locale.toString(pandemonium_common::maximum_database_size)));
+	"pandamonium_parsed_urls.db and pandamonium_visited_urls.db.").
+     arg(locale.toString(pandamonium_common::maximum_database_size)));
 
   QSettings settings;
 
-  restoreGeometry(settings.value("pandemonium_mainwindow").toByteArray());
-  settings.remove("pandemonium_kernel_load_interval");
+  restoreGeometry(settings.value("pandamonium_mainwindow").toByteArray());
+  settings.remove("pandamonium_kernel_load_interval");
   show();
   statusBar()->showMessage(tr("Creating databases..."));
   statusBar()->repaint();
   QApplication::setOverrideCursor(Qt::BusyCursor);
-  pandemonium_database::createdb();
+  pandamonium_database::createdb();
   QApplication::restoreOverrideCursor();
   statusBar()->clearMessage();
 
@@ -235,49 +235,49 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   */
 
   m_ui.delete_exported_urls->setChecked
-    (settings.value("pandemonium_delete_exported_urls").toBool());
+    (settings.value("pandamonium_delete_exported_urls").toBool());
 
   int index = m_ui.page_limit->findText
-    (settings.value("pandemonium_page_limit", "1000").toString());
+    (settings.value("pandamonium_page_limit", "1000").toString());
 
   if(index >= 0)
     m_ui.page_limit->setCurrentIndex(index);
 
   m_ui.periodically_list_parsed_urls->setChecked
-    (settings.value("pandemonium_periodically_list_parsed_urls").
+    (settings.value("pandamonium_periodically_list_parsed_urls").
      toBool());
   m_ui.periodically_list_search_urls->setChecked
-    (settings.value("pandemonium_periodically_list_search_urls").toBool());
+    (settings.value("pandamonium_periodically_list_search_urls").toBool());
 
   /*
   ** Restore kernel settings.
   */
 
   m_ui.kernel_path->setText
-    (settings.value("pandemonium_kernel_path").toString());
+    (settings.value("pandamonium_kernel_path").toString());
   m_ui.monitor_kernel->setChecked
-    (settings.value("pandemonium_monitor_kernel").toBool());
+    (settings.value("pandamonium_monitor_kernel").toBool());
 
   /*
   ** Restore proxy settings.
   */
 
-  m_ui.proxy_address->setText(settings.value("pandemonium_proxy_address").
+  m_ui.proxy_address->setText(settings.value("pandamonium_proxy_address").
 			      toString().trimmed());
-  m_ui.proxy_password->setText(settings.value("pandemonium_proxy_password").
+  m_ui.proxy_password->setText(settings.value("pandamonium_proxy_password").
 			       toString());
-  m_ui.proxy_port->setValue(settings.value("pandemonium_proxy_port").toInt());
-  index = settings.value("pandemonium_proxy_type").toInt();
+  m_ui.proxy_port->setValue(settings.value("pandamonium_proxy_port").toInt());
+  index = settings.value("pandamonium_proxy_type").toInt();
 
   if(index < 0 || index > 1)
     index = 0;
 
   m_ui.proxy_type->setCurrentIndex(index);
   m_ui.proxy_user->setText
-    (settings.value("pandemonium_proxy_user").toString());
+    (settings.value("pandamonium_proxy_user").toString());
 
   foreach(QString key, settings.allKeys())
-    if(key.startsWith("pandemonium_proxy"))
+    if(key.startsWith("pandamonium_proxy"))
       {
 	m_ui.proxy_information->setChecked(true);
 	break;
@@ -288,11 +288,11 @@ pandemonium_gui::pandemonium_gui(void):QMainWindow()
   QApplication::restoreOverrideCursor();
 }
 
-pandemonium_gui::~pandemonium_gui()
+pandamonium_gui::~pandamonium_gui()
 {
 }
 
-bool pandemonium_gui::areYouSure(const QString &text)
+bool pandamonium_gui::areYouSure(const QString &text)
 {
   QMessageBox mb(this);
 
@@ -305,7 +305,7 @@ bool pandemonium_gui::areYouSure(const QString &text)
   mb.setStandardButtons(QMessageBox::No | QMessageBox::Yes);
   mb.setText(text);
   mb.setWindowModality(Qt::WindowModal);
-  mb.setWindowTitle(tr("pandemonium: Confirmation"));
+  mb.setWindowTitle(tr("pandamonium: Confirmation"));
 
   if(mb.exec() != QMessageBox::Yes)
     return false;
@@ -313,7 +313,7 @@ bool pandemonium_gui::areYouSure(const QString &text)
     return true;
 }
 
-void pandemonium_gui::center(QWidget *child, QWidget *parent)
+void pandamonium_gui::center(QWidget *child, QWidget *parent)
 {
   if(!child || !parent)
     return;
@@ -337,15 +337,15 @@ void pandemonium_gui::center(QWidget *child, QWidget *parent)
   child->move(X, Y);
 }
 
-void pandemonium_gui::closeEvent(QCloseEvent *event)
+void pandamonium_gui::closeEvent(QCloseEvent *event)
 {
   QSettings settings;
 
-  settings.setValue("pandemonium_mainwindow", saveGeometry());
+  settings.setValue("pandamonium_mainwindow", saveGeometry());
   QMainWindow::closeEvent(event);
 }
 
-void pandemonium_gui::populateParsed(void)
+void pandamonium_gui::populateParsed(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
   m_ui.parsed_urls->clearContents();
@@ -357,7 +357,7 @@ void pandemonium_gui::populateParsed(void)
   quint64 limit = static_cast<quint64> (m_ui.page_limit->currentText().
 					toInt());
 
-  list = pandemonium_database::parsedLinks
+  list = pandamonium_database::parsedLinks
     (limit, static_cast<quint64> (limit * m_ui.page->currentIndex()));
   m_ui.parsed_urls->setRowCount(list.size());
 
@@ -388,12 +388,12 @@ void pandemonium_gui::populateParsed(void)
   QApplication::restoreOverrideCursor();
 }
 
-void pandemonium_gui::processExportDatabase(const QString &path)
+void pandamonium_gui::processExportDatabase(const QString &path)
 {
   QPair<QSqlDatabase, QString> pair;
 
   {
-    pair = pandemonium_database::database();
+    pair = pandamonium_database::database();
     pair.first.setDatabaseName(path);
 
     if(pair.first.open())
@@ -432,15 +432,15 @@ void pandemonium_gui::processExportDatabase(const QString &path)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_gui::saveKernelPath(const QString &path)
+void pandamonium_gui::saveKernelPath(const QString &path)
 {
   QSettings settings;
 
-  settings.setValue("pandemonium_kernel_path", path);
+  settings.setValue("pandamonium_kernel_path", path);
   m_ui.kernel_path->selectAll();
 }
 
-void pandemonium_gui::slotAbout(void)
+void pandamonium_gui::slotAbout(void)
 {
   QMessageBox mb(this);
 
@@ -450,18 +450,18 @@ void pandemonium_gui::slotAbout(void)
     (QString("<html>Version %1.<br>"
 	     "Qt %2.<br>"
 	     "Please visit <a href='https://github.com/textbrowser/"
-	     "pandemonium/blob/master/Documentation/RELEASE-NOTES.html'>"
+	     "pandamonium/blob/master/Documentation/RELEASE-NOTES.html'>"
 	     "https://github.com/textbrowser/"
-	     "pandemonium/blob/master/Documentation/RELEASE-NOTES.html</a> "
+	     "pandamonium/blob/master/Documentation/RELEASE-NOTES.html</a> "
 	     "for release information.</html>").
-     arg(PANDEMONIUM_VERSION_STR).
+     arg(pandamonium_VERSION_STR).
      arg(QT_VERSION_STR));
   mb.setTextFormat(Qt::RichText);
-  mb.setWindowTitle(tr("pandemonium: About"));
+  mb.setWindowTitle(tr("pandamonium: About"));
   mb.exec();
 }
 
-void pandemonium_gui::slotActivateKernel(void)
+void pandamonium_gui::slotActivateKernel(void)
 {
   QString program(m_ui.kernel_path->text());
 
@@ -483,46 +483,46 @@ void pandemonium_gui::slotActivateKernel(void)
 #endif
 }
 
-void pandemonium_gui::slotAddSearchUrl(void)
+void pandamonium_gui::slotAddSearchUrl(void)
 {
   QString str("");
   bool ok = true;
 
   str = QInputDialog::getText
-    (this, tr("pandemonium: URL"), tr("&URL"),
+    (this, tr("pandamonium: URL"), tr("&URL"),
      QLineEdit::Normal, QString(""), &ok);
 
   if(!ok)
     return;
 
-  pandemonium_database::addSearchUrl(str);
+  pandamonium_database::addSearchUrl(str);
   slotListSearchUrls();
 }
 
-void pandemonium_gui::slotDeactivateKernel(void)
+void pandamonium_gui::slotDeactivateKernel(void)
 {
   m_ui.monitor_kernel->setChecked(false);
-  pandemonium_database::recordKernelDeactivation();
+  pandamonium_database::recordKernelDeactivation();
 }
 
-void pandemonium_gui::slotDeleteExportedUrlsCheckBoxClicked(bool state)
+void pandamonium_gui::slotDeleteExportedUrlsCheckBoxClicked(bool state)
 {
   QSettings settings;
 
-  settings.setValue("pandemonium_delete_exported_urls", state);
+  settings.setValue("pandamonium_delete_exported_urls", state);
 }
 
-void pandemonium_gui::slotDepthChanged(const QString &text)
+void pandamonium_gui::slotDepthChanged(const QString &text)
 {
   QComboBox *comboBox = qobject_cast<QComboBox *> (sender());
 
   if(!comboBox)
     return;
 
-  pandemonium_database::saveSearchDepth(text, comboBox->property("url_hash"));
+  pandamonium_database::saveSearchDepth(text, comboBox->property("url_hash"));
 }
 
-void pandemonium_gui::slotExport(void)
+void pandamonium_gui::slotExport(void)
 {
   if(!areYouSure(tr("Have you prepared an export definition?")))
     return;
@@ -567,7 +567,7 @@ void pandemonium_gui::slotExport(void)
       if(!checkBox->isChecked())
 	continue;
 
-      pandemonium_database::exportUrl
+      pandamonium_database::exportUrl
 	(item->text(), m_ui.delete_exported_urls->isChecked());
     }
 
@@ -575,17 +575,17 @@ void pandemonium_gui::slotExport(void)
     slotListParsedUrls();
 }
 
-void pandemonium_gui::slotExportCheckBoxClicked(bool state)
+void pandamonium_gui::slotExportCheckBoxClicked(bool state)
 {
   if(state)
     m_ui.periodically_list_parsed_urls->setChecked(false);
 }
 
-void pandemonium_gui::slotExportDefinition(void)
+void pandamonium_gui::slotExportDefinition(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
-  QHash<QString, QString> hash(pandemonium_database::exportDefinition());
+  QHash<QString, QString> hash(pandamonium_database::exportDefinition());
 
   m_uiExport.export_database_path->setText(hash.value("database_path"));
   processExportDatabase(m_uiExport.export_database_path->text());
@@ -624,7 +624,7 @@ void pandemonium_gui::slotExportDefinition(void)
   QApplication::restoreOverrideCursor();
 }
 
-void pandemonium_gui::slotExportTableSelected(void)
+void pandamonium_gui::slotExportTableSelected(void)
 {
   int row = m_uiExport.tables_table->currentRow();
 
@@ -639,7 +639,7 @@ void pandemonium_gui::slotExportTableSelected(void)
   QPair<QSqlDatabase, QString> pair;
 
   {
-    pair = pandemonium_database::database();
+    pair = pandamonium_database::database();
     pair.first.setDatabaseName(m_uiExport.export_database_path->text());
 
     if(pair.first.open())
@@ -682,7 +682,7 @@ void pandemonium_gui::slotExportTableSelected(void)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_gui::slotHighlightTimeout(void)
+void pandamonium_gui::slotHighlightTimeout(void)
 {
   QColor color;
   QFileInfo fileInfo;
@@ -716,7 +716,7 @@ void pandemonium_gui::slotHighlightTimeout(void)
   if(m_ui.kernel_pid->text().toLongLong() > 0)
     {
       m_sb.kernel->setToolTip
-	(tr("The pandemonium kernel is online. "
+	(tr("The pandamonium kernel is online. "
 	    "Its process identifier is %1. You may deactivate the "
 	    "kernel by pressing this tool button.").
 	 arg(m_ui.kernel_pid->text()));
@@ -725,7 +725,7 @@ void pandemonium_gui::slotHighlightTimeout(void)
   else
     {
       m_sb.kernel->setToolTip
-	(tr("The pandemonium kernel is offline. "
+	(tr("The pandamonium kernel is offline. "
 	    "You may activate the kernel by pressing this tool button."));
       pixmap = icon.pixmap(QSize(16, 16), QIcon::Disabled, QIcon::Off);
     }
@@ -733,15 +733,15 @@ void pandemonium_gui::slotHighlightTimeout(void)
   m_sb.kernel->setIcon(pixmap);
 }
 
-void pandemonium_gui::slotKernelDatabaseTimeout(void)
+void pandamonium_gui::slotKernelDatabaseTimeout(void)
 {
-  pandemonium_database::createdb();
+  pandamonium_database::createdb();
 
   if(m_ui.monitor_kernel->isChecked())
     slotActivateKernel();
 
   m_ui.kernel_pid->setText
-    (QString::number(pandemonium_database::kernelProcessId()));
+    (QString::number(pandamonium_database::kernelProcessId()));
 
   /*
   ** Not for statistics.
@@ -753,7 +753,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
   QList<qint64> values;
   QLocale locale;
   QPair<quint64, quint64> numbers
-    (pandemonium_database::unvisitedAndVisitedNumbers());
+    (pandamonium_database::unvisitedAndVisitedNumbers());
   QStringList statistics;
   int percent = static_cast<int>
     (100 *
@@ -797,7 +797,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	     << "Total URL(s) Discovered";
   values << (t_now - t_started) / 60
 	 << p
-	 << pandemonium_database::parsedLinksCount()
+	 << pandamonium_database::parsedLinksCount()
 	 << static_cast<qint64> (percent)
 	 << numbers.first
 	 << numbers.first + numbers.second;
@@ -827,10 +827,10 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   QStringList list;
 
-  list << (pandemonium_common::homePath() + QDir::separator() +
-	   "pandemonium_parsed_urls.db")
-       << (pandemonium_common::homePath() + QDir::separator() +
-	   "pandemonium_visited_urls.db");
+  list << (pandamonium_common::homePath() + QDir::separator() +
+	   "pandamonium_parsed_urls.db")
+       << (pandamonium_common::homePath() + QDir::separator() +
+	   "pandamonium_visited_urls.db");
 
   for(int i = 0; i < list.size(); i++)
     {
@@ -840,11 +840,11 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
       percent = static_cast<int>
 	(100 * (static_cast<double> (fileInfo.size()) /
-		static_cast<double> (pandemonium_common::
+		static_cast<double> (pandamonium_common::
 				     maximum_database_size)));
       toolTip = tr("%1 of %2 bytes consumed.").
 	arg(locale.toString(fileInfo.size())).
-	arg(locale.toString(pandemonium_common::maximum_database_size));
+	arg(locale.toString(pandamonium_common::maximum_database_size));
 
       if(i == 0)
 	{
@@ -859,7 +859,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
     }
 }
 
-void pandemonium_gui::slotKernelToolButtonClicked(void)
+void pandamonium_gui::slotKernelToolButtonClicked(void)
 {
   if(m_ui.kernel_pid->text().toLongLong() > 0)
     slotDeactivateKernel();
@@ -867,12 +867,12 @@ void pandemonium_gui::slotKernelToolButtonClicked(void)
     slotActivateKernel();
 }
 
-void pandemonium_gui::slotListParsedUrls(void)
+void pandamonium_gui::slotListParsedUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
   QPair<quint64, quint64> numbers
-    (pandemonium_database::unvisitedAndVisitedNumbers());
+    (pandamonium_database::unvisitedAndVisitedNumbers());
   quint64 i = 1;
 
   m_ui.page->clear();
@@ -895,7 +895,7 @@ void pandemonium_gui::slotListParsedUrls(void)
   populateParsed();
 }
 
-void pandemonium_gui::slotListSearchUrls(void)
+void pandamonium_gui::slotListSearchUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
@@ -913,10 +913,10 @@ void pandemonium_gui::slotListSearchUrls(void)
   QPair<QSqlDatabase, QString> pair;
 
   {
-    pair = pandemonium_database::database();
+    pair = pandamonium_database::database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
@@ -927,7 +927,7 @@ void pandemonium_gui::slotListSearchUrls(void)
 
 	if(query.exec("SELECT meta_data_only, paused, request_interval, "
 		      "search_depth, url, url_hash "
-		      "FROM pandemonium_search_urls "
+		      "FROM pandamonium_search_urls "
 		      "ORDER BY url"))
 	  while(query.next())
 	    {
@@ -1038,18 +1038,18 @@ void pandemonium_gui::slotListSearchUrls(void)
   QApplication::restoreOverrideCursor();
 }
 
-void pandemonium_gui::slotLoadIntervalChanged(const QString &text)
+void pandamonium_gui::slotLoadIntervalChanged(const QString &text)
 {
   QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox *> (sender());
 
   if(!spinBox)
     return;
 
-  pandemonium_database::saveRequestInterval
+  pandamonium_database::saveRequestInterval
     (text, spinBox->property("url_hash"));
 }
 
-void pandemonium_gui::slotMetaDataOnly(bool state)
+void pandamonium_gui::slotMetaDataOnly(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -1059,16 +1059,16 @@ void pandemonium_gui::slotMetaDataOnly(bool state)
   QPair<QSqlDatabase, QString> pair;
 
   {
-    pair = pandemonium_database::database();
+    pair = pandamonium_database::database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("UPDATE pandemonium_search_urls "
+	query.prepare("UPDATE pandamonium_search_urls "
 		      "SET meta_data_only = ? "
 		      "WHERE url_hash = ?");
 	query.bindValue(0, state ? 1 : 0);
@@ -1083,21 +1083,21 @@ void pandemonium_gui::slotMetaDataOnly(bool state)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_gui::slotMonitorKernel(bool state)
+void pandamonium_gui::slotMonitorKernel(bool state)
 {
   QSettings settings;
 
-  settings.setValue("pandemonium_monitor_kernel", state);
+  settings.setValue("pandamonium_monitor_kernel", state);
 }
 
-void pandemonium_gui::slotPageChanged(int index)
+void pandamonium_gui::slotPageChanged(int index)
 {
   Q_UNUSED(index);
   m_ui.page->repaint();
   populateParsed();
 }
 
-void pandemonium_gui::slotPause(bool state)
+void pandamonium_gui::slotPause(bool state)
 {
   QCheckBox *checkBox = qobject_cast<QCheckBox *> (sender());
 
@@ -1107,16 +1107,16 @@ void pandemonium_gui::slotPause(bool state)
   QPair<QSqlDatabase, QString> pair;
 
   {
-    pair = pandemonium_database::database();
+    pair = pandamonium_database::database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("UPDATE pandemonium_search_urls "
+	query.prepare("UPDATE pandamonium_search_urls "
 		      "SET paused = ? "
 		      "WHERE url_hash = ?");
 	query.bindValue(0, state ? 1 : 0);
@@ -1131,7 +1131,7 @@ void pandemonium_gui::slotPause(bool state)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_gui::slotProxyInformationToggled(bool state)
+void pandamonium_gui::slotProxyInformationToggled(bool state)
 {
   if(!state)
     {
@@ -1143,31 +1143,31 @@ void pandemonium_gui::slotProxyInformationToggled(bool state)
 
       QSettings settings;
 
-      settings.remove("pandemonium_proxy_address");
-      settings.remove("pandemonium_proxy_password");
-      settings.remove("pandemonium_proxy_port");
-      settings.remove("pandemonium_proxy_type");
-      settings.remove("pandemonium_proxy_user");
+      settings.remove("pandamonium_proxy_address");
+      settings.remove("pandamonium_proxy_password");
+      settings.remove("pandamonium_proxy_port");
+      settings.remove("pandamonium_proxy_type");
+      settings.remove("pandamonium_proxy_user");
     }
 }
 
-void pandemonium_gui::slotQuit(void)
+void pandamonium_gui::slotQuit(void)
 {
   QApplication::instance()->quit();
 }
 
-void pandemonium_gui::slotRemoveAllParsedUrls(void)
+void pandamonium_gui::slotRemoveAllParsedUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove all of "
 		    "the parsed URL(s)?")))
     return;
 
-  QFile::remove(pandemonium_common::homePath() + QDir::separator() +
-		"pandemonium_parsed_urls.db");
+  QFile::remove(pandamonium_common::homePath() + QDir::separator() +
+		"pandamonium_parsed_urls.db");
   slotListParsedUrls();
 }
 
-void pandemonium_gui::slotRemoveSelectedParsedUrls(void)
+void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
 {
   QModelIndexList indexes
     (m_ui.parsed_urls->selectionModel()->selectedRows(1)); // URL
@@ -1191,12 +1191,12 @@ void pandemonium_gui::slotRemoveSelectedParsedUrls(void)
 
   if(!list.isEmpty())
     {
-      pandemonium_database::removeParsedUrls(list);
+      pandamonium_database::removeParsedUrls(list);
       slotListParsedUrls();
     }
 }
 
-void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
+void pandamonium_gui::slotRemoveSelectedSearchUrls(void)
 {
   QList<QString> list;
   QModelIndexList indexes
@@ -1213,22 +1213,22 @@ void pandemonium_gui::slotRemoveSelectedSearchUrls(void)
 
   if(!list.isEmpty())
     {
-      pandemonium_database::removeSearchUrls(list);
+      pandamonium_database::removeSearchUrls(list);
       slotListSearchUrls();
     }
 }
 
-void pandemonium_gui::slotRemoveUnvisitedVisitedUrls(void)
+void pandamonium_gui::slotRemoveUnvisitedVisitedUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove "
-		    "pandemonium_visited_urls.db?")))
+		    "pandamonium_visited_urls.db?")))
     return;
 
-  QFile::remove(pandemonium_common::homePath() + QDir::separator() +
-		"pandemonium_visited_urls.db");
+  QFile::remove(pandamonium_common::homePath() + QDir::separator() +
+		"pandamonium_visited_urls.db");
 }
 
-void pandemonium_gui::slotSaveExportDefinition(void)
+void pandamonium_gui::slotSaveExportDefinition(void)
 {
   QHash<QString, QString> hash;
   QTableWidgetItem *item = 0;
@@ -1253,27 +1253,27 @@ void pandemonium_gui::slotSaveExportDefinition(void)
       hash[comboBox->currentText()] = item->text();
     }
 
-  if(!pandemonium_database::saveExportDefinition(hash))
+  if(!pandamonium_database::saveExportDefinition(hash))
     QMessageBox::critical
-      (this, tr("pandemonium: Error"),
+      (this, tr("pandamonium: Error"),
        tr("An error occurred while attempting to save the "
 	  "export definition. Please verify that you have unique values "
 	  "for all of the database fields."));
 }
 
-void pandemonium_gui::slotSaveKernelPath(void)
+void pandamonium_gui::slotSaveKernelPath(void)
 {
   saveKernelPath(m_ui.kernel_path->text());
 }
 
-void pandemonium_gui::slotSavePageLimit(const QString &text)
+void pandamonium_gui::slotSavePageLimit(const QString &text)
 {
   QSettings settings;
 
-  settings.setValue("pandemonium_page_limit", text);
+  settings.setValue("pandamonium_page_limit", text);
 }
 
-void pandemonium_gui::slotSavePeriodic(bool state)
+void pandamonium_gui::slotSavePeriodic(bool state)
 {
   QSettings settings;
   QString str("");
@@ -1291,35 +1291,35 @@ void pandemonium_gui::slotSavePeriodic(bool state)
       else
 	m_tableListTimer.stop();
 
-      str = "pandemonium_periodically_list_parsed_urls";
+      str = "pandamonium_periodically_list_parsed_urls";
     }
   else
-    str = "pandemonium_periodically_list_search_urls";
+    str = "pandamonium_periodically_list_search_urls";
 
   settings.setValue(str, state);
 }
 
-void pandemonium_gui::slotSaveProxyInformation(void)
+void pandamonium_gui::slotSaveProxyInformation(void)
 {
   QSettings settings;
 
   settings.setValue
-    ("pandemonium_proxy_address", m_ui.proxy_address->text().trimmed());
+    ("pandamonium_proxy_address", m_ui.proxy_address->text().trimmed());
   settings.setValue
-    ("pandemonium_proxy_password", m_ui.proxy_password->text());
+    ("pandamonium_proxy_password", m_ui.proxy_password->text());
   settings.setValue
-    ("pandemonium_proxy_port", m_ui.proxy_port->value());
+    ("pandamonium_proxy_port", m_ui.proxy_port->value());
   settings.setValue
-    ("pandemonium_proxy_type", m_ui.proxy_type->currentIndex());
+    ("pandamonium_proxy_type", m_ui.proxy_type->currentIndex());
   settings.setValue
-    ("pandemonium_proxy_user", m_ui.proxy_user->text());
+    ("pandamonium_proxy_user", m_ui.proxy_user->text());
 }
 
-void pandemonium_gui::slotSelectExportDatabase(void)
+void pandamonium_gui::slotSelectExportDatabase(void)
 {
   QFileDialog dialog(m_exportMainWindow);
 
-  dialog.setWindowTitle(tr("pandemonium: Select Export Database"));
+  dialog.setWindowTitle(tr("pandamonium: Select Export Database"));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -1338,11 +1338,11 @@ void pandemonium_gui::slotSelectExportDatabase(void)
     }
 }
 
-void pandemonium_gui::slotSelectKernelPath(void)
+void pandamonium_gui::slotSelectKernelPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setWindowTitle(tr("pandemonium: Select Kernel Path"));
+  dialog.setWindowTitle(tr("pandamonium: Select Kernel Path"));
   dialog.setFileMode(QFileDialog::ExistingFile);
   dialog.setDirectory(QDir::homePath());
   dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
@@ -1360,22 +1360,22 @@ void pandemonium_gui::slotSelectKernelPath(void)
     }
 }
 
-void pandemonium_gui::slotShowStatisticsWindow(void)
+void pandamonium_gui::slotShowStatisticsWindow(void)
 {
   center(m_statisticsMainWindow, this);
   m_statisticsMainWindow->show();
 }
 
-void pandemonium_gui::slotTabIndexChanged(int index)
+void pandamonium_gui::slotTabIndexChanged(int index)
 {
   Q_UNUSED(index);
 }
 
-void pandemonium_gui::slotTableListTimeout(void)
+void pandamonium_gui::slotTableListTimeout(void)
 {
   QFileInfo fileInfo
-    (pandemonium_common::homePath() + QDir::separator() +
-     "pandemonium_parsed_urls.db");
+    (pandamonium_common::homePath() + QDir::separator() +
+     "pandamonium_parsed_urls.db");
 
   if(fileInfo.exists())
     {
@@ -1399,7 +1399,7 @@ void pandemonium_gui::slotTableListTimeout(void)
     }
 }
 
-void pandemonium_gui::slotToggleParsed(void)
+void pandamonium_gui::slotToggleParsed(void)
 {
   m_tableListTimer.stop();
   m_ui.periodically_list_parsed_urls->setChecked(false);

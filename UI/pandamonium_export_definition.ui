@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pandemonium_export</class>
- <widget class="QMainWindow" name="pandemonium_export">
+ <class>pandamonium_export</class>
+ <widget class="QMainWindow" name="pandamonium_export">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pandemonium: Export Definition</string>
+   <string>pandamonium: Export Definition</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">

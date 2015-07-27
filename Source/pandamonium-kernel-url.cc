@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,24 +22,24 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <QTextDocument>
 #include <QTimer>
 #include <QtDebug>
 
-#include "pandemonium-common.h"
-#include "pandemonium-database.h"
-#include "pandemonium-kernel.h"
-#include "pandemonium-kernel-url.h"
+#include "pandamonium-common.h"
+#include "pandamonium-database.h"
+#include "pandamonium-kernel.h"
+#include "pandamonium-kernel-url.h"
 
 static bool sortStringListByLength(const QString &a, const QString &b)
 {
   return a.length() > b.length();
 }
 
-pandemonium_kernel_url::pandemonium_kernel_url
+pandamonium_kernel_url::pandamonium_kernel_url
 (const QUrl &url, const bool paused, const double request_interval,
  const int search_depth, QObject *parent):
   QObject(parent)
@@ -63,7 +63,7 @@ pandemonium_kernel_url::pandemonium_kernel_url
     {
       m_abortTimer.start();
 
-      QNetworkReply *reply = pandemonium_kernel::get
+      QNetworkReply *reply = pandamonium_kernel::get
 	(QNetworkRequest(m_url));
 
       reply->setParent(this);
@@ -73,11 +73,11 @@ pandemonium_kernel_url::pandemonium_kernel_url
   m_loadNextTimer.setInterval(static_cast<int> (1000 * m_requestInterval));
 }
 
-pandemonium_kernel_url::~pandemonium_kernel_url()
+pandamonium_kernel_url::~pandamonium_kernel_url()
 {
 }
 
-void pandemonium_kernel_url::connectReplySignals(QNetworkReply *reply)
+void pandamonium_kernel_url::connectReplySignals(QNetworkReply *reply)
 {
   if(!reply)
     return;
@@ -100,7 +100,7 @@ void pandemonium_kernel_url::connectReplySignals(QNetworkReply *reply)
 	  SLOT(slotSslErrors(const QList<QSslError> &)));
 }
 
-void pandemonium_kernel_url::parseContent(void)
+void pandamonium_kernel_url::parseContent(void)
 {
   /*
   ** Let's discover all links.
@@ -109,7 +109,7 @@ void pandemonium_kernel_url::parseContent(void)
   QString description("");
   QString title("");
   QStringList words;
-  bool metaDataOnly = pandemonium_database::isUrlMetaDataOnly(m_url);
+  bool metaDataOnly = pandamonium_database::isUrlMetaDataOnly(m_url);
   int s = -1;
 
   if(metaDataOnly)
@@ -184,7 +184,7 @@ void pandemonium_kernel_url::parseContent(void)
 	title = m_content.mid(s + 7, e - s - 7).trimmed();
     }
 
-  pandemonium_database::saveUrlMetaData(description, title, m_urlToLoad);
+  pandamonium_database::saveUrlMetaData(description, title, m_urlToLoad);
   s = m_content.indexOf("<a");
 
   while(s >= 0)
@@ -224,14 +224,14 @@ void pandemonium_kernel_url::parseContent(void)
 	    url.setScheme(m_url.scheme());
 
 	  if(url.toString().startsWith(m_url.toString()))
-	    pandemonium_database::markUrlAsVisited(url, false);
+	    pandamonium_database::markUrlAsVisited(url, false);
 	}
     }
 
   m_content.clear();
 }
 
-void pandemonium_kernel_url::setPaused(const bool paused)
+void pandamonium_kernel_url::setPaused(const bool paused)
 {
   m_paused = paused;
 
@@ -244,7 +244,7 @@ void pandemonium_kernel_url::setPaused(const bool paused)
     }
 }
 
-void pandemonium_kernel_url::setRequestInterval(const double request_interval)
+void pandamonium_kernel_url::setRequestInterval(const double request_interval)
 {
   m_requestInterval = qBound(0.100, request_interval, 100.00);
 
@@ -253,7 +253,7 @@ void pandemonium_kernel_url::setRequestInterval(const double request_interval)
     m_loadNextTimer.start(static_cast<int> (1000 * m_requestInterval));
 }
 
-void pandemonium_kernel_url::slotAbortTimeout(void)
+void pandamonium_kernel_url::slotAbortTimeout(void)
 {
   if(!m_isLoaded)
     {
@@ -269,7 +269,7 @@ void pandemonium_kernel_url::slotAbortTimeout(void)
     }
 }
 
-void pandemonium_kernel_url::slotDownloadProgress
+void pandamonium_kernel_url::slotDownloadProgress
 (qint64 bytesReceived, qint64 bytesTotal)
 {
   Q_UNUSED(bytesReceived);
@@ -281,7 +281,7 @@ void pandemonium_kernel_url::slotDownloadProgress
     m_content.append(reply->readAll());
 }
 
-void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
+void pandamonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 {
   m_abortTimer.stop();
   m_content.clear();
@@ -298,12 +298,12 @@ void pandemonium_kernel_url::slotError(QNetworkReply::NetworkError code)
     qDebug() << "Network error " << code << "!";
 }
 
-void pandemonium_kernel_url::slotLoadNext(void)
+void pandamonium_kernel_url::slotLoadNext(void)
 {
   if(m_paused)
     return;
 
-  QUrl url(pandemonium_database::unvisitedChildUrl(m_url));
+  QUrl url(pandamonium_database::unvisitedChildUrl(m_url));
 
   if(url.isEmpty() || !url.isValid())
     url = m_url; // Restart.
@@ -319,18 +319,18 @@ void pandemonium_kernel_url::slotLoadNext(void)
 	  m_urlToLoad = url;
 
 	  QNetworkReply *reply =
-	    pandemonium_kernel::get(QNetworkRequest(m_urlToLoad));
+	    pandamonium_kernel::get(QNetworkRequest(m_urlToLoad));
 
 	  reply->setParent(this);
 	  connectReplySignals(reply);
 	}
 }
 
-void pandemonium_kernel_url::slotReplyFinished(void)
+void pandamonium_kernel_url::slotReplyFinished(void)
 {
   m_abortTimer.stop();
   m_isLoaded = true;
-  pandemonium_database::markUrlAsVisited(m_urlToLoad, true);
+  pandamonium_database::markUrlAsVisited(m_urlToLoad, true);
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
   bool redirect = false;
@@ -348,7 +348,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
 	  {
 	    redirect = true;
 	    redirectUrl = m_url.resolved(redirectUrl);
-	    reply = pandemonium_kernel::get(QNetworkRequest(redirectUrl));
+	    reply = pandamonium_kernel::get(QNetworkRequest(redirectUrl));
 	    reply->setParent(this);
 	    connectReplySignals(reply);
 	  }
@@ -358,7 +358,7 @@ void pandemonium_kernel_url::slotReplyFinished(void)
     parseContent();
 }
 
-void pandemonium_kernel_url::slotSslErrors(const QList<QSslError> &errors)
+void pandamonium_kernel_url::slotSslErrors(const QList<QSslError> &errors)
 {
   Q_UNUSED(errors);
 

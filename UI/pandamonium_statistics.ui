@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pandemonium_statistics</class>
- <widget class="QMainWindow" name="pandemonium_statistics">
+ <class>pandamonium_statistics</class>
+ <widget class="QMainWindow" name="pandamonium_statistics">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pandemonium: Statistics</string>
+   <string>pandamonium: Statistics</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">

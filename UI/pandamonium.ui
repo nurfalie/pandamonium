@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pandemonium_mainwindow</class>
- <widget class="QMainWindow" name="pandemonium_mainwindow">
+ <class>pandamonium_mainwindow</class>
+ <widget class="QMainWindow" name="pandamonium_mainwindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pandemonium</string>
+   <string>pandamonium</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../Icons/icons.qrc">
@@ -81,7 +81,7 @@
              <item row="1" column="2">
               <widget class="QPushButton" name="activate_kernel">
                <property name="toolTip">
-                <string>Activate pandemonium's kernel.</string>
+                <string>Activate pandamonium's kernel.</string>
                </property>
                <property name="text">
                 <string>Activate</string>
@@ -95,7 +95,7 @@
              <item row="1" column="3">
               <widget class="QPushButton" name="deactivate_kernel">
                <property name="toolTip">
-                <string>Deactivate pandemonium's kernel. If pressed, kernel monitoring will be disabled.</string>
+                <string>Deactivate pandamonium's kernel. If pressed, kernel monitoring will be disabled.</string>
                </property>
                <property name="text">
                 <string>Deactivate</string>
@@ -620,7 +620,7 @@
           <item>
            <widget class="QPushButton" name="purge_unvisited_visited_urls">
             <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove pandemonium_visited_urls.db. The parsed URLs will not be removed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Remove pandamonium_visited_urls.db. The parsed URLs will not be removed.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
             <property name="text">
              <string>Purge</string>

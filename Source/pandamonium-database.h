@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,18 +22,18 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _pandemonium_database_h_
-#define _pandemonium_database_h_
+#ifndef _pandamonium_database_h_
+#define _pandamonium_database_h_
 
 #include <QPair>
 #include <QReadWriteLock>
 #include <QSqlDatabase>
 #include <QUrl>
 
-class pandemonium_database
+class pandamonium_database
 {
  public:
   static QHash<QString, QString> exportDefinition(void);
@@ -66,7 +66,7 @@ class pandemonium_database
 			      const QUrl &url);
 
  private:
-  pandemonium_database(void)
+  pandamonium_database(void)
   {
   }
 

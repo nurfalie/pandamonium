@@ -2,6 +2,6 @@ purge.commands = rm -f *~ && rm -f */*~
 
 CONFIG += ordered
 QMAKE_EXTRA_TARGETS = purge
-SUBDIRS = pandemonium-gui.pro \
-          pandemonium-kernel.pro
+SUBDIRS = pandamonium-gui.osx.pro \
+          pandamonium-kernel.osx.pro
 TEMPLATE = subdirs

@@ -3,7 +3,7 @@ LANGUAGE = C++
 QT += network sql widgets
 TEMPLATE = app
 
-QMAKE_CLEAN += pandemonium-kernel
+QMAKE_CLEAN += pandamonium-kernel
 
 win32 {
 QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
@@ -21,15 +21,15 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual \
 
 INCLUDEPATH += . Source
 
-HEADERS = Source\\pandemonium-common.h \
-	  Source\\pandemonium-database.h \
-          Source\\pandemonium-kernel.h \
-          Source\\pandemonium-kernel-url.h
+HEADERS = Source\\pandamonium-common.h \
+	  Source\\pandamonium-database.h \
+          Source\\pandamonium-kernel.h \
+          Source\\pandamonium-kernel-url.h
 
-SOURCES = Source\\pandemonium-database.cc \
-          Source\\pandemonium-kernel.cc \
-	  Source\\pandemonium-kernel-main.cc \
-          Source\\pandemonium-kernel-url.cc
+SOURCES = Source\\pandamonium-database.cc \
+          Source\\pandamonium-kernel.cc \
+	  Source\\pandamonium-kernel-main.cc \
+          Source\\pandamonium-kernel-url.cc
 
-PROJECTNAME = pandemonium-kernel
-TARGET = pandemonium-kernel
+PROJECTNAME = pandamonium-kernel
+TARGET = pandamonium-kernel

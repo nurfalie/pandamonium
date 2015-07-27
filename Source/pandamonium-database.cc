@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,7 +22,7 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <QCryptographicHash>
@@ -33,13 +33,13 @@
 #include <QUrl>
 #include <QtDebug>
 
-#include "pandemonium-common.h"
-#include "pandemonium-database.h"
+#include "pandamonium-common.h"
+#include "pandamonium-database.h"
 
-QReadWriteLock pandemonium_database::s_dbIdLock;
-quint64 pandemonium_database::s_dbId = 0;
+QReadWriteLock pandamonium_database::s_dbIdLock;
+quint64 pandamonium_database::s_dbId = 0;
 
-QHash<QString, QString> pandemonium_database::exportDefinition(void)
+QHash<QString, QString> pandamonium_database::exportDefinition(void)
 {
   QHash<QString, QString> hash;
   QPair<QSqlDatabase, QString> pair;
@@ -47,8 +47,8 @@ QHash<QString, QString> pandemonium_database::exportDefinition(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_export_definition.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_export_definition.db");
 
     if(pair.first.open())
       {
@@ -56,7 +56,7 @@ QHash<QString, QString> pandemonium_database::exportDefinition(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT * FROM pandemonium_export_definition"))
+	if(query.exec("SELECT * FROM pandamonium_export_definition"))
 	  if(query.next())
 	    for(int i = 0; i < query.record().count(); i++)
 	      hash[query.record().fieldName(i)] =
@@ -71,7 +71,7 @@ QHash<QString, QString> pandemonium_database::exportDefinition(void)
   return hash;
 }
 
-QList<QList<QVariant> > pandemonium_database::parsedLinks(const quint64 limit,
+QList<QList<QVariant> > pandamonium_database::parsedLinks(const quint64 limit,
 							  const quint64 offset)
 {
   QList<QList<QVariant> > list;
@@ -80,8 +80,8 @@ QList<QList<QVariant> > pandemonium_database::parsedLinks(const quint64 limit,
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_parsed_urls.db");
 
     if(pair.first.open())
       {
@@ -93,7 +93,7 @@ QList<QList<QVariant> > pandemonium_database::parsedLinks(const quint64 limit,
 
 	query.setForwardOnly(true);
 	query.prepare
-	  (QString("SELECT title, url FROM pandemonium_parsed_urls "
+	  (QString("SELECT title, url FROM pandamonium_parsed_urls "
 		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2 ").
 	   arg(limit).
 	   arg(offset));
@@ -122,7 +122,7 @@ QList<QList<QVariant> > pandemonium_database::parsedLinks(const quint64 limit,
   return list;
 }
 
-QList<QList<QVariant> > pandemonium_database::searchUrls(void)
+QList<QList<QVariant> > pandamonium_database::searchUrls(void)
 {
   QList<QList<QVariant> > list;
   QPair<QSqlDatabase, QString> pair;
@@ -130,8 +130,8 @@ QList<QList<QVariant> > pandemonium_database::searchUrls(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
@@ -140,7 +140,7 @@ QList<QList<QVariant> > pandemonium_database::searchUrls(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT paused, request_interval, search_depth, url "
-		      "FROM pandemonium_search_urls"))
+		      "FROM pandamonium_search_urls"))
 	  while(query.next())
 	    {
 	      QList<QVariant> values;
@@ -161,7 +161,7 @@ QList<QList<QVariant> > pandemonium_database::searchUrls(void)
   return list;
 }
 
-QPair<QSqlDatabase, QString> pandemonium_database::database(void)
+QPair<QSqlDatabase, QString> pandamonium_database::database(void)
 {
   QPair<QSqlDatabase, QString> pair;
   quint64 dbId = 0;
@@ -176,7 +176,7 @@ QPair<QSqlDatabase, QString> pandemonium_database::database(void)
   return pair;
 }
 
-QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
+QPair<quint64, quint64> pandamonium_database::unvisitedAndVisitedNumbers(void)
 {
   QPair<QSqlDatabase, QString> pair;
   QPair<quint64, quint64> numbers;
@@ -184,8 +184,8 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_visited_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_visited_urls.db");
 
     if(pair.first.open())
       {
@@ -193,9 +193,9 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT COUNT(*), 'u' FROM pandemonium_visited_urls "
+	if(query.exec("SELECT COUNT(*), 'u' FROM pandamonium_visited_urls "
 		      "WHERE visited = 0 UNION "
-		      "SELECT COUNT(*), 'v' FROM pandemonium_visited_urls "
+		      "SELECT COUNT(*), 'v' FROM pandamonium_visited_urls "
 		      "WHERE visited = 1 ORDER BY 2"))
 	  {
 	    query.next();
@@ -213,7 +213,7 @@ QPair<quint64, quint64> pandemonium_database::unvisitedAndVisitedNumbers(void)
   return numbers;
 }
 
-QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
+QUrl pandamonium_database::unvisitedChildUrl(const QUrl &url)
 {
   QPair<QSqlDatabase, QString> pair;
   QUrl new_url;
@@ -221,8 +221,8 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_visited_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_visited_urls.db");
 
     if(pair.first.open())
       {
@@ -230,7 +230,7 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
 
 	query.setForwardOnly(true);
 	query.prepare
-	  ("SELECT url, visited FROM pandemonium_visited_urls "
+	  ("SELECT url, visited FROM pandamonium_visited_urls "
 	   "WHERE url LIKE ? AND visited = 0");
 	query.bindValue(0, (url.toEncoded() + "%").constData());
 
@@ -247,7 +247,7 @@ QUrl pandemonium_database::unvisitedChildUrl(const QUrl &url)
   return new_url;
 }
 
-bool pandemonium_database::isKernelActive(void)
+bool pandamonium_database::isKernelActive(void)
 {
   QPair<QSqlDatabase, QString> pair;
   bool active = false;
@@ -255,8 +255,8 @@ bool pandemonium_database::isKernelActive(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_kernel_command.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_kernel_command.db");
 
     if(pair.first.open())
       {
@@ -264,7 +264,7 @@ bool pandemonium_database::isKernelActive(void)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT COUNT(*) FROM pandemonium_kernel_command"))
+	if(query.exec("SELECT COUNT(*) FROM pandamonium_kernel_command"))
 	  if(query.next())
 	    if(query.value(0).toLongLong() > 0)
 	      active = true;
@@ -278,7 +278,7 @@ bool pandemonium_database::isKernelActive(void)
   return active;
 }
 
-bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
+bool pandamonium_database::isUrlMetaDataOnly(const QUrl &url)
 {
   bool state = true;
   QPair<QSqlDatabase, QString> pair;
@@ -286,8 +286,8 @@ bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
@@ -295,7 +295,7 @@ bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT meta_data_only "
-		      "FROM pandemonium_search_urls WHERE url = ?");
+		      "FROM pandamonium_search_urls WHERE url = ?");
 	query.bindValue(0, url.toEncoded());
 
 	if(query.exec())
@@ -311,7 +311,7 @@ bool pandemonium_database::isUrlMetaDataOnly(const QUrl &url)
   return state;
 }
 
-bool pandemonium_database::saveExportDefinition
+bool pandamonium_database::saveExportDefinition
 (const QHash<QString, QString> &hash)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -320,14 +320,14 @@ bool pandemonium_database::saveExportDefinition
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_export_definition.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_export_definition.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("INSERT OR REPLACE INTO pandemonium_export_definition("
+	query.prepare("INSERT OR REPLACE INTO pandamonium_export_definition("
 		      "database_path, database_table, "
 		      "field_description, field_title, field_url) "
 		      "VALUES(?, ?, ?, ?, ?)");
@@ -347,7 +347,7 @@ bool pandemonium_database::saveExportDefinition
   return ok;
 }
 
-bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
+bool pandamonium_database::shouldTerminateKernel(const qint64 process_id)
 {
   QPair<QSqlDatabase, QString> pair;
   bool terminate = false;
@@ -355,15 +355,15 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_kernel_command.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_kernel_command.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT command FROM pandemonium_kernel_command "
+	query.prepare("SELECT command FROM pandamonium_kernel_command "
 		      "WHERE kernel_process_id = ?");
 	query.bindValue(0, process_id);
 
@@ -376,7 +376,7 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
 	      }
 	    else
 	      {
-		query.exec("DELETE FROM pandemonium_kernel_command");
+		query.exec("DELETE FROM pandamonium_kernel_command");
 		terminate = true;
 	      }
 	  }
@@ -394,7 +394,7 @@ bool pandemonium_database::shouldTerminateKernel(const qint64 process_id)
   return terminate;
 }
 
-qint64 pandemonium_database::kernelProcessId(void)
+qint64 pandamonium_database::kernelProcessId(void)
 {
   QPair<QSqlDatabase, QString> pair;
   qint64 process_id = 0;
@@ -402,8 +402,8 @@ qint64 pandemonium_database::kernelProcessId(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_kernel_command.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_kernel_command.db");
 
     if(pair.first.open())
       {
@@ -412,7 +412,7 @@ qint64 pandemonium_database::kernelProcessId(void)
 	query.setForwardOnly(true);
 
 	if(query.exec("SELECT kernel_process_id FROM "
-		      "pandemonium_kernel_command"))
+		      "pandamonium_kernel_command"))
 	  if(query.next())
 	    process_id = query.value(0).toLongLong();
       }
@@ -426,7 +426,7 @@ qint64 pandemonium_database::kernelProcessId(void)
 }
 
 
-qint64 pandemonium_database::parsedLinksCount(void)
+qint64 pandamonium_database::parsedLinksCount(void)
 {
   QPair<QSqlDatabase, QString> pair;
   qint64 count = 0;
@@ -434,14 +434,14 @@ qint64 pandemonium_database::parsedLinksCount(void)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_parsed_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	if(query.exec("SELECT COUNT(*) FROM pandemonium_parsed_urls"))
+	if(query.exec("SELECT COUNT(*) FROM pandamonium_parsed_urls"))
 	  if(query.next())
 	    count = query.value(0).toLongLong();
       }
@@ -454,7 +454,7 @@ qint64 pandemonium_database::parsedLinksCount(void)
   return count;
 }
 
-void pandemonium_database::addSearchUrl(const QString &str)
+void pandamonium_database::addSearchUrl(const QString &str)
 {
   QUrl url(QUrl::fromUserInput(str.trimmed()));
 
@@ -468,8 +468,8 @@ void pandemonium_database::addSearchUrl(const QString &str)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
@@ -483,7 +483,7 @@ void pandemonium_database::addSearchUrl(const QString &str)
 	QSqlQuery query(pair.first);
 
 	hash.addData(url.toEncoded());
-	query.prepare("INSERT OR REPLACE INTO pandemonium_search_urls"
+	query.prepare("INSERT OR REPLACE INTO pandamonium_search_urls"
 		      "(url, url_hash) "
 		      "VALUES(?, ?)");
 	query.bindValue(0, url.toEncoded());
@@ -498,15 +498,15 @@ void pandemonium_database::addSearchUrl(const QString &str)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::createdb(void)
+void pandamonium_database::createdb(void)
 {
   QList<QString> fileNames;
 
-  fileNames << "pandemonium_export_definition.db"
-	    << "pandemonium_kernel_command.db"
-	    << "pandemonium_parsed_urls.db"
-	    << "pandemonium_search_urls.db"
-	    << "pandemonium_visited_urls.db";
+  fileNames << "pandamonium_export_definition.db"
+	    << "pandamonium_kernel_command.db"
+	    << "pandamonium_parsed_urls.db"
+	    << "pandamonium_search_urls.db"
+	    << "pandamonium_visited_urls.db";
 
   foreach(QString fileName, fileNames)
     {
@@ -515,16 +515,16 @@ void pandemonium_database::createdb(void)
       {
 	pair = database();
 	pair.first.setDatabaseName
-	  (pandemonium_common::homePath() + QDir::separator() + fileName);
+	  (pandamonium_common::homePath() + QDir::separator() + fileName);
 
 	if(pair.first.open())
 	  {
 	    QSqlQuery query(pair.first);
 
-	    if(fileName == "pandemonium_export_definition.db")
+	    if(fileName == "pandamonium_export_definition.db")
 	      {
 		query.exec
-		  ("CREATE TABLE IF NOT EXISTS pandemonium_export_definition("
+		  ("CREATE TABLE IF NOT EXISTS pandamonium_export_definition("
 		   "database_path TEXT NOT NULL, "
 		   "database_table TEXT NOT NULL, "
 		   "field_description TEXT NOT NULL, "
@@ -535,45 +535,45 @@ void pandemonium_database::createdb(void)
 		   "field_url))");
 		query.exec
 		  ("CREATE TRIGGER IF NOT EXISTS "
-		   "pandemonium_export_definition_trigger "
-		   "BEFORE INSERT ON pandemonium_export_definition "
+		   "pandamonium_export_definition_trigger "
+		   "BEFORE INSERT ON pandamonium_export_definition "
 		   "BEGIN "
-		   "DELETE FROM pandemonium_export_definition;"
+		   "DELETE FROM pandamonium_export_definition;"
 		   "END");
 	      }
-	    else if(fileName == "pandemonium_kernel_command.db")
+	    else if(fileName == "pandamonium_kernel_command.db")
 	      {
 		query.exec
-		  ("CREATE TABLE IF NOT EXISTS pandemonium_kernel_command("
+		  ("CREATE TABLE IF NOT EXISTS pandamonium_kernel_command("
 		   "command TEXT NOT NULL, "
 		   "kernel_process_id INTEGER NOT NULL PRIMARY KEY)");
 		query.exec
 		  ("CREATE TRIGGER IF NOT EXISTS "
-		   "pandemonium_kernel_command_trigger "
-		   "BEFORE INSERT ON pandemonium_kernel_command "
+		   "pandamonium_kernel_command_trigger "
+		   "BEFORE INSERT ON pandamonium_kernel_command "
 		   "BEGIN "
-		   "DELETE FROM pandemonium_kernel_command;"
+		   "DELETE FROM pandamonium_kernel_command;"
 		   "END");
 	      }
-	    else if(fileName == "pandemonium_parsed_urls.db")
+	    else if(fileName == "pandamonium_parsed_urls.db")
 	      query.exec
-		("CREATE TABLE IF NOT EXISTS pandemonium_parsed_urls("
+		("CREATE TABLE IF NOT EXISTS pandamonium_parsed_urls("
 		 "description TEXT NOT NULL, " // Not a BLOB?
 		 "time_inserted INTEGER NOT NULL, "
 		 "title TEXT NOT NULL, "
 		 "url TEXT NOT NULL PRIMARY KEY)");
-	    else if(fileName == "pandemonium_search_urls.db")
+	    else if(fileName == "pandamonium_search_urls.db")
 	      query.exec
-		("CREATE TABLE IF NOT EXISTS pandemonium_search_urls("
+		("CREATE TABLE IF NOT EXISTS pandamonium_search_urls("
 		 "meta_data_only INTEGER NOT NULL DEFAULT 1, "
 		 "paused INTEGER NOT NULL DEFAULT 0, "
 		 "request_interval REAL NOT NULL DEFAULT 0.50, "
 		 "search_depth INTEGER NOT NULL DEFAULT -1, "
 		 "url TEXT NOT NULL, "
 		 "url_hash TEXT NOT NULL PRIMARY KEY)");
-	    else if(fileName == "pandemonium_visited_urls.db")
+	    else if(fileName == "pandamonium_visited_urls.db")
 	      query.exec
-		("CREATE TABLE IF NOT EXISTS pandemonium_visited_urls("
+		("CREATE TABLE IF NOT EXISTS pandamonium_visited_urls("
 		 "url TEXT NOT NULL PRIMARY KEY, "
 		 "visited INTEGER NOT NULL DEFAULT 0)");
 	  }
@@ -586,7 +586,7 @@ void pandemonium_database::createdb(void)
     }
 }
 
-void pandemonium_database::exportUrl
+void pandamonium_database::exportUrl
 (const QString &str, const bool shouldDelete)
 {
   /*
@@ -609,8 +609,8 @@ void pandemonium_database::exportUrl
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_parsed_urls.db");
 
     if(pair.first.open())
       {
@@ -618,7 +618,7 @@ void pandemonium_database::exportUrl
 
 	query.setForwardOnly(true);
 	query.prepare("SELECT description, title FROM "
-		      "pandemonium_parsed_urls WHERE url = ?");
+		      "pandamonium_parsed_urls WHERE url = ?");
 	query.bindValue(0, QUrl(str).toEncoded());
 
 	if(query.exec())
@@ -687,14 +687,14 @@ void pandemonium_database::exportUrl
       removeParsedUrls(QStringList() << str);
 }
 
-void pandemonium_database::markUrlAsVisited
+void pandamonium_database::markUrlAsVisited
 (const QUrl &url, const bool visited)
 {
   QFileInfo fileInfo
-    (pandemonium_common::homePath() + QDir::separator() +
-     "pandemonium_visited_urls.db");
+    (pandamonium_common::homePath() + QDir::separator() +
+     "pandamonium_visited_urls.db");
 
-  if(fileInfo.size() >= pandemonium_common::maximum_database_size)
+  if(fileInfo.size() >= pandamonium_common::maximum_database_size)
     return;
 
   QPair<QSqlDatabase, QString> pair;
@@ -708,13 +708,13 @@ void pandemonium_database::markUrlAsVisited
 	QSqlQuery query(pair.first);
 
 	if(visited)
-	  query.prepare("INSERT OR REPLACE INTO pandemonium_visited_urls"
+	  query.prepare("INSERT OR REPLACE INTO pandamonium_visited_urls"
 			"(url, visited) "
 			"VALUES(?, ?)");
 	else
 	  {
 	    query.exec("PRAGMA synchronous = OFF");
-	    query.prepare("INSERT INTO pandemonium_visited_urls"
+	    query.prepare("INSERT INTO pandamonium_visited_urls"
 			  "(url, visited) "
 			  "VALUES(?, ?)");
 	  }
@@ -731,25 +731,25 @@ void pandemonium_database::markUrlAsVisited
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::recordKernelDeactivation(const qint64 process_id)
+void pandamonium_database::recordKernelDeactivation(const qint64 process_id)
 {
   QPair<QSqlDatabase, QString> pair;
 
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_kernel_command.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_kernel_command.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
 	if(process_id == 0)
-	  query.exec("DELETE FROM pandemonium_kernel_command");
+	  query.exec("DELETE FROM pandamonium_kernel_command");
 	else
 	  {
-	    query.prepare("DELETE FROM pandemonium_kernel_command "
+	    query.prepare("DELETE FROM pandamonium_kernel_command "
 			  "WHERE kernel_process_id = ?");
 	    query.bindValue(0, process_id);
 	    query.exec();
@@ -763,15 +763,15 @@ void pandemonium_database::recordKernelDeactivation(const qint64 process_id)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::recordKernelProcessId(const qint64 process_id)
+void pandamonium_database::recordKernelProcessId(const qint64 process_id)
 {
   QPair<QSqlDatabase, QString> pair;
 
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_kernel_command.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_kernel_command.db");
 
     if(pair.first.open())
       {
@@ -780,14 +780,14 @@ void pandemonium_database::recordKernelProcessId(const qint64 process_id)
 
 	query.setForwardOnly(true);
 
-	if(query.exec("SELECT command FROM pandemonium_kernel_command"))
+	if(query.exec("SELECT command FROM pandamonium_kernel_command"))
 	  if(query.next())
 	    if(query.value(0).toString().trimmed() == "terminate")
 	      ok = false;
 
 	if(ok)
 	  {
-	    query.prepare("INSERT INTO pandemonium_kernel_command"
+	    query.prepare("INSERT INTO pandamonium_kernel_command"
 			  "(command, kernel_process_id) "
 			  "VALUES(?, ?)");
 	    query.bindValue(0, "rove");
@@ -803,7 +803,7 @@ void pandemonium_database::recordKernelProcessId(const qint64 process_id)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::removeParsedUrls(const QList<QString> &list)
+void pandamonium_database::removeParsedUrls(const QList<QString> &list)
 {
   if(list.isEmpty())
     return;
@@ -813,8 +813,8 @@ void pandemonium_database::removeParsedUrls(const QList<QString> &list)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_parsed_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_parsed_urls.db");
 
     if(pair.first.open())
       {
@@ -824,7 +824,7 @@ void pandemonium_database::removeParsedUrls(const QList<QString> &list)
 
 	foreach(QString str, list)
 	  {
-	    query.prepare("DELETE FROM pandemonium_parsed_urls "
+	    query.prepare("DELETE FROM pandamonium_parsed_urls "
 			  "WHERE url = ?");
 	    query.bindValue(0, QUrl(str).toEncoded());
 	    query.exec();
@@ -838,7 +838,7 @@ void pandemonium_database::removeParsedUrls(const QList<QString> &list)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::removeSearchUrls(const QList<QString> &list)
+void pandamonium_database::removeSearchUrls(const QList<QString> &list)
 {
   if(list.isEmpty())
     return;
@@ -848,8 +848,8 @@ void pandemonium_database::removeSearchUrls(const QList<QString> &list)
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
@@ -859,7 +859,7 @@ void pandemonium_database::removeSearchUrls(const QList<QString> &list)
 
 	foreach(QString str, list)
 	  {
-	    query.prepare("DELETE FROM pandemonium_search_urls "
+	    query.prepare("DELETE FROM pandamonium_search_urls "
 			  "WHERE url_hash = ?");
 	    query.bindValue(0, str);
 	    query.exec();
@@ -873,7 +873,7 @@ void pandemonium_database::removeSearchUrls(const QList<QString> &list)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::saveRequestInterval(const QString &request_interval,
+void pandamonium_database::saveRequestInterval(const QString &request_interval,
 					       const QVariant &url_hash)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -881,14 +881,14 @@ void pandemonium_database::saveRequestInterval(const QString &request_interval,
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("UPDATE pandemonium_search_urls "
+	query.prepare("UPDATE pandamonium_search_urls "
 		      "SET request_interval = ? "
 		      "WHERE url_hash = ?");
 	query.bindValue(0, request_interval.toDouble());
@@ -903,7 +903,7 @@ void pandemonium_database::saveRequestInterval(const QString &request_interval,
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::saveSearchDepth(const QString &search_depth,
+void pandamonium_database::saveSearchDepth(const QString &search_depth,
 					   const QVariant &url_hash)
 {
   QPair<QSqlDatabase, QString> pair;
@@ -911,14 +911,14 @@ void pandemonium_database::saveSearchDepth(const QString &search_depth,
   {
     pair = database();
     pair.first.setDatabaseName
-      (pandemonium_common::homePath() + QDir::separator() +
-       "pandemonium_search_urls.db");
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_search_urls.db");
 
     if(pair.first.open())
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("UPDATE pandemonium_search_urls "
+	query.prepare("UPDATE pandamonium_search_urls "
 		      "SET search_depth = ? "
 		      "WHERE url_hash = ?");
 	query.bindValue(0, search_depth.toInt());
@@ -933,15 +933,15 @@ void pandemonium_database::saveSearchDepth(const QString &search_depth,
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandemonium_database::saveUrlMetaData(const QString &description,
+void pandamonium_database::saveUrlMetaData(const QString &description,
 					   const QString &title,
 					   const QUrl &url)
 {
   QFileInfo fileInfo
-    (pandemonium_common::homePath() + QDir::separator() +
-     "pandemonium_parsed_urls.db");
+    (pandamonium_common::homePath() + QDir::separator() +
+     "pandamonium_parsed_urls.db");
 
-  if(fileInfo.size() >= pandemonium_common::maximum_database_size)
+  if(fileInfo.size() >= pandamonium_common::maximum_database_size)
     return;
 
   QPair<QSqlDatabase, QString> pair;
@@ -954,7 +954,7 @@ void pandemonium_database::saveUrlMetaData(const QString &description,
       {
 	QSqlQuery query(pair.first);
 
-	query.prepare("INSERT OR REPLACE INTO pandemonium_parsed_urls"
+	query.prepare("INSERT OR REPLACE INTO pandamonium_parsed_urls"
 		      "(description, time_inserted, title, url)"
 		      "VALUES(?, ?, ?, ?)");
 

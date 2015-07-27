@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,11 +22,11 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#ifndef _pandemonium_kernel_h_
-#define _pandemonium_kernel_h_
+#ifndef _pandamonium_kernel_h_
+#define _pandamonium_kernel_h_
 
 #include <QHash>
 #include <QNetworkAccessManager>
@@ -36,21 +36,21 @@
 #include <QPointer>
 #include <QTimer>
 
-#include "pandemonium-kernel-url.h"
+#include "pandamonium-kernel-url.h"
 
 class QNetworkAccessManager;
 
-class pandemonium_kernel: public QObject
+class pandamonium_kernel: public QObject
 {
   Q_OBJECT
 
  public:
-  pandemonium_kernel(void);
-  ~pandemonium_kernel();
+  pandamonium_kernel(void);
+  ~pandamonium_kernel();
   static QNetworkReply *get(const QNetworkRequest &request);
 
  private:
-  QHash<QUrl, QPointer<pandemonium_kernel_url> > m_searchUrls;
+  QHash<QUrl, QPointer<pandamonium_kernel_url> > m_searchUrls;
   QNetworkAccessManager *m_networkAccessManager;
   QTimer m_controlTimer;
   QTimer m_rovingTimer;

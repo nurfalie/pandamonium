@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,24 +22,24 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <QApplication>
 #include <QNetworkAccessManager>
 #include <QtDebug>
 
-#include "pandemonium-common.h"
-#include "pandemonium-database.h"
-#include "pandemonium-kernel.h"
+#include "pandamonium-common.h"
+#include "pandamonium-database.h"
+#include "pandamonium-kernel.h"
 
-static pandemonium_kernel *s_kernel = 0;
+static pandamonium_kernel *s_kernel = 0;
 
-pandemonium_kernel::pandemonium_kernel(void):QObject()
+pandamonium_kernel::pandamonium_kernel(void):QObject()
 {
   s_kernel = this;
   m_networkAccessManager = new QNetworkAccessManager(this);
-  m_networkAccessManager->setProxy(pandemonium_common::proxy());
+  m_networkAccessManager->setProxy(pandamonium_common::proxy());
   connect(&m_controlTimer,
 	  SIGNAL(timeout(void)),
 	  this,
@@ -50,35 +50,35 @@ pandemonium_kernel::pandemonium_kernel(void):QObject()
 	  SLOT(slotRovingTimeout(void)));
   m_controlTimer.start(2500);
   m_rovingTimer.start(2500);
-  pandemonium_database::createdb();
-  pandemonium_database::recordKernelProcessId(QApplication::applicationPid());
+  pandamonium_database::createdb();
+  pandamonium_database::recordKernelProcessId(QApplication::applicationPid());
 }
 
-pandemonium_kernel::~pandemonium_kernel()
+pandamonium_kernel::~pandamonium_kernel()
 {
   s_kernel = 0;
-  pandemonium_database::recordKernelDeactivation
+  pandamonium_database::recordKernelDeactivation
     (QApplication::applicationPid());
   QApplication::quit();
 }
 
-QNetworkReply *pandemonium_kernel::get(const QNetworkRequest &request)
+QNetworkReply *pandamonium_kernel::get(const QNetworkRequest &request)
 {
   return s_kernel->m_networkAccessManager->get(request);
 }
 
-void pandemonium_kernel::slotControlTimeout(void)
+void pandamonium_kernel::slotControlTimeout(void)
 {
-  if(pandemonium_database::
+  if(pandamonium_database::
      shouldTerminateKernel(QApplication::applicationPid()))
     deleteLater();
 
-  m_networkAccessManager->setProxy(pandemonium_common::proxy());
+  m_networkAccessManager->setProxy(pandamonium_common::proxy());
 }
 
-void pandemonium_kernel::slotRovingTimeout(void)
+void pandamonium_kernel::slotRovingTimeout(void)
 {
-  QList<QList<QVariant> > list(pandemonium_database::searchUrls());
+  QList<QList<QVariant> > list(pandamonium_database::searchUrls());
   QList<QUrl> urls;
 
   for(int i = 0; i < list.size(); i++)
@@ -100,7 +100,7 @@ void pandemonium_kernel::slotRovingTimeout(void)
 
       if(!m_searchUrls.contains(url))
 	{
-	  QPointer<pandemonium_kernel_url> u = new pandemonium_kernel_url
+	  QPointer<pandamonium_kernel_url> u = new pandamonium_kernel_url
 	    (url,
 	     values.value(0).toBool(),
 	     values.value(1).toDouble(),
@@ -111,7 +111,7 @@ void pandemonium_kernel::slotRovingTimeout(void)
 	}
       else
 	{
-	  QPointer<pandemonium_kernel_url> u(m_searchUrls.value(url, 0));
+	  QPointer<pandamonium_kernel_url> u(m_searchUrls.value(url, 0));
 
 	  if(u)
 	    {
@@ -121,7 +121,7 @@ void pandemonium_kernel::slotRovingTimeout(void)
 	}
     }
 
-  QMutableHashIterator<QUrl, QPointer<pandemonium_kernel_url> >
+  QMutableHashIterator<QUrl, QPointer<pandamonium_kernel_url> >
     it(m_searchUrls);
 
   while(it.hasNext())

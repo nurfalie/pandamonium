@@ -11,9 +11,9 @@
 **    notice, this list of conditions and the following disclaimer in the
 **    documentation and/or other materials provided with the distribution.
 ** 3. The name of the author may not be used to endorse or promote products
-**    derived from pandemonium without specific prior written permission.
+**    derived from pandamonium without specific prior written permission.
 **
-** PANDEMONIUM IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+** pandamonium IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
 ** IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
 ** OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
 ** IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
@@ -22,7 +22,7 @@
 ** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 ** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 ** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-** PANDEMONIUM, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <QApplication>
@@ -35,8 +35,8 @@
 
 #include <iostream>
 
-#include "pandemonium-common.h"
-#include "pandemonium-gui.h"
+#include "pandamonium-common.h"
+#include "pandamonium-gui.h"
 
 int main(int argc, char *argv[])
 {
@@ -66,19 +66,19 @@ int main(int argc, char *argv[])
   CocoaInitializer ci;
 #endif
 #endif
-  QApplication::setApplicationName("pandemonium");
-  QApplication::setOrganizationName("pandemonium");
-  QApplication::setOrganizationDomain("pandemonium");
-  QApplication::setApplicationVersion(PANDEMONIUM_VERSION_STR);
+  QApplication::setApplicationName("pandamonium");
+  QApplication::setOrganizationName("pandamonium");
+  QApplication::setOrganizationDomain("pandamonium");
+  QApplication::setApplicationVersion(pandamonium_VERSION_STR);
   QSettings::setPath(QSettings::IniFormat, QSettings::UserScope,
-                     pandemonium_common::homePath());
+                     pandamonium_common::homePath());
   QSettings::setDefaultFormat(QSettings::IniFormat);
 
-  pandemonium_gui *p = 0;
+  pandamonium_gui *p = 0;
 
   try
     {
-      p = new pandemonium_gui();
+      p = new pandamonium_gui();
       return qapplication.exec();
     }
   catch(std::bad_alloc &exception)

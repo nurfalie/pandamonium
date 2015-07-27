@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>pandemonium_statusbar</class>
- <widget class="QWidget" name="pandemonium_statusbar">
+ <class>pandamonium_statusbar</class>
+ <widget class="QWidget" name="pandamonium_statusbar">
   <property name="geometry">
    <rect>
     <x>0</x>

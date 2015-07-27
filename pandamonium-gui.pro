@@ -3,7 +3,7 @@ LANGUAGE = C++
 QT += network sql widgets
 TEMPLATE = app
 
-QMAKE_CLEAN += pandemonium
+QMAKE_CLEAN += pandamonium
 
 win32 {
 QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
@@ -20,23 +20,23 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
 
 INCLUDEPATH +=
 
-FORMS = UI\\pandemonium.ui \
-	UI\\pandemonium_export_definition.ui \
-        UI\\pandemonium_statistics.ui \
-	UI\\pandemonium_statusbar.ui
+FORMS = UI\\pandamonium.ui \
+	UI\\pandamonium_export_definition.ui \
+        UI\\pandamonium_statistics.ui \
+	UI\\pandamonium_statusbar.ui
 
-HEADERS = Source\\pandemonium-common.h \
-	  Source\\pandemonium-database.h \
-	  Source\\pandemonium-gui.h
-SOURCES = Source\\pandemonium-database.cc \
-	  Source\\pandemonium-gui.cc \
-          Source\\pandemonium-gui-main.cc
+HEADERS = Source\\pandamonium-common.h \
+	  Source\\pandamonium-database.h \
+	  Source\\pandamonium-gui.h
+SOURCES = Source\\pandamonium-database.cc \
+	  Source\\pandamonium-gui.cc \
+          Source\\pandamonium-gui-main.cc
 
 win32 {
-RC_FILE = pandemonium.rc
+RC_FILE = pandamonium.rc
 }
 
 RESOURCES = Icons/icons.qrc
 
-PROJECTNAME = pandemonium
-TARGET = pandemonium
+PROJECTNAME = pandamonium
+TARGET = pandamonium
