@@ -761,19 +761,33 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
      static_cast<double> (qMax(static_cast<quint64> (1),
 			       numbers.first +
 			       numbers.second)));
-  qreal ldpm = 0.00;
   uint t_now = QDateTime::currentDateTime().toTime_t();
 
   /*
   ** Static variables.
   */
 
+  static int c = 0;
+  static quint64 p = 0;
+  static quint64 previous = 0;
+  static quint64 total = 0;
   static uint t_started = t_now;
 
-  if(t_now > t_started)
-    ldpm = (numbers.first + numbers.second) /
-      qMax(static_cast<quint64> (1),
-	   static_cast<quint64> ((t_now - t_started) / 60));
+  c += 1;
+
+  if(c >= 60 / (m_kernelDatabaseTimer.interval() / 1000))
+    {
+      p = total / c;
+      c = 0;
+      total = 0;
+    }
+  else
+    {
+      if(numbers.first + numbers.second >= previous)
+	total += numbers.first + numbers.second - previous;
+
+      previous = numbers.first + numbers.second;
+    }
 
   statistics << "Interface Uptime (Minutes)"
 	     << "Pages Discovered Per Minute (PPM)"
@@ -782,7 +796,7 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 	     << "Remaining URL(s)"
 	     << "Total URL(s) Discovered";
   values << (t_now - t_started) / 60
-	 << ldpm
+	 << p
 	 << pandemonium_database::parsedLinksCount()
 	 << static_cast<qint64> (percent)
 	 << numbers.first
