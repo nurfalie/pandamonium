@@ -777,11 +777,11 @@ void pandemonium_gui::slotKernelDatabaseTimeout(void)
 
   if(c >= 60 / (m_kernelDatabaseTimer.interval() / 1000))
     {
-      p = total / c;
+      p = total;
       c = 0;
       total = 0;
     }
-  else
+  else if(c >= 2)
     {
       if(numbers.first + numbers.second >= previous)
 	total += numbers.first + numbers.second - previous;
