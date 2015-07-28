@@ -28,7 +28,8 @@ OBJECTIVE_HEADERS += Source/CocoaInitializer.h
 OBJECTIVE_SOURCES += Source/CocoaInitializer.mm
 
 ICON = Icons/pandamonium.icns
-RESOURCES = Icons/icons.qrc
+RESOURCES = Icons/icons.qrc \
+	    Images/images.qrc
 PROJECTNAME = pandamonium
 TARGET = pandamonium
 

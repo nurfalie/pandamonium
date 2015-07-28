@@ -218,6 +218,12 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	"pandamonium_parsed_urls.db and pandamonium_visited_urls.db.").
      arg(locale.toString(pandamonium_common::maximum_database_size)));
 
+  QPixmap pixmap(":/pandamonium-logo.png");
+
+  pixmap = pixmap.scaled
+    (256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  m_uiStatistics.pixmap->setPixmap(pixmap);
+
   QSettings settings;
 
   restoreGeometry(settings.value("pandamonium_mainwindow").toByteArray());
@@ -443,8 +449,11 @@ void pandamonium_gui::saveKernelPath(const QString &path)
 void pandamonium_gui::slotAbout(void)
 {
   QMessageBox mb(this);
+  QPixmap pixmap(":/pandamonium-logo-font.png");
 
-  mb.setIconPixmap(QPixmap(":/nuvola/www.png"));
+  pixmap = pixmap.scaled
+    (256, 256, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+  mb.setIconPixmap(pixmap);
   mb.setStandardButtons(QMessageBox::Ok);
   mb.setText
     (QString("<html>Version %1.<br>"
@@ -457,6 +466,7 @@ void pandamonium_gui::slotAbout(void)
      arg(pandamonium_VERSION_STR).
      arg(QT_VERSION_STR));
   mb.setTextFormat(Qt::RichText);
+  mb.setWindowFlags(Qt::SplashScreen | mb.windowFlags());
   mb.setWindowTitle(tr("pandamonium: About"));
   mb.exec();
 }

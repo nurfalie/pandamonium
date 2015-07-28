@@ -36,7 +36,8 @@ win32 {
 RC_FILE = pandamonium.rc
 }
 
-RESOURCES = Icons/icons.qrc
+RESOURCES = Icons\\icons.qrc \
+	    Images\\images.qrc
 
 PROJECTNAME = pandamonium
 TARGET = pandamonium

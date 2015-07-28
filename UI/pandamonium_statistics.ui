@@ -88,12 +88,6 @@
           </item>
           <item>
            <widget class="QProgressBar" name="parsed_urls_capacity">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -132,6 +126,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QLabel" name="pixmap">
+        <property name="scaledContents">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QLabel" name="label_10">
@@ -163,12 +164,6 @@
           </item>
           <item>
            <widget class="QProgressBar" name="visited_urls_capacity">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -246,6 +241,7 @@
  </widget>
  <resources>
   <include location="../Icons/icons.qrc"/>
+  <include location="../Images/images.qrc"/>
  </resources>
  <connections/>
 </ui>

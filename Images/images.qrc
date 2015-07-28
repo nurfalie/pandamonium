@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+	<file>pandamonium-logo.png</file>
+	<file>pandamonium-logo-font.png</file>
+    </qresource>
+</RCC>
