@@ -14,8 +14,8 @@
    <string>pandamonium</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../Icons/icons.qrc">
-    <normaloff>:/nuvola/www.png</normaloff>:/nuvola/www.png</iconset>
+   <iconset resource="../Images/images.qrc">
+    <normaloff>:/pandamonium-logo-font.png</normaloff>:/pandamonium-logo-font.png</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -763,6 +763,7 @@
  </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>
+  <include location="../Images/images.qrc"/>
  </resources>
  <connections/>
 </ui>
