@@ -53,6 +53,9 @@ class pandamonium_database
   static void createdb(void);
   static void exportUrl(const QString &str, const bool shouldDelete);
   static void markUrlAsVisited(const QUrl &url, const bool visited);
+  static void recordBrokenUrl(const QString &error_string,
+			      const QUrl &child_url,
+			      const QUrl &parent_url);
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);
   static void removeParsedUrls(const QList<QString> &list);

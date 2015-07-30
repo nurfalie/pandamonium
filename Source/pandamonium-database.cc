@@ -502,7 +502,8 @@ void pandamonium_database::createdb(void)
 {
   QList<QString> fileNames;
 
-  fileNames << "pandamonium_export_definition.db"
+  fileNames << "pandamonium_broken_urls.db"
+	    << "pandamonium_export_definition.db"
 	    << "pandamonium_kernel_command.db"
 	    << "pandamonium_parsed_urls.db"
 	    << "pandamonium_search_urls.db"
@@ -521,7 +522,14 @@ void pandamonium_database::createdb(void)
 	  {
 	    QSqlQuery query(pair.first);
 
-	    if(fileName == "pandamonium_export_definition.db")
+	    if(fileName == "pandamonium_broken_urls.db")
+	      query.exec
+		("CREATE TABLE IF NOT EXISTS pandamonium_broken_urls("
+		 "error_string TEXT NOT NULL, "
+		 "url TEXT NOT NULL, "
+		 "url_hash TEXT NOT NULL PRIMARY KEY, "
+		 "url_parent TEXT NOT NULL)");
+	    else if(fileName == "pandamonium_export_definition.db")
 	      {
 		query.exec
 		  ("CREATE TABLE IF NOT EXISTS pandamonium_export_definition("
@@ -721,6 +729,51 @@ void pandamonium_database::markUrlAsVisited
 
 	query.bindValue(0, url.toEncoded());
 	query.bindValue(1, visited ? 1 : 0);
+	query.exec();
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
+void pandamonium_database::recordBrokenUrl(const QString &error_string,
+					   const QUrl &child_url,
+					   const QUrl &parent_url)
+{
+  if(child_url.isEmpty() || !child_url.isValid() ||
+     parent_url.isEmpty() || !parent_url.isValid())
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_broken_urls.db");
+
+    if(pair.first.open())
+      {
+#if QT_VERSION >= 0x050100
+	QCryptographicHash hash(QCryptographicHash::Sha3_512);
+#elif QT_VERSION >= 0x050000
+	QCryptographicHash hash(QCryptographicHash::Sha512);
+#else
+	QCryptographicHash hash(QCryptographicHash::Sha1);
+#endif
+	QSqlQuery query(pair.first);
+
+	hash.addData(child_url.toEncoded());
+	query.prepare("INSERT OR REPLACE INTO pandamonium_broken_urls"
+		      "(error_string, url, url_hash, url_parent) "
+		      "VALUES(?, ?, ?, ?)");
+	query.bindValue(0, error_string.trimmed());
+	query.bindValue(1, child_url.toEncoded());
+	query.bindValue(2, hash.result().toHex().constData());
+	query.bindValue(3, parent_url.toEncoded());
 	query.exec();
       }
 

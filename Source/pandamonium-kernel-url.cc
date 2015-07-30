@@ -63,8 +63,7 @@ pandamonium_kernel_url::pandamonium_kernel_url
     {
       m_abortTimer.start();
 
-      QNetworkReply *reply = pandamonium_kernel::get
-	(QNetworkRequest(m_url));
+      QNetworkReply *reply = pandamonium_kernel::get(QNetworkRequest(m_url));
 
       reply->setParent(this);
       connectReplySignals(reply);
@@ -291,6 +290,8 @@ void pandamonium_kernel_url::slotError(QNetworkReply::NetworkError code)
 
   if(reply)
     {
+      pandamonium_database::recordBrokenUrl
+	(reply->errorString(), reply->url(), m_url);
       qDebug() << "Network error " << code << "!" << reply->url();
       reply->deleteLater();
     }
