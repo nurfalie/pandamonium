@@ -21,6 +21,7 @@ QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
 INCLUDEPATH +=
 
 FORMS = UI\\pandamonium.ui \
+	UI\\pandamonium_broken_links.ui \
 	UI\\pandamonium_export_definition.ui \
         UI\\pandamonium_statistics.ui \
 	UI\\pandamonium_statusbar.ui

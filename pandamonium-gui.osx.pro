@@ -13,6 +13,7 @@ INCLUDEPATH +=
 LIBS += -framework AppKit -framework Cocoa
 
 FORMS = UI/pandamonium.ui \
+	UI/pandamonium_broken_links.ui \
 	UI/pandamonium_export_definition.ui \
         UI/pandamonium_statistics.ui \
 	UI/pandamonium_statusbar.ui

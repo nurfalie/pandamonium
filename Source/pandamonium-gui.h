@@ -32,6 +32,7 @@
 #include <QTimer>
 
 #include "ui_pandamonium.h"
+#include "ui_pandamonium_broken_links.h"
 #include "ui_pandamonium_export_definition.h"
 #include "ui_pandamonium_statistics.h"
 #include "ui_pandamonium_statusbar.h"
@@ -45,14 +46,16 @@ class pandamonium_gui: public QMainWindow
   ~pandamonium_gui();
 
  private:
+  QMainWindow *m_brokenLinksWindow;
   QMainWindow *m_exportMainWindow;
   QMainWindow *m_statisticsMainWindow;
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
   QWidget *m_sbWidget;
-  Ui_pandamonium_mainwindow m_ui;
+  Ui_pandamonium_broken_links m_uiBrokenLinks;
   Ui_pandamonium_export m_uiExport;
+  Ui_pandamonium_mainwindow m_ui;
   Ui_pandamonium_statistics m_uiStatistics;
   Ui_pandamonium_statusbar m_sb;
   uint m_parsedLinksLastDateTime;
@@ -97,6 +100,7 @@ class pandamonium_gui: public QMainWindow
   void slotSaveProxyInformation(void);
   void slotSelectExportDatabase(void);
   void slotSelectKernelPath(void);
+  void slotShowBrokenLinksWindow(void);
   void slotShowStatisticsWindow(void);
   void slotTabIndexChanged(int index);
   void slotTableListTimeout(void);

@@ -51,6 +51,7 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 {
   QDir().mkdir(pandamonium_common::homePath());
   m_parsedLinksLastDateTime = 0;
+  m_brokenLinksWindow = new QMainWindow(this);
   m_exportMainWindow = new QMainWindow(this);
   m_statisticsMainWindow = new QMainWindow(this);
   m_statisticsMainWindow->setWindowFlags
@@ -63,6 +64,7 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 			     "border: none; "
 			     "}");
   statusBar()->setMaximumHeight(m_sbWidget->height());
+  m_uiBrokenLinks.setupUi(m_brokenLinksWindow);
   m_uiExport.setupUi(m_exportMainWindow);
   m_uiStatistics.setupUi(m_statisticsMainWindow);
   connect(&m_highlightTimer,
@@ -85,6 +87,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotAbout(void)));
+  connect(m_ui.action_Broken_Links,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotShowBrokenLinksWindow(void)));
   connect(m_ui.action_Export_Definition,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -1368,6 +1374,12 @@ void pandamonium_gui::slotSelectKernelPath(void)
       m_ui.kernel_path->setText(dialog.selectedFiles().value(0));
       saveKernelPath(dialog.selectedFiles().value(0));
     }
+}
+
+void pandamonium_gui::slotShowBrokenLinksWindow(void)
+{
+  center(m_brokenLinksWindow, this);
+  m_brokenLinksWindow->show();
 }
 
 void pandamonium_gui::slotShowStatisticsWindow(void)
