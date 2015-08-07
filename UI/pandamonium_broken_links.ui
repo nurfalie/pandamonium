@@ -33,6 +33,9 @@
       <property name="horizontalScrollMode">
        <enum>QAbstractItemView::ScrollPerPixel</enum>
       </property>
+      <property name="sortingEnabled">
+       <bool>true</bool>
+      </property>
       <attribute name="horizontalHeaderDefaultSectionSize">
        <number>150</number>
       </attribute>
@@ -50,6 +53,16 @@
       <column>
        <property name="text">
         <string>URL</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>Error String</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>URL Hash</string>
        </property>
       </column>
      </widget>
@@ -119,7 +132,7 @@
      <x>0</x>
      <y>0</y>
      <width>755</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
