@@ -89,6 +89,7 @@ class pandamonium_gui: public QMainWindow
   void slotPause(bool state);
   void slotProxyInformationToggled(bool state);
   void slotQuit(void);
+  void slotRefreshBrokenLinks(void);
   void slotRemoveAllParsedUrls(void);
   void slotRemoveSelectedParsedUrls(void);
   void slotRemoveSelectedSearchUrls(void);

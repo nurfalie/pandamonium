@@ -195,6 +195,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotToggleParsed(void)));
+  connect(m_uiBrokenLinks.action_Close,
+	  SIGNAL(triggered(void)),
+	  m_brokenLinksWindow,
+	  SLOT(close(void)));
   connect(m_uiExport.action_Close,
 	  SIGNAL(triggered(void)),
 	  m_exportMainWindow,
@@ -1170,6 +1174,10 @@ void pandamonium_gui::slotProxyInformationToggled(bool state)
 void pandamonium_gui::slotQuit(void)
 {
   QApplication::instance()->quit();
+}
+
+void pandamonium_gui::slotRefreshBrokenLinks(void)
+{
 }
 
 void pandamonium_gui::slotRemoveAllParsedUrls(void)
