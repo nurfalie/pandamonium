@@ -20,6 +20,77 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>&amp;Limit</string>
+        </property>
+        <property name="buddy">
+         <cstring>page_limit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="page_limit">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>1000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>2500</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>5000</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>7500</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>10000</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="page">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>Page 1</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </item>
+    <item>
      <widget class="QTableWidget" name="table">
       <property name="alternatingRowColors">
        <bool>true</bool>
@@ -132,7 +203,7 @@
      <x>0</x>
      <y>0</y>
      <width>755</width>
-     <height>25</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -153,6 +224,14 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>page_limit</tabstop>
+  <tabstop>page</tabstop>
+  <tabstop>table</tabstop>
+  <tabstop>refresh</tabstop>
+  <tabstop>remove_all</tabstop>
+  <tabstop>remove_selected</tabstop>
+ </tabstops>
  <resources>
   <include location="../Icons/icons.qrc"/>
   <include location="../Images/images.qrc"/>
