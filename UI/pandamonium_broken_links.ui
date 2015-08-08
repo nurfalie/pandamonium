@@ -46,21 +46,6 @@
           <string>2500</string>
          </property>
         </item>
-        <item>
-         <property name="text">
-          <string>5000</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>7500</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>10000</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>

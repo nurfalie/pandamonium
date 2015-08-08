@@ -398,7 +398,6 @@ void pandamonium_gui::populateBroken(void)
 	quint64 offset = static_cast<quint64> (limit * m_uiBrokenLinks.
 					       page->currentIndex());
 
-	m_uiBrokenLinks.page->clear();
 	m_uiBrokenLinks.table->setSortingEnabled(false);
 	query.setForwardOnly(true);
 	query.prepare
@@ -409,6 +408,8 @@ void pandamonium_gui::populateBroken(void)
 	if(query.exec())
 	  while(query.next())
 	    {
+	      m_uiBrokenLinks.table->setRowCount(row + 1);
+
 	      QTableWidgetItem *item = 0;
 
 	      item = new QTableWidgetItem(query.value(0).toString());
@@ -424,9 +425,6 @@ void pandamonium_gui::populateBroken(void)
 	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 	      m_uiBrokenLinks.table->setItem(row, 3, item);
 	      row += 1;
-
-	      if(row >= m_uiBrokenLinks.table->rowCount())
-		break;
 	    }
 
 	m_uiBrokenLinks.table->setSortingEnabled(true);
@@ -971,12 +969,11 @@ void pandamonium_gui::slotKernelToolButtonClicked(void)
 void pandamonium_gui::slotListParsedUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
+  m_ui.page->clear();
 
   QPair<quint64, quint64> numbers
     (pandamonium_database::unvisitedAndVisitedNumbers());
   quint64 i = 1;
-
-  m_ui.page->clear();
 
   do
     {
@@ -1284,7 +1281,7 @@ void pandamonium_gui::slotRefreshBrokenUrls(void)
 
 	QSqlQuery query(pair.first);
 	quint64 count = 0;
-	quint64 i = 0;
+	quint64 i = 1;
 
 	if(query.exec("SELECT COUNT(*) FROM pandamonium_broken_urls"))
 	  if(query.next())
