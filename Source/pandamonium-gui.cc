@@ -202,7 +202,11 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
   connect(m_uiBrokenLinks.refresh,
 	  SIGNAL(clicked(void)),
 	  this,
-	  SLOT(slotRefreshBrokenLinks(void)));
+	  SLOT(slotRefreshBrokenUrls(void)));
+  connect(m_uiBrokenLinks.remove_all,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveAllBrokenUrls(void)));
   connect(m_uiExport.action_Close,
 	  SIGNAL(triggered(void)),
 	  m_exportMainWindow,
@@ -560,11 +564,11 @@ void pandamonium_gui::slotExport(void)
   dialog.setAttribute(Qt::WA_MacMetalStyle, true);
 #endif
 #endif
-  dialog.setLabelText(tr("Exporting URL(s)..."));
+  dialog.setLabelText(tr("Exporting URL..."));
   dialog.setMaximum(m_ui.parsed_urls->rowCount());
   dialog.setMinimum(0);
   dialog.setWindowModality(Qt::ApplicationModal);
-  dialog.setWindowTitle(tr("Exporting URL(s)..."));
+  dialog.setWindowTitle(tr("Exporting URL..."));
   dialog.show();
   dialog.update();
 #ifndef Q_OS_MAC
@@ -815,10 +819,10 @@ void pandamonium_gui::slotKernelDatabaseTimeout(void)
 
   statistics << "Interface Uptime (Minutes)"
 	     << "Pages Discovered Per Minute (PPM)"
-	     << "Parsed URL(s)"
+	     << "Parsed URLs"
 	     << "Percent Remaining"
-	     << "Remaining URL(s)"
-	     << "Total URL(s) Discovered";
+	     << "Remaining URLs"
+	     << "Total URLs Discovered";
   values << (t_now - t_started) / 60
 	 << p
 	 << pandamonium_database::parsedLinksCount()
@@ -1180,7 +1184,7 @@ void pandamonium_gui::slotQuit(void)
   QApplication::instance()->quit();
 }
 
-void pandamonium_gui::slotRefreshBrokenLinks(void)
+void pandamonium_gui::slotRefreshBrokenUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
@@ -1244,10 +1248,21 @@ void pandamonium_gui::slotRefreshBrokenLinks(void)
   QApplication::restoreOverrideCursor();
 }
 
+void pandamonium_gui::slotRemoveAllBrokenUrls(void)
+{
+  if(!areYouSure(tr("Are you sure that you wish to remove all of "
+		    "the broken links?")))
+    return;
+
+  QFile::remove(pandamonium_common::homePath() + QDir::separator() +
+		"pandamonium_broken_urls.db");
+  slotRefreshBrokenUrls();
+}
+
 void pandamonium_gui::slotRemoveAllParsedUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove all of "
-		    "the parsed URL(s)?")))
+		    "the parsed URLs?")))
     return;
 
   QFile::remove(pandamonium_common::homePath() + QDir::separator() +
@@ -1264,7 +1279,7 @@ void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
     return;
 
   if(!areYouSure(tr("Are you sure that you wish to remove the selected "
-		    "URL(s)?")))
+		    "URLs?")))
     return;
 
   QList<QString> list;
