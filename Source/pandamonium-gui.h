@@ -62,6 +62,7 @@ class pandamonium_gui: public QMainWindow
   bool areYouSure(const QString &text);
   void center(QWidget *child, QWidget *parent);
   void closeEvent(QCloseEvent *event);
+  void populateBroken(void);
   void populateParsed(void);
   void processExportDatabase(const QString &path);
   void saveKernelPath(const QString &path);

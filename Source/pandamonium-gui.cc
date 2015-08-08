@@ -199,6 +199,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  m_brokenLinksWindow,
 	  SLOT(close(void)));
+  connect(m_uiBrokenLinks.page,
+	  SIGNAL(currentIndexChanged(int)),
+	  this,
+	  SLOT(slotPageChanged(int)));
   connect(m_uiBrokenLinks.refresh,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -367,6 +371,75 @@ void pandamonium_gui::closeEvent(QCloseEvent *event)
 
   settings.setValue("pandamonium_mainwindow", saveGeometry());
   QMainWindow::closeEvent(event);
+}
+
+void pandamonium_gui::populateBroken(void)
+{
+  QApplication::setOverrideCursor(Qt::BusyCursor);
+
+  m_uiBrokenLinks.table->clearContents();
+  m_uiBrokenLinks.table->setRowCount(0);
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = pandamonium_database::database();
+    pair.first.setDatabaseName
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_broken_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+	int row = 0;
+	quint64 limit = static_cast<quint64> (m_uiBrokenLinks.
+					      page_limit->currentText().
+					      toInt());
+	quint64 offset = static_cast<quint64> (limit * m_uiBrokenLinks.
+					       page->currentIndex());
+
+	m_uiBrokenLinks.page->clear();
+	m_uiBrokenLinks.table->setSortingEnabled(false);
+	query.setForwardOnly(true);
+	query.prepare
+	  (QString("SELECT url_parent, url, error_string, url_hash "
+		   "FROM pandamonium_broken_urls ORDER BY url_parent "
+		   "LIMIT %1 OFFSET %2").arg(limit).arg(offset));
+
+	if(query.exec())
+	  while(query.next())
+	    {
+	      QTableWidgetItem *item = 0;
+
+	      item = new QTableWidgetItem(query.value(0).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_uiBrokenLinks.table->setItem(row, 0, item);
+	      item = new QTableWidgetItem(query.value(1).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_uiBrokenLinks.table->setItem(row, 1, item);
+	      item = new QTableWidgetItem(query.value(2).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_uiBrokenLinks.table->setItem(row, 2, item);
+	      item = new QTableWidgetItem(query.value(3).toString());
+	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	      m_uiBrokenLinks.table->setItem(row, 3, item);
+	      row += 1;
+
+	      if(row >= m_uiBrokenLinks.table->rowCount())
+		break;
+	    }
+
+	m_uiBrokenLinks.table->setSortingEnabled(true);
+	m_uiBrokenLinks.table->horizontalHeader()->
+	  setSortIndicator(0, Qt::AscendingOrder);
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+  QApplication::restoreOverrideCursor();
 }
 
 void pandamonium_gui::populateParsed(void)
@@ -1121,8 +1194,17 @@ void pandamonium_gui::slotMonitorKernel(bool state)
 void pandamonium_gui::slotPageChanged(int index)
 {
   Q_UNUSED(index);
-  m_ui.page->repaint();
-  populateParsed();
+
+  if(m_uiBrokenLinks.page == sender())
+    {
+      m_uiBrokenLinks.page->repaint();
+      populateBroken();
+    }
+  else
+    {
+      m_ui.page->repaint();
+      populateParsed();
+    }
 }
 
 void pandamonium_gui::slotPause(bool state)
@@ -1188,9 +1270,6 @@ void pandamonium_gui::slotRefreshBrokenUrls(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
 
-  m_uiBrokenLinks.table->clearContents();
-  m_uiBrokenLinks.table->setRowCount(0);
-
   QPair<QSqlDatabase, QString> pair;
 
   {
@@ -1201,43 +1280,29 @@ void pandamonium_gui::slotRefreshBrokenUrls(void)
 
     if(pair.first.open())
       {
-	QSqlQuery query(pair.first);
-	int row = 0;
+	m_uiBrokenLinks.page->clear();
 
-	m_uiBrokenLinks.table->setSortingEnabled(false);
-	query.setForwardOnly(true);
+	QSqlQuery query(pair.first);
+	quint64 count = 0;
+	quint64 i = 0;
 
 	if(query.exec("SELECT COUNT(*) FROM pandamonium_broken_urls"))
 	  if(query.next())
-	    m_uiBrokenLinks.table->setRowCount(query.value(0).toInt());
+	    count = query.value(0).toULongLong();
 
-	if(query.exec("SELECT url_parent, url, error_string, url_hash "
-		      "FROM pandamonium_broken_urls ORDER BY url_parent"))
-	  while(query.next())
-	    {
-	      QTableWidgetItem *item = 0;
+	do
+	  {
+	    m_uiBrokenLinks.page->addItem(tr("Page %1").arg(i));
 
-	      item = new QTableWidgetItem(query.value(0).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_uiBrokenLinks.table->setItem(row, 0, item);
-	      item = new QTableWidgetItem(query.value(1).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_uiBrokenLinks.table->setItem(row, 1, item);
-	      item = new QTableWidgetItem(query.value(2).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_uiBrokenLinks.table->setItem(row, 2, item);
-	      item = new QTableWidgetItem(query.value(3).toString());
-	      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	      m_uiBrokenLinks.table->setItem(row, 3, item);
-	      row += 1;
+	    if(i > count / static_cast<quint64> (m_uiBrokenLinks.
+						 page_limit->
+						 currentText().
+						 toInt()))
+	      break;
 
-	      if(row >= m_uiBrokenLinks.table->rowCount())
-		break;
-	    }
-
-	m_uiBrokenLinks.table->setSortingEnabled(true);
-	m_uiBrokenLinks.table->horizontalHeader()->
-	  setSortIndicator(0, Qt::AscendingOrder);
+	    i += 1;
+	  }
+	while(true);
       }
 
     pair.first.close();
@@ -1246,6 +1311,7 @@ void pandamonium_gui::slotRefreshBrokenUrls(void)
 
   QSqlDatabase::removeDatabase(pair.second);
   QApplication::restoreOverrideCursor();
+  populateBroken();
 }
 
 void pandamonium_gui::slotRemoveAllBrokenUrls(void)

@@ -94,7 +94,7 @@ QList<QList<QVariant> > pandamonium_database::parsedLinks(const quint64 limit,
 	query.setForwardOnly(true);
 	query.prepare
 	  (QString("SELECT title, url FROM pandamonium_parsed_urls "
-		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2 ").
+		   "ORDER BY time_inserted DESC LIMIT %1 OFFSET %2").
 	   arg(limit).
 	   arg(offset));
 
