@@ -211,6 +211,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(clicked(void)),
 	  this,
 	  SLOT(slotRemoveAllBrokenUrls(void)));
+  connect(m_uiBrokenLinks.remove_selected,
+	  SIGNAL(clicked(void)),
+	  this,
+	  SLOT(slotRemoveSelectedBrokenUrls(void)));
   connect(m_uiExport.action_Close,
 	  SIGNAL(triggered(void)),
 	  m_exportMainWindow,
@@ -567,7 +571,7 @@ void pandamonium_gui::slotActivateKernel(void)
 #ifdef Q_OS_MAC
   if(QFileInfo(program).isBundle())
     {
-      QList<QString> list;
+      QStringList list;
 
       list << "-a" << program;
 
@@ -1333,6 +1337,35 @@ void pandamonium_gui::slotRemoveAllParsedUrls(void)
   slotListParsedUrls();
 }
 
+void pandamonium_gui::slotRemoveSelectedBrokenUrls(void)
+{
+  QModelIndexList indexes
+    (m_uiBrokenLinks.table->selectionModel()->selectedRows(3)); // URL Hash
+
+  if(indexes.isEmpty())
+    return;
+
+  if(!areYouSure(tr("Are you sure that you wish to remove the selected "
+		    "URLs?")))
+    return;
+
+  QStringList list;
+
+  while(!indexes.isEmpty())
+    {
+      QModelIndex index(indexes.takeFirst());
+
+      if(index.isValid())
+	list << index.data().toString();
+    }
+
+  if(!list.isEmpty())
+    {
+      pandamonium_database::removeBrokenUrls(list);
+      slotRefreshBrokenUrls();
+    }
+}
+
 void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
 {
   QModelIndexList indexes
@@ -1345,7 +1378,7 @@ void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
 		    "URLs?")))
     return;
 
-  QList<QString> list;
+  QStringList list;
 
   while(!indexes.isEmpty())
     {
@@ -1364,10 +1397,15 @@ void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
 
 void pandamonium_gui::slotRemoveSelectedSearchUrls(void)
 {
-  QList<QString> list;
   QModelIndexList indexes
     (m_ui.search_urls->selectionModel()->
      selectedRows(m_ui.search_urls->columnCount() - 1));
+
+  if(!areYouSure(tr("Are you sure that you wish to remove the selected "
+		    "URLs?")))
+    return;
+
+  QStringList list;
 
   while(!indexes.isEmpty())
     {

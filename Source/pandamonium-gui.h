@@ -93,6 +93,7 @@ class pandamonium_gui: public QMainWindow
   void slotRefreshBrokenUrls(void);
   void slotRemoveAllBrokenUrls(void);
   void slotRemoveAllParsedUrls(void);
+  void slotRemoveSelectedBrokenUrls(void);
   void slotRemoveSelectedParsedUrls(void);
   void slotRemoveSelectedSearchUrls(void);
   void slotRemoveUnvisitedVisitedUrls(void);

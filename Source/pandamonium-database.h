@@ -58,8 +58,9 @@ class pandamonium_database
 			      const QUrl &parent_url);
   static void recordKernelDeactivation(const qint64 process_id = 0);
   static void recordKernelProcessId(const qint64 process_id);
-  static void removeParsedUrls(const QList<QString> &list);
-  static void removeSearchUrls(const QList<QString> &list);
+  static void removeBrokenUrls(const QStringList &list);
+  static void removeParsedUrls(const QStringList &list);
+  static void removeSearchUrls(const QStringList &list);
   static void saveRequestInterval(const QString &request_interval,
 				  const QVariant &url_hash);
   static void saveSearchDepth(const QString &search_depth,

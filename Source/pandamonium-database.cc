@@ -500,7 +500,7 @@ void pandamonium_database::addSearchUrl(const QString &str)
 
 void pandamonium_database::createdb(void)
 {
-  QList<QString> fileNames;
+  QStringList fileNames;
 
   fileNames << "pandamonium_broken_urls.db"
 	    << "pandamonium_export_definition.db"
@@ -856,7 +856,42 @@ void pandamonium_database::recordKernelProcessId(const qint64 process_id)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandamonium_database::removeParsedUrls(const QList<QString> &list)
+void pandamonium_database::removeBrokenUrls(const QStringList &list)
+{
+  if(list.isEmpty())
+    return;
+
+  QPair<QSqlDatabase, QString> pair;
+
+  {
+    pair = database();
+    pair.first.setDatabaseName
+      (pandamonium_common::homePath() + QDir::separator() +
+       "pandamonium_broken_urls.db");
+
+    if(pair.first.open())
+      {
+	QSqlQuery query(pair.first);
+
+	query.exec("PRAGMA secure_delete = ON");
+
+	foreach(QString str, list)
+	  {
+	    query.prepare("DELETE FROM pandamonium_broken_urls "
+			  "WHERE url_hash = ?");
+	    query.bindValue(0, str);
+	    query.exec();
+	  }
+      }
+
+    pair.first.close();
+    pair.first = QSqlDatabase();
+  }
+
+  QSqlDatabase::removeDatabase(pair.second);
+}
+
+void pandamonium_database::removeParsedUrls(const QStringList &list)
 {
   if(list.isEmpty())
     return;
@@ -891,7 +926,7 @@ void pandamonium_database::removeParsedUrls(const QList<QString> &list)
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandamonium_database::removeSearchUrls(const QList<QString> &list)
+void pandamonium_database::removeSearchUrls(const QStringList &list)
 {
   if(list.isEmpty())
     return;
