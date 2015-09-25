@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
       p = new pandamonium_kernel();
       return qapplication.exec();
     }
-  catch(std::bad_alloc &exception)
+  catch(const std::bad_alloc &exception)
     {
       std::cerr << QObject::tr("Memory allocation error at line ").
 	toStdString()
