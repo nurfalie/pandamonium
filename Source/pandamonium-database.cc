@@ -553,7 +553,8 @@ void pandamonium_database::createdb(void)
 	      {
 		query.exec
 		  ("CREATE TABLE IF NOT EXISTS pandamonium_kernel_command("
-		   "command TEXT NOT NULL, "
+		   "command TEXT NOT NULL CHECK "
+		   "(command IN ('rove', 'terminate')), "
 		   "kernel_process_id INTEGER NOT NULL PRIMARY KEY)");
 		query.exec
 		  ("CREATE TRIGGER IF NOT EXISTS "
