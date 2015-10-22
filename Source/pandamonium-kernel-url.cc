@@ -84,19 +84,23 @@ void pandamonium_kernel_url::connectReplySignals(QNetworkReply *reply)
   connect(reply,
 	  SIGNAL(downloadProgress(qint64, qint64)),
 	  this,
-	  SLOT(slotDownloadProgress(qint64, qint64)));
+	  SLOT(slotDownloadProgress(qint64, qint64)),
+	  Qt::UniqueConnection);
   connect(reply,
 	  SIGNAL(error(QNetworkReply::NetworkError)),
 	  this,
-	  SLOT(slotError(QNetworkReply::NetworkError)));
+	  SLOT(slotError(QNetworkReply::NetworkError)),
+	  Qt::UniqueConnection);
   connect(reply,
 	  SIGNAL(finished(void)),
 	  this,
-	  SLOT(slotReplyFinished(void)));
+	  SLOT(slotReplyFinished(void)),
+	  Qt::UniqueConnection);
   connect(reply,
 	  SIGNAL(sslErrors(const QList<QSslError> &)),
 	  this,
-	  SLOT(slotSslErrors(const QList<QSslError> &)));
+	  SLOT(slotSslErrors(const QList<QSslError> &)),
+	  Qt::UniqueConnection);
 }
 
 void pandamonium_kernel_url::parseContent(void)
