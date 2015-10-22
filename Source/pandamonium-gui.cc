@@ -847,11 +847,8 @@ void pandamonium_gui::slotKernelDatabaseTimeout(void)
     (QString::number(pandamonium_database::kernelProcessId()));
 
   /*
-  ** Not for statistics.
+  ** Now for statistics.
   */
-
-  m_uiStatistics.statistics->clearContents();
-  m_uiStatistics.statistics->setRowCount(0);
 
   QList<qint64> values;
   QLocale locale;
@@ -904,27 +901,47 @@ void pandamonium_gui::slotKernelDatabaseTimeout(void)
 	 << static_cast<qint64> (percent)
 	 << numbers.first
 	 << numbers.first + numbers.second;
-  m_uiStatistics.statistics->setRowCount(statistics.size());
 
-  for(int i = 0; i < statistics.size(); i++)
+  bool initialize = true;
+
+  if(m_uiStatistics.statistics->rowCount() == 0)
+    m_uiStatistics.statistics->setRowCount(statistics.size());
+  else
+    initialize = false;
+
+  if(initialize)
     {
-      QLCDNumber *number = 0;
-      QTableWidgetItem *item = 0;
+      for(int i = 0; i < statistics.size(); i++)
+	{
+	  QLCDNumber *number = 0;
+	  QTableWidgetItem *item = 0;
 
-      item = new QTableWidgetItem();
-      item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-      item->setText(statistics.at(i));
-      m_uiStatistics.statistics->setItem(i, 0, item);
-      number = new QLCDNumber();
-      number->setDigitCount
-	(static_cast<int> (log10(std::numeric_limits<int>::max())));
-      number->display(static_cast<int> (values.at(i)));
-      number->setAutoFillBackground(true);
-      number->setSegmentStyle(QLCDNumber::Flat);
-      number->setStyleSheet
-	("QLCDNumber{color:rgb(102, 255, 0); background-color:black;}");
-      m_uiStatistics.statistics->setCellWidget(i, 1, number);
+	  item = new QTableWidgetItem();
+	  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	  item->setText(statistics.at(i));
+	  m_uiStatistics.statistics->setItem(i, 0, item);
+	  number = new QLCDNumber();
+	  number->setDigitCount
+	    (static_cast<int> (log10(std::numeric_limits<int>::max())));
+	  number->display(static_cast<int> (values.at(i)));
+	  number->setAutoFillBackground(true);
+	  number->setSegmentStyle(QLCDNumber::Flat);
+	  number->setStyleSheet
+	    ("QLCDNumber{color:rgb(102, 255, 0); background-color:black;}");
+	  m_uiStatistics.statistics->setCellWidget(i, 1, number);
+	}
     }
+  else
+    for(int i = 0; i < statistics.size(); i++)
+      {
+	QLCDNumber *number = qobject_cast<QLCDNumber *>
+	  (m_uiStatistics.statistics->cellWidget(i, 1));
+
+	if(!number)
+	  continue;
+
+	number->display(static_cast<int> (values.at(i)));
+      }
 
   m_uiStatistics.statistics->resizeColumnToContents(0);
 
