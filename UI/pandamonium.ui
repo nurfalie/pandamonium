@@ -667,7 +667,7 @@
      <x>0</x>
      <y>0</y>
      <width>885</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -690,7 +690,21 @@
     </property>
     <addaction name="action_About"/>
    </widget>
+   <widget class="QMenu" name="menu_Edit">
+    <property name="title">
+     <string>&amp;Edit</string>
+    </property>
+    <widget class="QMenu" name="menu_Icon_Set">
+     <property name="title">
+      <string>&amp;Icon Set</string>
+     </property>
+     <addaction name="action_Nuvola"/>
+     <addaction name="action_Vibrancy"/>
+    </widget>
+    <addaction name="menu_Icon_Set"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menu_Edit"/>
    <addaction name="menu_View"/>
    <addaction name="menu_About"/>
   </widget>
@@ -734,6 +748,22 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+B</string>
+   </property>
+  </action>
+  <action name="action_Nuvola">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Nuvola</string>
+   </property>
+  </action>
+  <action name="action_Vibrancy">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Vibrancy</string>
    </property>
   </action>
  </widget>

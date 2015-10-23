@@ -13,5 +13,18 @@
 	<file>nuvola/stop.png</file>
 	<file>nuvola/trashcan_empty.png</file>
 	<file>nuvola/www.png</file>
+	<file>vibrancy/bookmark_add.png</file>
+	<file>vibrancy/configure.png</file>
+	<file>vibrancy/editdelete.png</file>
+	<file>vibrancy/exit.png</file>
+	<file>vibrancy/fileexport.png</file>
+	<file>vibrancy/fileopen.png</file>
+	<file>vibrancy/filesave.png</file>
+	<file>vibrancy/online.png</file>
+	<file>vibrancy/reload.png</file>
+	<file>vibrancy/run.png</file>
+	<file>vibrancy/stop.png</file>
+	<file>vibrancy/trashcan_empty.png</file>
+	<file>vibrancy/www.png</file>
     </qresource>
 </RCC>

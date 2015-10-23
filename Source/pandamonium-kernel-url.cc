@@ -119,7 +119,7 @@ void pandamonium_kernel_url::parseContent(void)
     {
       QString content("");
 
-      s = m_content.indexOf("<meta");
+      s = m_content.toLower().indexOf("<meta");
 
       while(s >= 0)
 	{
@@ -138,7 +138,7 @@ void pandamonium_kernel_url::parseContent(void)
 	  if(bytes.toLower().contains("name=\"description\"") ||
 	     bytes.toLower().contains("name=\"keywords\""))
 	    {
-	      int s = meta.indexOf("content");
+	      int s = meta.toLower().indexOf("content");
 
 	      if(s >= 0)
 		{
@@ -155,7 +155,7 @@ void pandamonium_kernel_url::parseContent(void)
 		}
 	    }
 
-	  s = m_content.indexOf("<meta", e);
+	  s = m_content.toLower().indexOf("<meta", e);
 	}
 
       words = content.split(QRegExp("\\W+"), QString::SkipEmptyParts);
@@ -179,39 +179,39 @@ void pandamonium_kernel_url::parseContent(void)
     else
       words.takeFirst();
 
-  if((s = m_content.indexOf("<title>")) >= 0)
+  if((s = m_content.toLower().indexOf("<title>")) >= 0)
     {
-      int e = m_content.indexOf("</title>");
+      int e = m_content.toLower().indexOf("</title>");
 
       if(e >= s + 7)
 	title = m_content.mid(s + 7, e - s - 7).trimmed();
     }
 
   pandamonium_database::saveUrlMetaData(description, title, m_urlToLoad);
-  s = m_content.indexOf("<a");
+  s = m_content.toLower().indexOf("<a");
 
   while(s >= 0)
     {
       QByteArray a;
-      int e = m_content.indexOf("</a>", s);
+      int e = m_content.toLower().indexOf("</a>", s);
 
       if(e >= s - 4)
 	a = m_content.mid(s, e - s + 4);
       else
 	break;
 
-      s = m_content.indexOf("<a", e);
+      s = m_content.toLower().indexOf("<a", e);
 
       /*
       ** a = <a ...>...</a>
       */
 
-      if(a.contains("href"))
+      if(a.toLower().contains("href"))
 	{
 	  QByteArray href;
 	  QUrl url;
 	  int e = -1;
-	  int s = a.indexOf("href");
+	  int s = a.toLower().indexOf("href");
 
 	  s = a.indexOf("\"", s);
 	  e = a.indexOf("\"", s + 1);

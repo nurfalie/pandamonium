@@ -51,6 +51,7 @@ class pandamonium_gui: public QMainWindow
   QMainWindow *m_brokenLinksWindow;
   QMainWindow *m_exportMainWindow;
   QMainWindow *m_statisticsMainWindow;
+  QString m_iconName;
   QTimer m_highlightTimer;
   QTimer m_kernelDatabaseTimer;
   QTimer m_tableListTimer;
@@ -69,6 +70,7 @@ class pandamonium_gui: public QMainWindow
   void populateParsed(void);
   void processExportDatabase(const QString &path);
   void saveKernelPath(const QString &path);
+  void setIcons(void);
 
  private slots:
   void slotAbout(void);
@@ -107,6 +109,7 @@ class pandamonium_gui: public QMainWindow
   void slotSaveProxyInformation(void);
   void slotSelectExportDatabase(void);
   void slotSelectKernelPath(void);
+  void slotSetIcons(void);
   void slotShowBrokenLinksWindow(void);
   void slotShowStatisticsWindow(void);
   void slotStatisticsReady(const QList<QVariant> &statistics);

@@ -99,6 +99,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotExportDefinition(void)));
+  connect(m_ui.action_Nuvola,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotSetIcons(void)));
   connect(m_ui.action_Quit,
 	  SIGNAL(triggered(void)),
 	  this,
@@ -107,6 +111,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  this,
 	  SLOT(slotShowStatisticsWindow(void)));
+  connect(m_ui.action_Vibrancy,
+	  SIGNAL(triggered(void)),
+	  this,
+	  SLOT(slotSetIcons(void)));
   connect(m_ui.activate_kernel,
 	  SIGNAL(clicked(void)),
 	  this,
@@ -260,7 +268,26 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 
   QSettings settings;
 
+  if(settings.value("pandamonium_icon_name").toString().
+     toLower().trimmed() == "nuvola")
+    {
+      m_iconName = "nuvola";
+      m_ui.action_Nuvola->setChecked(true);
+    }
+  else if(settings.value("pandamonium_icon_name").toString().
+	  toLower().trimmed() == "vibrancy")
+    {
+      m_iconName = "vibrancy";
+      m_ui.action_Vibrancy->setChecked(true);
+    }
+  else
+    {
+      m_iconName = "nuvola";
+      m_ui.action_Nuvola->setChecked(true);
+    }
+
   restoreGeometry(settings.value("pandamonium_mainwindow").toByteArray());
+  setIcons();
   settings.remove("pandamonium_kernel_load_interval");
   show();
   statusBar()->showMessage(tr("Creating databases..."));
@@ -603,6 +630,48 @@ void pandamonium_gui::saveKernelPath(const QString &path)
   m_ui.kernel_path->selectAll();
 }
 
+void pandamonium_gui::setIcons(void)
+{
+  m_sb.kernel->setIcon
+    (QIcon(QString(":/%1/online.png").arg(m_iconName)));
+  m_ui.action_Quit->setIcon
+    (QIcon(QString(":/%1/exit.png").arg(m_iconName)));
+  m_ui.activate_kernel->setIcon
+    (QIcon(QString(":/%1/run.png").arg(m_iconName)));
+  m_ui.add_search_url->setIcon
+    (QIcon(QString(":/%1/bookmark_add.png").arg(m_iconName)));
+  m_ui.deactivate_kernel->setIcon
+    (QIcon(QString(":/%1/stop.png").arg(m_iconName)));
+  m_ui.export_toggled->setIcon
+    (QIcon(QString(":/%1/fileexport.png").arg(m_iconName)));
+  m_ui.list_parsed_urls->setIcon
+    (QIcon(QString(":/%1/reload.png").arg(m_iconName)));
+  m_ui.list_search_urls->setIcon
+    (QIcon(QString(":/%1/reload.png").arg(m_iconName)));
+  m_ui.purge_unvisited_visited_urls->setIcon
+    (QIcon(QString(":/%1/trashcan_empty.png").arg(m_iconName)));
+  m_ui.remove_all_parsed_urls->setIcon
+    (QIcon(QString(":/%1/editdelete.png").arg(m_iconName)));
+  m_ui.remove_search_urls->setIcon
+    (QIcon(QString(":/%1/editdelete.png").arg(m_iconName)));
+  m_ui.remove_selected_parsed_urls->setIcon
+    (QIcon(QString(":/%1/editdelete.png").arg(m_iconName)));
+  m_ui.select_kernel_path->setIcon
+    (QIcon(QString(":/%1/fileopen.png").arg(m_iconName)));
+  m_ui.tab_widget->setTabIcon
+    (0, QIcon(QString(":/%1/configure.png").arg(m_iconName)));
+  m_ui.tab_widget->setTabIcon
+    (1, QIcon(QString(":/%1/www.png").arg(m_iconName)));
+  m_uiBrokenLinks.refresh->setIcon
+    (QIcon(QString(":/%1/reload.png").arg(m_iconName)));
+  m_uiBrokenLinks.remove_all->setIcon
+    (QIcon(QString(":/%1/editdelete.png").arg(m_iconName)));
+  m_uiBrokenLinks.remove_selected->setIcon
+    (QIcon(QString(":/%1/editdelete.png").arg(m_iconName)));
+  m_uiExport.save->setIcon
+    (QIcon(QString(":/%1/filesave.png").arg(m_iconName)));
+}
+
 void pandamonium_gui::slotAbout(void)
 {
   QMessageBox mb(this);
@@ -877,7 +946,7 @@ void pandamonium_gui::slotHighlightTimeout(void)
   ** The status bar!
   */
 
-  QIcon icon(":/nuvola/online.png");
+  QIcon icon(QString(":/%1/online.png").arg(m_iconName));
   QPixmap pixmap;
 
   if(m_ui.kernel_pid->text().toLongLong() > 0)
@@ -1513,6 +1582,35 @@ void pandamonium_gui::slotSelectKernelPath(void)
       m_ui.kernel_path->setText(dialog.selectedFiles().value(0));
       saveKernelPath(dialog.selectedFiles().value(0));
     }
+}
+
+void pandamonium_gui::slotSetIcons(void)
+{
+  QSettings settings;
+
+  if(m_ui.action_Nuvola == sender())
+    {
+      m_iconName = "nuvola";
+      m_ui.action_Nuvola->setChecked(true);
+      m_ui.action_Vibrancy->setChecked(false);
+      settings.setValue("pandamonium_icon_name", "nuvola");
+    }
+  else if(m_ui.action_Vibrancy == sender())
+    {
+      m_iconName = "vibrancy";
+      m_ui.action_Nuvola->setChecked(false);
+      m_ui.action_Vibrancy->setChecked(true);
+      settings.setValue("pandamonium_icon_name", "vibrancy");
+    }
+  else
+    {
+      m_iconName = "nuvola";
+      m_ui.action_Nuvola->setChecked(true);
+      m_ui.action_Vibrancy->setChecked(false);
+      settings.setValue("pandamonium_icon_name", "nuvola");
+    }
+
+  setIcons();
 }
 
 void pandamonium_gui::slotShowBrokenLinksWindow(void)
