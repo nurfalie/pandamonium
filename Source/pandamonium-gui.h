@@ -76,6 +76,8 @@ class pandamonium_gui: public QMainWindow
   void slotAbout(void);
   void slotActivateKernel(void);
   void slotAddSearchUrl(void);
+  void slotCopySelectedURL(void);
+  void slotCustomContextMenuRequested(const QPoint &point);
   void slotDeactivateKernel(void);
   void slotDeleteExportedUrlsCheckBoxClicked(bool state);
   void slotDepthChanged(const QString &text);

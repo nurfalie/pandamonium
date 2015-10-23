@@ -25,6 +25,7 @@
 ** pandamonium, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+#include <QClipboard>
 #include <QComboBox>
 #include <QDateTime>
 #include <QFileDialog>
@@ -159,6 +160,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(currentIndexChanged(const QString &)),
 	  this,
 	  SLOT(slotSavePageLimit(const QString &)));
+  connect(m_ui.parsed_urls,
+	  SIGNAL(customContextMenuRequested(const QPoint &)),
+	  this,
+	  SLOT(slotCustomContextMenuRequested(const QPoint &)));
   connect(m_ui.periodically_list_parsed_urls,
 	  SIGNAL(toggled(bool)),
 	  this,
@@ -250,6 +255,7 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.setInterval(5000);
+  m_ui.parsed_urls->setContextMenuPolicy(Qt::CustomContextMenu);
   m_ui.search_urls->setColumnHidden
     (m_ui.search_urls->columnCount() - 1, true); // url_hash
 
@@ -733,6 +739,29 @@ void pandamonium_gui::slotAddSearchUrl(void)
 
   pandamonium_database::addSearchUrl(str);
   slotListSearchUrls();
+}
+
+void pandamonium_gui::slotCopySelectedURL(void)
+{
+  QClipboard *clipboard = QApplication::clipboard();
+
+  if(!clipboard)
+    return;
+
+  QTableWidgetItem *item = m_ui.parsed_urls->item
+    (m_ui.parsed_urls->currentRow(), 1);
+
+  if(item)
+    clipboard->setText(item->text());
+}
+
+void pandamonium_gui::slotCustomContextMenuRequested(const QPoint &point)
+{
+  QMenu menu(this);
+
+  menu.addAction(tr("&Copy Selected URL"), this,
+		 SLOT(slotCopySelectedURL(void)));
+  menu.exec(m_ui.parsed_urls->mapToGlobal(point));
 }
 
 void pandamonium_gui::slotDeactivateKernel(void)
