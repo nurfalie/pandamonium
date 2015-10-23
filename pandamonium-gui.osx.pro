@@ -3,6 +3,10 @@ LANGUAGE = C++
 QT += network sql widgets
 TEMPLATE = app
 
+greaterThan(QT_MAJOR_VERSION, 4) {
+QT += concurrent
+}
+
 QMAKE_CLEAN += pandamonium
 QMAKE_CXXFLAGS_RELEASE += -Wall -Wcast-align -Wcast-qual -Werror \
                           -Wextra -Wpointer-arith \

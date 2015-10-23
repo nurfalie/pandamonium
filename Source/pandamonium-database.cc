@@ -441,6 +441,8 @@ qint64 pandamonium_database::parsedLinksCount(void)
       {
 	QSqlQuery query(pair.first);
 
+	query.setForwardOnly(true);
+
 	if(query.exec("SELECT COUNT(*) FROM pandamonium_parsed_urls"))
 	  if(query.next())
 	    count = query.value(0).toLongLong();

@@ -28,6 +28,7 @@
 #ifndef _pandamonium_gui_h_
 #define _pandamonium_gui_h_
 
+#include <QFuture>
 #include <QMainWindow>
 #include <QTimer>
 
@@ -46,6 +47,7 @@ class pandamonium_gui: public QMainWindow
   ~pandamonium_gui();
 
  private:
+  QFuture<void> m_future;
   QMainWindow *m_brokenLinksWindow;
   QMainWindow *m_exportMainWindow;
   QMainWindow *m_statisticsMainWindow;
@@ -62,6 +64,7 @@ class pandamonium_gui: public QMainWindow
   bool areYouSure(const QString &text);
   void center(QWidget *child, QWidget *parent);
   void closeEvent(QCloseEvent *event);
+  void gatherStatistics(void);
   void populateBroken(void);
   void populateParsed(void);
   void processExportDatabase(const QString &path);
@@ -106,9 +109,13 @@ class pandamonium_gui: public QMainWindow
   void slotSelectKernelPath(void);
   void slotShowBrokenLinksWindow(void);
   void slotShowStatisticsWindow(void);
+  void slotStatisticsReady(const QList<QVariant> &statistics);
   void slotTabIndexChanged(int index);
   void slotTableListTimeout(void);
   void slotToggleParsed(void);
+
+ signals:
+  void statisticsReady(const QList<QVariant> &statistics);
 };
 
 #endif

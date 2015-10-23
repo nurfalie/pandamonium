@@ -38,6 +38,10 @@
 #include <QSqlField>
 #include <QSqlQuery>
 #include <QSqlRecord>
+#if QT_VERSION >= 0x050000
+#include <QtConcurrent>
+#endif
+#include <QtCore>
 #include <QtCore/qmath.h>
 #include <QtDebug>
 
@@ -231,6 +235,10 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
 	  SIGNAL(triggered(void)),
 	  m_statisticsMainWindow,
 	  SLOT(close(void)));
+  connect(this,
+	  SIGNAL(statisticsReady(const QList<QVariant> &)),
+	  this,
+	  SLOT(slotStatisticsReady(const QList<QVariant> &)));
   m_highlightTimer.start(2500);
   m_kernelDatabaseTimer.start(2500);
   m_tableListTimer.setInterval(5000);
@@ -375,6 +383,62 @@ void pandamonium_gui::closeEvent(QCloseEvent *event)
 
   settings.setValue("pandamonium_mainwindow", saveGeometry());
   QMainWindow::closeEvent(event);
+}
+
+void pandamonium_gui::gatherStatistics(void)
+{
+  QList<QVariant> statistics;
+
+  pandamonium_database::createdb();
+  statistics << QString::number(pandamonium_database::kernelProcessId());
+
+  /*
+  ** Now for statistics.
+  */
+
+  QPair<quint64, quint64> numbers
+    (pandamonium_database::unvisitedAndVisitedNumbers());
+  int percent = static_cast<int>
+    (100 *
+     static_cast<double> (numbers.first) /
+     static_cast<double> (qMax(static_cast<quint64> (1),
+			       numbers.first +
+			       numbers.second)));
+  uint t_now = QDateTime::currentDateTime().toTime_t();
+
+  /*
+  ** Static variables.
+  */
+
+  static int c = 0;
+  static quint64 p = 0;
+  static quint64 previous = 0;
+  static quint64 total = 0;
+  static uint t_started = t_now;
+
+  c += 1;
+
+  if(c >= 60 / (m_kernelDatabaseTimer.interval() / 1000))
+    {
+      p = total;
+      c = 0;
+      total = 0;
+    }
+  else if(c >= 2)
+    {
+      if(numbers.first + numbers.second >= previous)
+	total += numbers.first + numbers.second - previous;
+
+      previous = numbers.first + numbers.second;
+    }
+
+  statistics << (t_now - t_started) / 60
+	     << p
+	     << pandamonium_database::parsedLinksCount()
+	     << static_cast<qint64> (percent)
+	     << numbers.first
+	     << numbers.first + numbers.second;
+  emit statisticsReady(statistics);
 }
 
 void pandamonium_gui::populateBroken(void)
@@ -838,145 +902,10 @@ void pandamonium_gui::slotHighlightTimeout(void)
 
 void pandamonium_gui::slotKernelDatabaseTimeout(void)
 {
-  pandamonium_database::createdb();
+  if(!m_future.isFinished())
+    return;
 
-  if(m_ui.monitor_kernel->isChecked())
-    slotActivateKernel();
-
-  m_ui.kernel_pid->setText
-    (QString::number(pandamonium_database::kernelProcessId()));
-
-  /*
-  ** Now for statistics.
-  */
-
-  QList<qint64> values;
-  QLocale locale;
-  QPair<quint64, quint64> numbers
-    (pandamonium_database::unvisitedAndVisitedNumbers());
-  QStringList statistics;
-  int percent = static_cast<int>
-    (100 *
-     static_cast<double> (numbers.first) /
-     static_cast<double> (qMax(static_cast<quint64> (1),
-			       numbers.first +
-			       numbers.second)));
-  uint t_now = QDateTime::currentDateTime().toTime_t();
-
-  /*
-  ** Static variables.
-  */
-
-  static int c = 0;
-  static quint64 p = 0;
-  static quint64 previous = 0;
-  static quint64 total = 0;
-  static uint t_started = t_now;
-
-  c += 1;
-
-  if(c >= 60 / (m_kernelDatabaseTimer.interval() / 1000))
-    {
-      p = total;
-      c = 0;
-      total = 0;
-    }
-  else if(c >= 2)
-    {
-      if(numbers.first + numbers.second >= previous)
-	total += numbers.first + numbers.second - previous;
-
-      previous = numbers.first + numbers.second;
-    }
-
-  statistics << "Interface Uptime (Minutes)"
-	     << "Pages Discovered Per Minute (PPM)"
-	     << "Parsed URLs"
-	     << "Percent Remaining"
-	     << "Remaining URLs"
-	     << "Total URLs Discovered";
-  values << (t_now - t_started) / 60
-	 << p
-	 << pandamonium_database::parsedLinksCount()
-	 << static_cast<qint64> (percent)
-	 << numbers.first
-	 << numbers.first + numbers.second;
-
-  bool initialize = true;
-
-  if(m_uiStatistics.statistics->rowCount() == 0)
-    m_uiStatistics.statistics->setRowCount(statistics.size());
-  else
-    initialize = false;
-
-  if(initialize)
-    {
-      for(int i = 0; i < statistics.size(); i++)
-	{
-	  QLCDNumber *number = 0;
-	  QTableWidgetItem *item = 0;
-
-	  item = new QTableWidgetItem();
-	  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
-	  item->setText(statistics.at(i));
-	  m_uiStatistics.statistics->setItem(i, 0, item);
-	  number = new QLCDNumber();
-	  number->setDigitCount
-	    (static_cast<int> (log10(std::numeric_limits<int>::max())));
-	  number->display(static_cast<int> (values.at(i)));
-	  number->setAutoFillBackground(true);
-	  number->setSegmentStyle(QLCDNumber::Flat);
-	  number->setStyleSheet
-	    ("QLCDNumber{color:rgb(102, 255, 0); background-color:black;}");
-	  m_uiStatistics.statistics->setCellWidget(i, 1, number);
-	}
-    }
-  else
-    for(int i = 0; i < statistics.size(); i++)
-      {
-	QLCDNumber *number = qobject_cast<QLCDNumber *>
-	  (m_uiStatistics.statistics->cellWidget(i, 1));
-
-	if(!number)
-	  continue;
-
-	number->display(static_cast<int> (values.at(i)));
-      }
-
-  m_uiStatistics.statistics->resizeColumnToContents(0);
-
-  QStringList list;
-
-  list << (pandamonium_common::homePath() + QDir::separator() +
-	   "pandamonium_parsed_urls.db")
-       << (pandamonium_common::homePath() + QDir::separator() +
-	   "pandamonium_visited_urls.db");
-
-  for(int i = 0; i < list.size(); i++)
-    {
-      QFileInfo fileInfo(list.at(i));
-      QString toolTip("");
-      int percent = 0;
-
-      percent = static_cast<int>
-	(100 * (static_cast<double> (fileInfo.size()) /
-		static_cast<double> (pandamonium_common::
-				     maximum_database_size)));
-      toolTip = tr("%1 of %2 bytes consumed.").
-	arg(locale.toString(fileInfo.size())).
-	arg(locale.toString(pandamonium_common::maximum_database_size));
-
-      if(i == 0)
-	{
-	  m_uiStatistics.parsed_urls_capacity->setToolTip(toolTip);
-	  m_uiStatistics.parsed_urls_capacity->setValue(percent);
-	}
-      else
-	{
-	  m_uiStatistics.visited_urls_capacity->setToolTip(toolTip);
-	  m_uiStatistics.visited_urls_capacity->setValue(percent);
-	}
-    }
+  m_future = QtConcurrent::run(this, &pandamonium_gui::gatherStatistics);
 }
 
 void pandamonium_gui::slotKernelToolButtonClicked(void)
@@ -1281,6 +1210,11 @@ void pandamonium_gui::slotProxyInformationToggled(bool state)
 
 void pandamonium_gui::slotQuit(void)
 {
+  m_highlightTimer.stop();
+  m_kernelDatabaseTimer.stop();
+  m_tableListTimer.stop();
+  m_future.cancel();
+  m_future.waitForFinished();
   QApplication::instance()->quit();
 }
 
@@ -1591,6 +1525,112 @@ void pandamonium_gui::slotShowStatisticsWindow(void)
 {
   center(m_statisticsMainWindow, this);
   m_statisticsMainWindow->show();
+}
+
+void pandamonium_gui::slotStatisticsReady(const QList<QVariant> &statistics)
+{
+  if(m_ui.monitor_kernel->isChecked())
+    slotActivateKernel();
+
+  m_ui.kernel_pid->setText
+    (QString::number(statistics.value(0).toLongLong()));
+
+  /*
+  ** Now for statistics.
+  */
+
+  QList<qint64> values;
+  QLocale locale;
+  QStringList labels;
+
+  labels << "Interface Uptime (Minutes)"
+	 << "Pages Discovered Per Minute (PPM)"
+	 << "Parsed URLs"
+	 << "Percent Remaining"
+	 << "Remaining URLs"
+	 << "Total URLs Discovered";
+  values << statistics.value(1).toLongLong()
+	 << statistics.value(2).toLongLong()
+	 << statistics.value(3).toLongLong()
+	 << statistics.value(4).toLongLong()
+	 << statistics.value(5).toLongLong()
+	 << statistics.value(6).toLongLong();
+
+  bool initialize = true;
+
+  if(m_uiStatistics.statistics->rowCount() == 0)
+    m_uiStatistics.statistics->setRowCount(labels.size());
+  else
+    initialize = false;
+
+  if(initialize)
+    {
+      for(int i = 0; i < labels.size(); i++)
+	{
+	  QLCDNumber *number = 0;
+	  QTableWidgetItem *item = 0;
+
+	  item = new QTableWidgetItem();
+	  item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+	  item->setText(labels.at(i));
+	  m_uiStatistics.statistics->setItem(i, 0, item);
+	  number = new QLCDNumber();
+	  number->setDigitCount
+	    (static_cast<int> (log10(std::numeric_limits<int>::max())));
+	  number->display(static_cast<int> (values.at(i)));
+	  number->setAutoFillBackground(true);
+	  number->setSegmentStyle(QLCDNumber::Flat);
+	  number->setStyleSheet
+	    ("QLCDNumber{color:rgb(102, 255, 0); background-color:black;}");
+	  m_uiStatistics.statistics->setCellWidget(i, 1, number);
+	}
+    }
+  else
+    for(int i = 0; i < labels.size(); i++)
+      {
+	QLCDNumber *number = qobject_cast<QLCDNumber *>
+	  (m_uiStatistics.statistics->cellWidget(i, 1));
+
+	if(!number)
+	  continue;
+
+	number->display(static_cast<int> (values.at(i)));
+      }
+
+  m_uiStatistics.statistics->resizeColumnToContents(0);
+
+  QStringList list;
+
+  list << (pandamonium_common::homePath() + QDir::separator() +
+	   "pandamonium_parsed_urls.db")
+       << (pandamonium_common::homePath() + QDir::separator() +
+	   "pandamonium_visited_urls.db");
+
+  for(int i = 0; i < list.size(); i++)
+    {
+      QFileInfo fileInfo(list.at(i));
+      QString toolTip("");
+      int percent = 0;
+
+      percent = static_cast<int>
+	(100 * (static_cast<double> (fileInfo.size()) /
+		static_cast<double> (pandamonium_common::
+				     maximum_database_size)));
+      toolTip = tr("%1 of %2 bytes consumed.").
+	arg(locale.toString(fileInfo.size())).
+	arg(locale.toString(pandamonium_common::maximum_database_size));
+
+      if(i == 0)
+	{
+	  m_uiStatistics.parsed_urls_capacity->setToolTip(toolTip);
+	  m_uiStatistics.parsed_urls_capacity->setValue(percent);
+	}
+      else
+	{
+	  m_uiStatistics.visited_urls_capacity->setToolTip(toolTip);
+	  m_uiStatistics.visited_urls_capacity->setValue(percent);
+	}
+    }
 }
 
 void pandamonium_gui::slotTabIndexChanged(int index)
