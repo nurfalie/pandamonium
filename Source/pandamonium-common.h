@@ -43,7 +43,7 @@ extern "C"
 #endif
 #endif
 
-#define pandamonium_VERSION_STR "2015.10.23"
+#define pandamonium_VERSION_STR "2015.10.30"
 
 class pandamonium_common
 {
