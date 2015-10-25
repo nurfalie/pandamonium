@@ -308,6 +308,9 @@ void pandamonium_kernel_url::slotLoadNext(void)
   if(m_paused)
     return;
 
+  if(!findChildren<QNetworkReply *> ().isEmpty())
+    return;
+
   QUrl url(pandamonium_database::unvisitedChildUrl(m_url));
 
   if(url.isEmpty() || !url.isValid())
