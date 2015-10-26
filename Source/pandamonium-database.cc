@@ -232,7 +232,8 @@ QUrl pandamonium_database::unvisitedChildUrl(const QUrl &url)
 	query.prepare
 	  ("SELECT url, visited FROM pandamonium_visited_urls "
 	   "WHERE url LIKE ? AND visited = 0");
-	query.bindValue(0, (url.toEncoded() + "%").constData());
+	query.bindValue
+	  (0, (pandamonium_common::toEncoded(url) + "%").constData());
 
 	if(query.exec())
 	  if(query.next())
@@ -296,7 +297,7 @@ bool pandamonium_database::isUrlMetaDataOnly(const QUrl &url)
 	query.setForwardOnly(true);
 	query.prepare("SELECT meta_data_only "
 		      "FROM pandamonium_search_urls WHERE url = ?");
-	query.bindValue(0, url.toEncoded());
+	query.bindValue(0, pandamonium_common::toEncoded(url));
 
 	if(query.exec())
 	  if(query.next())
@@ -484,11 +485,11 @@ void pandamonium_database::addSearchUrl(const QString &str)
 #endif
 	QSqlQuery query(pair.first);
 
-	hash.addData(url.toEncoded());
+	hash.addData(pandamonium_common::toEncoded(url));
 	query.prepare("INSERT OR REPLACE INTO pandamonium_search_urls"
 		      "(url, url_hash) "
 		      "VALUES(?, ?)");
-	query.bindValue(0, url.toEncoded());
+	query.bindValue(0, pandamonium_common::toEncoded(url));
 	query.bindValue(1, hash.result().toHex().constData());
 	query.exec();
       }
@@ -630,7 +631,7 @@ void pandamonium_database::exportUrl
 	query.setForwardOnly(true);
 	query.prepare("SELECT description, title FROM "
 		      "pandamonium_parsed_urls WHERE url = ?");
-	query.bindValue(0, QUrl(str).toEncoded());
+	query.bindValue(0, pandamonium_common::toEncoded(QUrl(str)));
 
 	if(query.exec())
 	  if(query.next())
@@ -642,7 +643,7 @@ void pandamonium_database::exportUrl
 	    }
 
 	if(!ok)
-	  qDebug() << str << QUrl(str).toEncoded() << query.lastError();
+	  qDebug() << str << QUrl(str) << query.lastError();
       }
 
     pair.first.close();
@@ -676,7 +677,8 @@ void pandamonium_database::exportUrl
 		      arg(hash.value("field_url")));
 	query.bindValue(0, values.value(0).toUtf8());
 	query.bindValue(1, values.value(1).toUtf8());
-	query.bindValue(2, QUrl::fromEncoded(str.toUtf8()).toEncoded());
+	query.bindValue
+	  (2, pandamonium_common::toEncoded(QUrl::fromEncoded(str.toUtf8())));
 	ok = query.exec();
 
 	if(!ok)
@@ -730,7 +732,7 @@ void pandamonium_database::markUrlAsVisited
 			  "VALUES(?, ?)");
 	  }
 
-	query.bindValue(0, url.toEncoded());
+	query.bindValue(0, pandamonium_common::toEncoded(url));
 	query.bindValue(1, visited ? 1 : 0);
 	query.exec();
       }
@@ -769,14 +771,14 @@ void pandamonium_database::recordBrokenUrl(const QString &error_string,
 #endif
 	QSqlQuery query(pair.first);
 
-	hash.addData(child_url.toEncoded());
+	hash.addData(pandamonium_common::toEncoded(child_url));
 	query.prepare("INSERT OR REPLACE INTO pandamonium_broken_urls"
 		      "(error_string, url, url_hash, url_parent) "
 		      "VALUES(?, ?, ?, ?)");
 	query.bindValue(0, error_string.trimmed());
-	query.bindValue(1, child_url.toEncoded());
+	query.bindValue(1, pandamonium_common::toEncoded(child_url));
 	query.bindValue(2, hash.result().toHex().constData());
-	query.bindValue(3, parent_url.toEncoded());
+	query.bindValue(3, pandamonium_common::toEncoded(parent_url));
 	query.exec();
       }
 
@@ -917,7 +919,7 @@ void pandamonium_database::removeParsedUrls(const QStringList &list)
 	  {
 	    query.prepare("DELETE FROM pandamonium_parsed_urls "
 			  "WHERE url = ?");
-	    query.bindValue(0, QUrl(str).toEncoded());
+	    query.bindValue(0, pandamonium_common::toEncoded(QUrl(str)));
 	    query.exec();
 	  }
       }
@@ -1050,18 +1052,18 @@ void pandamonium_database::saveUrlMetaData(const QString &description,
 		      "VALUES(?, ?, ?, ?)");
 
 	if(description.trimmed().isEmpty())
-	  query.bindValue(0, url.toEncoded());
+	  query.bindValue(0, pandamonium_common::toEncoded(url));
 	else
 	  query.bindValue(0, description.trimmed());
 
 	query.bindValue(1, QDateTime::currentDateTime().toTime_t());
 
 	if(title.trimmed().isEmpty())
-	  query.bindValue(2, url.toEncoded());
+	  query.bindValue(2, pandamonium_common::toEncoded(url));
 	else
 	  query.bindValue(2, title.trimmed());
 
-	query.bindValue(3, url.toEncoded());
+	query.bindValue(3, pandamonium_common::toEncoded(url));
 	query.exec();
       }
 

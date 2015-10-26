@@ -36,6 +36,7 @@ extern "C"
 #include <QDir>
 #include <QNetworkProxy>
 #include <QSettings>
+#include <QUrl>
 
 #ifdef Q_OS_MAC
 #if QT_VERSION >= 0x050000
@@ -48,6 +49,19 @@ extern "C"
 class pandamonium_common
 {
  public:
+  static QByteArray toEncoded(const QUrl &url)
+  {
+#if QT_VERSION < 0x050000
+    QByteArray bytes(url.toEncoded());
+
+    bytes.replace("(", "%28");
+    bytes.replace(")", "%29");
+    return bytes;
+#else
+    return url.toEncoded();
+#endif
+  }
+
   static QNetworkProxy proxy(void)
   {
     QNetworkProxy proxy;
