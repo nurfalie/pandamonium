@@ -1145,6 +1145,28 @@ void pandamonium_gui::slotListSearchUrls(void)
 			      SLOT(slotDepthChanged(const QString &)));
 		      m_ui.search_urls->setCellWidget(row, i, comboBox);
 		    }
+		  else if(i == 4)
+		    {
+		      QTableWidgetItem *item = new QTableWidgetItem
+			(QUrl::fromEncoded(query.value(i).toByteArray()).
+			 toString());
+
+		      item->setFlags
+			(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+		      m_ui.search_urls->setItem(row, i, item);
+
+		      if(i == query.record().count() - 1)
+			if(selected.contains(item->text()))
+			  {
+			    QModelIndex index
+			      (m_ui.search_urls->model()->index(row, 0));
+
+			    m_ui.search_urls->selectionModel()->select
+			      (index,
+			       QItemSelectionModel::Rows |
+			       QItemSelectionModel::SelectCurrent);
+			  }
+		    }
 		  else
 		    {
 		      QTableWidgetItem *item = new QTableWidgetItem
