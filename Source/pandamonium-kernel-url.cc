@@ -149,7 +149,9 @@ void pandamonium_kernel_url::parseContent(void)
 
 		  if(e >= s)
 		    {
-		      content.append(meta.mid(s + 1, e - s - 1));
+		      content.append
+			(QString::fromUtf8(meta.mid(s + 1, e - s - 1).
+					   constData()));
 		      content.append(" ");
 		    }
 		}
@@ -184,7 +186,8 @@ void pandamonium_kernel_url::parseContent(void)
       int e = m_content.toLower().indexOf("</title>");
 
       if(e >= s + 7)
-	title = m_content.mid(s + 7, e - s - 7).trimmed();
+	title = QString::fromUtf8
+	  (m_content.mid(s + 7, e - s - 7).trimmed().constData());
     }
 
   pandamonium_database::saveUrlMetaData(description, title, m_urlToLoad);

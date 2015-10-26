@@ -1052,14 +1052,14 @@ void pandamonium_database::saveUrlMetaData(const QString &description,
 	if(description.trimmed().isEmpty())
 	  query.bindValue(0, url.toEncoded());
 	else
-	  query.bindValue(0, description.trimmed().toUtf8());
+	  query.bindValue(0, description.trimmed());
 
 	query.bindValue(1, QDateTime::currentDateTime().toTime_t());
 
 	if(title.trimmed().isEmpty())
 	  query.bindValue(2, url.toEncoded());
 	else
-	  query.bindValue(2, title.trimmed().toUtf8());
+	  query.bindValue(2, title.trimmed());
 
 	query.bindValue(3, url.toEncoded());
 	query.exec();
