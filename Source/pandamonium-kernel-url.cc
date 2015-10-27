@@ -344,10 +344,13 @@ void pandamonium_kernel_url::slotReplyFinished(void)
   pandamonium_database::markUrlAsVisited(m_urlToLoad, true);
 
   QNetworkReply *reply = qobject_cast<QNetworkReply *> (sender());
+  QNetworkReply::NetworkError code = QNetworkReply::NoError;
   bool redirect = false;
 
   if(reply)
     {
+      code = reply->error();
+
       QUrl redirectUrl
 	(reply->attribute(QNetworkRequest::
 			  RedirectionTargetAttribute).toUrl());
@@ -365,7 +368,7 @@ void pandamonium_kernel_url::slotReplyFinished(void)
 	  }
     }
 
-  if(!redirect)
+  if(code == QNetworkReply::NoError && redirect)
     parseContent();
 }
 

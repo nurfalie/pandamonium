@@ -1335,6 +1335,7 @@ void pandamonium_gui::slotQuit(void)
   m_tableListTimer.stop();
   m_future.cancel();
   m_future.waitForFinished();
+  close();
   QApplication::instance()->quit();
 }
 
@@ -1668,6 +1669,7 @@ void pandamonium_gui::slotShowBrokenLinksWindow(void)
 {
   center(m_brokenLinksWindow, this);
   m_brokenLinksWindow->show();
+  slotRefreshBrokenUrls();
 }
 
 void pandamonium_gui::slotShowStatisticsWindow(void)
