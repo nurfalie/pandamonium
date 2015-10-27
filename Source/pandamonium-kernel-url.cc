@@ -380,4 +380,6 @@ void pandamonium_kernel_url::slotSslErrors(const QList<QSslError> &errors)
 
   if(reply)
     reply->ignoreSslErrors();
+
+  qDebug() << "SSL errors " << errors << "!";
 }
