@@ -190,7 +190,8 @@ void pandamonium_kernel_url::parseContent(void)
 	  (m_content.mid(s + 7, e - s - 7).trimmed().constData());
     }
 
-  pandamonium_database::saveUrlMetaData(description, title, m_urlToLoad);
+  pandamonium_database::saveUrlMetaData
+    (m_content, description, title, m_urlToLoad);
   s = m_content.toLower().indexOf("<a");
 
   while(s >= 0)
@@ -368,7 +369,7 @@ void pandamonium_kernel_url::slotReplyFinished(void)
 	  }
     }
 
-  if(code == QNetworkReply::NoError && redirect)
+  if(code == QNetworkReply::NoError && !redirect)
     parseContent();
 }
 

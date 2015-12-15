@@ -330,13 +330,15 @@ bool pandamonium_database::saveExportDefinition
 
 	query.prepare("INSERT OR REPLACE INTO pandamonium_export_definition("
 		      "database_path, database_table, "
+		      "field_content, "
 		      "field_description, field_title, field_url) "
-		      "VALUES(?, ?, ?, ?, ?)");
+		      "VALUES(?, ?, ?, ?, ?, ?)");
 	query.bindValue(0, hash["database_path"]);
 	query.bindValue(1, hash["database_table"]);
-	query.bindValue(2, hash["field_description"]);
-	query.bindValue(3, hash["field_title"]);
-	query.bindValue(4, hash["field_url"]);
+	query.bindValue(2, hash["field_content"]);
+	query.bindValue(3, hash["field_description"]);
+	query.bindValue(4, hash["field_title"]);
+	query.bindValue(5, hash["field_url"]);
 	ok = query.exec();
       }
 
@@ -538,6 +540,7 @@ void pandamonium_database::createdb(void)
 		  ("CREATE TABLE IF NOT EXISTS pandamonium_export_definition("
 		   "database_path TEXT NOT NULL, "
 		   "database_table TEXT NOT NULL, "
+		   "field_content BLOB NOT NULL, "
 		   "field_description TEXT NOT NULL, "
 		   "field_title TEXT NOT NULL, "
 		   "field_url TEXT NOT NULL, "
@@ -570,6 +573,7 @@ void pandamonium_database::createdb(void)
 	    else if(fileName == "pandamonium_parsed_urls.db")
 	      query.exec
 		("CREATE TABLE IF NOT EXISTS pandamonium_parsed_urls("
+		 "content BLOB TEXT NOT NULL, "
 		 "description TEXT NOT NULL, " // Not a BLOB?
 		 "time_inserted INTEGER NOT NULL, "
 		 "title TEXT NOT NULL, "
@@ -615,7 +619,7 @@ void pandamonium_database::exportUrl
   */
 
   QPair<QSqlDatabase, QString> pair;
-  QStringList values;
+  QList<QVariant> values;
   bool ok = false;
 
   {
@@ -629,7 +633,7 @@ void pandamonium_database::exportUrl
 	QSqlQuery query(pair.first);
 
 	query.setForwardOnly(true);
-	query.prepare("SELECT description, title FROM "
+	query.prepare("SELECT content, description, title FROM "
 		      "pandamonium_parsed_urls WHERE url = ?");
 	query.bindValue(0, pandamonium_common::toEncoded(QUrl(str)));
 
@@ -637,8 +641,9 @@ void pandamonium_database::exportUrl
 	  if(query.next())
 	    {
 	      ok = true;
-	      values << query.value(0).toString().trimmed()
+	      values << query.value(0).toByteArray()
 		     << query.value(1).toString().trimmed()
+		     << query.value(2).toString().trimmed()
 		     << str;
 	    }
 
@@ -670,15 +675,17 @@ void pandamonium_database::exportUrl
 	QSqlQuery query(pair.first);
 
 	query.prepare(QString("INSERT OR REPLACE INTO %1("
-			      "%2, %3, %4) VALUES(?, ?, ?)").
+			      "%2, %3, %4, %5) VALUES(?, ?, ?, ?)").
 		      arg(hash.value("database_table")).
+		      arg(hash.value("field_content")).
 		      arg(hash.value("field_description")).
 		      arg(hash.value("field_title")).
 		      arg(hash.value("field_url")));
-	query.bindValue(0, values.value(0).toUtf8());
-	query.bindValue(1, values.value(1).toUtf8());
+	query.bindValue(0, values.value(0).toByteArray());
+	query.bindValue(1, values.value(1).toString().toUtf8());
+	query.bindValue(2, values.value(2).toString().toUtf8());
 	query.bindValue
-	  (2, pandamonium_common::toEncoded(QUrl::fromEncoded(str.toUtf8())));
+	  (3, pandamonium_common::toEncoded(QUrl::fromEncoded(str.toUtf8())));
 	ok = query.exec();
 
 	if(!ok)
@@ -1026,7 +1033,8 @@ void pandamonium_database::saveSearchDepth(const QString &search_depth,
   QSqlDatabase::removeDatabase(pair.second);
 }
 
-void pandamonium_database::saveUrlMetaData(const QString &description,
+void pandamonium_database::saveUrlMetaData(const QByteArray &content,
+					   const QString &description,
 					   const QString &title,
 					   const QUrl &url)
 {
@@ -1048,22 +1056,23 @@ void pandamonium_database::saveUrlMetaData(const QString &description,
 	QSqlQuery query(pair.first);
 
 	query.prepare("INSERT OR REPLACE INTO pandamonium_parsed_urls"
-		      "(description, time_inserted, title, url)"
-		      "VALUES(?, ?, ?, ?)");
+		      "(content, description, time_inserted, title, url)"
+		      "VALUES(?, ?, ?, ?, ?)");
+	query.bindValue(0, content);
 
 	if(description.trimmed().isEmpty())
-	  query.bindValue(0, pandamonium_common::toEncoded(url));
+	  query.bindValue(1, pandamonium_common::toEncoded(url));
 	else
-	  query.bindValue(0, description.trimmed());
+	  query.bindValue(1, description.trimmed());
 
-	query.bindValue(1, QDateTime::currentDateTime().toTime_t());
+	query.bindValue(2, QDateTime::currentDateTime().toTime_t());
 
 	if(title.trimmed().isEmpty())
-	  query.bindValue(2, pandamonium_common::toEncoded(url));
+	  query.bindValue(3, pandamonium_common::toEncoded(url));
 	else
-	  query.bindValue(2, title.trimmed());
+	  query.bindValue(3, title.trimmed());
 
-	query.bindValue(3, pandamonium_common::toEncoded(url));
+	query.bindValue(4, pandamonium_common::toEncoded(url));
 	query.exec();
       }
 

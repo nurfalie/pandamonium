@@ -65,7 +65,8 @@ class pandamonium_database
 				  const QVariant &url_hash);
   static void saveSearchDepth(const QString &search_depth,
 			      const QVariant &url_hash);
-  static void saveUrlMetaData(const QString &description,
+  static void saveUrlMetaData(const QByteArray &content,
+			      const QString &description,
 			      const QString &title,
 			      const QUrl &url);
 

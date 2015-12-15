@@ -876,12 +876,14 @@ void pandamonium_gui::slotExportDefinition(void)
       if(!comboBox || !item)
 	continue;
 
-      if(hash.value("field_description") == item->text())
+      if(hash.value("field_content") == item->text())
 	comboBox->setCurrentIndex(1);
-      else if(hash.value("field_title") == item->text())
+      else if(hash.value("field_description") == item->text())
 	comboBox->setCurrentIndex(2);
-      else if(hash.value("field_url") == item->text())
+      else if(hash.value("field_title") == item->text())
 	comboBox->setCurrentIndex(3);
+      else if(hash.value("field_url") == item->text())
+	comboBox->setCurrentIndex(4);
     }
 
   center(m_exportMainWindow, this);
@@ -931,6 +933,7 @@ void pandamonium_gui::slotExportTableSelected(void)
 	    m_uiExport.fields_table->setItem(i, 1, item);
 	    comboBox = new QComboBox();
 	    comboBox->addItem("-");
+	    comboBox->addItem("field_content");
 	    comboBox->addItem("field_description");
 	    comboBox->addItem("field_title");
 	    comboBox->addItem("field_url");
