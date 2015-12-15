@@ -368,6 +368,12 @@ void pandamonium_kernel_url::slotReplyFinished(void)
 	    connectReplySignals(reply);
 	  }
     }
+  else
+    {
+      // We'll consider this an error.
+
+      return;
+    }
 
   if(code == QNetworkReply::NoError && !redirect)
     parseContent();
