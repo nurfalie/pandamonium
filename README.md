@@ -5,10 +5,8 @@ may not properly encode quotes!
 
 Non-OS X
 
-qmake -o Makefile pandamonium.pro
-make (gmake, mingw32-make)
+qmake -o Makefile pandamonium.pro && make (gmake, mingw32-make)
 
 OS X
 
-qmake -o Makefile pandamonium.osx.pro
-make
+qmake -o Makefile pandamonium.osx.pro && make
