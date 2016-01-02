@@ -365,9 +365,9 @@ pandamonium_gui::~pandamonium_gui()
 {
 }
 
-bool pandamonium_gui::areYouSure(const QString &text)
+bool pandamonium_gui::areYouSure(const QString &text, QWidget *parent)
 {
-  QMessageBox mb(this);
+  QMessageBox mb(parent);
 
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
@@ -789,7 +789,7 @@ void pandamonium_gui::slotDepthChanged(const QString &text)
 
 void pandamonium_gui::slotExport(void)
 {
-  if(!areYouSure(tr("Have you prepared an export definition?")))
+  if(!areYouSure(tr("Have you prepared an export definition?"), this))
     return;
 
   m_ui.periodically_list_parsed_urls->setChecked(false);
@@ -1393,7 +1393,7 @@ void pandamonium_gui::slotRefreshBrokenUrls(void)
 void pandamonium_gui::slotRemoveAllBrokenUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove all of "
-		    "the broken links?")))
+		    "the broken links?"), m_brokenLinksWindow))
     return;
 
   QFile::remove(pandamonium_common::homePath() + QDir::separator() +
@@ -1404,7 +1404,7 @@ void pandamonium_gui::slotRemoveAllBrokenUrls(void)
 void pandamonium_gui::slotRemoveAllParsedUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove all of "
-		    "the parsed URLs?")))
+		    "the parsed URLs?"), this))
     return;
 
   QFile::remove(pandamonium_common::homePath() + QDir::separator() +
@@ -1421,7 +1421,7 @@ void pandamonium_gui::slotRemoveSelectedBrokenUrls(void)
     return;
 
   if(!areYouSure(tr("Are you sure that you wish to remove the selected "
-		    "URLs?")))
+		    "URLs?"), m_brokenLinksWindow))
     return;
 
   QStringList list;
@@ -1450,7 +1450,7 @@ void pandamonium_gui::slotRemoveSelectedParsedUrls(void)
     return;
 
   if(!areYouSure(tr("Are you sure that you wish to remove the selected "
-		    "URLs?")))
+		    "URLs?"), this))
     return;
 
   QStringList list;
@@ -1477,7 +1477,7 @@ void pandamonium_gui::slotRemoveSelectedSearchUrls(void)
      selectedRows(m_ui.search_urls->columnCount() - 1));
 
   if(!areYouSure(tr("Are you sure that you wish to remove the selected "
-		    "URLs?")))
+		    "URLs?"), this))
     return;
 
   QStringList list;
@@ -1500,7 +1500,7 @@ void pandamonium_gui::slotRemoveSelectedSearchUrls(void)
 void pandamonium_gui::slotRemoveUnvisitedVisitedUrls(void)
 {
   if(!areYouSure(tr("Are you sure that you wish to remove "
-		    "pandamonium_visited_urls.db?")))
+		    "pandamonium_visited_urls.db?"), this))
     return;
 
   QFile::remove(pandamonium_common::homePath() + QDir::separator() +

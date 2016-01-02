@@ -62,7 +62,7 @@ class pandamonium_gui: public QMainWindow
   Ui_pandamonium_statistics m_uiStatistics;
   Ui_pandamonium_statusbar m_sb;
   uint m_parsedLinksLastDateTime;
-  bool areYouSure(const QString &text);
+  bool areYouSure(const QString &text, QWidget *parent);
   void center(QWidget *child, QWidget *parent);
   void closeEvent(QCloseEvent *event);
   void gatherStatistics(void);
