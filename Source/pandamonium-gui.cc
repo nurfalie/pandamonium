@@ -1598,16 +1598,19 @@ void pandamonium_gui::slotSelectExportDatabase(void)
 {
   QFileDialog dialog(m_exportMainWindow);
 
-  dialog.setWindowTitle(tr("pandamonium: Select Export Database"));
-  dialog.setFileMode(QFileDialog::ExistingFile);
-  dialog.setDirectory(QDir::homePath());
-  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 #endif
+  dialog.setDirectory(QDir::homePath());
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+#ifdef Q_OS_MAC
+  dialog.setOption(QFileDialog::DontUseNativeDialog);
+#endif
+  dialog.setWindowTitle(tr("pandamonium: Select Export Database"));
 
   if(dialog.exec() == QDialog::Accepted)
     {
@@ -1621,16 +1624,16 @@ void pandamonium_gui::slotSelectKernelPath(void)
 {
   QFileDialog dialog(this);
 
-  dialog.setWindowTitle(tr("pandamonium: Select Kernel Path"));
-  dialog.setFileMode(QFileDialog::ExistingFile);
-  dialog.setDirectory(QDir::homePath());
-  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
   dialog.setAcceptMode(QFileDialog::AcceptOpen);
 #ifdef Q_OS_MAC
 #if QT_VERSION < 0x050000
   dialog.setAttribute(Qt::WA_MacMetalStyle, false);
 #endif
 #endif
+  dialog.setDirectory(QDir::homePath());
+  dialog.setFileMode(QFileDialog::ExistingFile);
+  dialog.setLabelText(QFileDialog::Accept, tr("&Select"));
+  dialog.setWindowTitle(tr("pandamonium: Select Kernel Path"));
 
   if(dialog.exec() == QDialog::Accepted)
     {
