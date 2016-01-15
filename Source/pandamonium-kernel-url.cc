@@ -353,8 +353,13 @@ void pandamonium_kernel_url::slotReplyFinished(void)
       code = reply->error();
 
       QUrl redirectUrl
-	(reply->attribute(QNetworkRequest::
-			  RedirectionTargetAttribute).toUrl());
+	(reply->attribute(QNetworkRequest::RedirectionTargetAttribute).
+	 toUrl());
+
+      if(!reply->attribute(QNetworkRequest::RedirectionTargetAttribute).
+	 isNull())
+	if(redirectUrl.isRelative())
+	  redirectUrl = m_url.resolved(redirectUrl);
 
       reply->deleteLater();
 
@@ -362,7 +367,6 @@ void pandamonium_kernel_url::slotReplyFinished(void)
 	if(redirectUrl.isValid())
 	  {
 	    redirect = true;
-	    redirectUrl = m_url.resolved(redirectUrl);
 	    reply = pandamonium_kernel::get(QNetworkRequest(redirectUrl));
 	    reply->setParent(this);
 	    connectReplySignals(reply);
