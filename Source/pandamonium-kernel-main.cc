@@ -41,11 +41,11 @@ static void signal_handler(int signal_number)
   static int fatal_error = 0;
 
   if(fatal_error)
-    _Exit(signal_number);
+    _Exit(signal_number); // Safe.
 
   fatal_error = 1;
-  pandamonium_database::recordKernelDeactivation(s_kernel_process_id);
-  _Exit(signal_number);
+  pandamonium_database::recordKernelDeactivation(s_kernel_process_id); // Not safe.
+  _Exit(signal_number); // Safe.
 }
 
 int main(int argc, char *argv[])
