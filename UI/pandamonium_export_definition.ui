@@ -39,7 +39,7 @@
       <item>
        <widget class="QPushButton" name="select">
         <property name="text">
-         <string>&amp;Select Export Database</string>
+         <string>&amp;Select Export Database...</string>
         </property>
        </widget>
       </item>
