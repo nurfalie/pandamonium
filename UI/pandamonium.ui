@@ -738,6 +738,10 @@
    </property>
   </action>
   <action name="action_About">
+   <property name="icon">
+    <iconset>
+     <normaloff>../Images/pandamonium-logo-font.png</normaloff>../Images/pandamonium-logo-font.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About...</string>
    </property>
