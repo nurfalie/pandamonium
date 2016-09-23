@@ -179,7 +179,7 @@ void pandamonium_kernel_url::parseContent(void)
 	description.append(" ");
       }
     else
-      words.takeFirst();
+      words.removeFirst();
 
   if((s = m_content.toLower().indexOf("<title>")) >= 0)
     {
