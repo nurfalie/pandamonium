@@ -597,9 +597,8 @@ void pandamonium_gui::processExportDatabase(const QString &path)
 		   SIGNAL(itemSelectionChanged(void)),
 		   this,
 		   SLOT(slotExportTableSelected(void)));
-	m_uiExport.fields_table->clearContents();
 	m_uiExport.fields_table->setRowCount(0);
-	m_uiExport.tables_table->clearContents();
+	m_uiExport.tables_table->setRowCount(0);
 	m_uiExport.tables_table->setRowCount(tables.size());
 
 	for(int i = 0; i < tables.size(); i++)
@@ -908,7 +907,6 @@ void pandamonium_gui::slotExportTableSelected(void)
 
     if(pair.first.open())
       {
-	m_uiExport.fields_table->clearContents();
 	m_uiExport.fields_table->setRowCount(0);
 
 	QSqlRecord record(pair.first.record(item->text()));
@@ -1053,7 +1051,6 @@ void pandamonium_gui::slotListSearchUrls(void)
   while(!list.isEmpty())
     selected << list.takeFirst().data().toString();
 
-  m_ui.search_urls->clearContents();
   m_ui.search_urls->setRowCount(0);
 
   QPair<QSqlDatabase, QString> pair;
