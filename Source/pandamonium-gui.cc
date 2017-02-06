@@ -477,8 +477,6 @@ void pandamonium_gui::gatherStatistics(void)
 void pandamonium_gui::populateBroken(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
-
-  m_uiBrokenLinks.table->clearContents();
   m_uiBrokenLinks.table->setRowCount(0);
 
   QPair<QSqlDatabase, QString> pair;
@@ -544,7 +542,6 @@ void pandamonium_gui::populateBroken(void)
 void pandamonium_gui::populateParsed(void)
 {
   QApplication::setOverrideCursor(Qt::BusyCursor);
-  m_ui.parsed_urls->clearContents();
   m_ui.parsed_urls->scrollToTop();
   m_ui.parsed_urls->setRowCount(0);
 
