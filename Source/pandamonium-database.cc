@@ -514,7 +514,7 @@ void pandamonium_database::createdb(void)
 	    << "pandamonium_search_urls.db"
 	    << "pandamonium_visited_urls.db";
 
-  foreach(QString fileName, fileNames)
+  foreach(const QString &fileName, fileNames)
     {
       QPair<QSqlDatabase, QString> pair;
 
@@ -887,7 +887,7 @@ void pandamonium_database::removeBrokenUrls(const QStringList &list)
 
 	query.exec("PRAGMA secure_delete = ON");
 
-	foreach(QString str, list)
+	foreach(const QString &str, list)
 	  {
 	    query.prepare("DELETE FROM pandamonium_broken_urls "
 			  "WHERE url_hash = ?");
