@@ -349,7 +349,7 @@ pandamonium_gui::pandamonium_gui(void):QMainWindow()
   m_ui.proxy_user->setText
     (settings.value("pandamonium_proxy_user").toString());
 
-  foreach(QString key, settings.allKeys())
+  foreach(const QString &key, settings.allKeys())
     if(key.startsWith("pandamonium_proxy"))
       {
 	m_ui.proxy_information->setChecked(true);
