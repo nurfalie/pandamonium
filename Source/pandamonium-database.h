@@ -42,7 +42,7 @@ class pandamonium_database
   static QList<QList<QVariant> > searchUrls(void);
   static QPair<QSqlDatabase, QString> database(void);
   static QPair<quint64, quint64> unvisitedAndVisitedNumbers(void);
-  static QUrl unvisitedChildUrl(const QUrl &url);
+  static QUrl unvisitedChildUrl(void);
   static bool isKernelActive(void);
   static bool isUrlMetaDataOnly(const QUrl &url);
   static bool saveExportDefinition(const QHash<QString, QString> &hash);

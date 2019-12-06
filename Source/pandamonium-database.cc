@@ -213,7 +213,7 @@ QPair<quint64, quint64> pandamonium_database::unvisitedAndVisitedNumbers(void)
   return numbers;
 }
 
-QUrl pandamonium_database::unvisitedChildUrl(const QUrl &url)
+QUrl pandamonium_database::unvisitedChildUrl(void)
 {
   QPair<QSqlDatabase, QString> pair;
   QUrl new_url;
@@ -231,9 +231,7 @@ QUrl pandamonium_database::unvisitedChildUrl(const QUrl &url)
 	query.setForwardOnly(true);
 	query.prepare
 	  ("SELECT url, visited FROM pandamonium_visited_urls "
-	   "WHERE url LIKE ? AND visited = 0");
-	query.bindValue
-	  (0, (pandamonium_common::toEncoded(url) + "%").constData());
+	   "WHERE visited = 0");
 
 	if(query.exec())
 	  if(query.next())

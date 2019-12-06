@@ -230,7 +230,9 @@ void pandamonium_kernel_url::parseContent(void)
 	  else if(href.startsWith("//"))
 	    url.setScheme(m_url.scheme());
 
-	  if(url.toString().startsWith(m_url.toString()))
+	  if(url.scheme() == "http" || url.scheme() == "https")
+	    pandamonium_database::markUrlAsVisited(url, false);
+	  else if(url.toString().startsWith(m_url.toString()))
 	    pandamonium_database::markUrlAsVisited(url, false);
 	}
     }
@@ -315,7 +317,7 @@ void pandamonium_kernel_url::slotLoadNext(void)
   if(!findChildren<QNetworkReply *> ().isEmpty())
     return;
 
-  QUrl url(pandamonium_database::unvisitedChildUrl(m_url));
+  QUrl url(pandamonium_database::unvisitedChildUrl());
 
   if(url.isEmpty() || !url.isValid())
     url = m_url; // Restart.

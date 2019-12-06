@@ -64,7 +64,11 @@ pandamonium_kernel::~pandamonium_kernel()
 
 QNetworkReply *pandamonium_kernel::get(const QNetworkRequest &request)
 {
-  return s_kernel->m_networkAccessManager->get(request);
+  QNetworkRequest r(request);
+
+  r.setRawHeader("Accept", "text/html");
+  r.setRawHeader("User-Agent", "Pandamonium");
+  return s_kernel->m_networkAccessManager->get(r);
 }
 
 void pandamonium_kernel::slotControlTimeout(void)
