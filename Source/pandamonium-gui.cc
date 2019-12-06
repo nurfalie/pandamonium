@@ -1470,6 +1470,9 @@ void pandamonium_gui::slotRemoveSelectedSearchUrls(void)
     (m_ui.search_urls->selectionModel()->
      selectedRows(m_ui.search_urls->columnCount() - 1));
 
+  if(indexes.isEmpty())
+    return;
+
   if(!areYouSure(tr("Are you sure that you wish to remove the selected "
 		    "URLs?"), this))
     return;
