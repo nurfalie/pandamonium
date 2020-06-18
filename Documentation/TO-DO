@@ -1,11 +1,8 @@
 Completed Items
 
-1.   Allow query interval. 0.50 seconds and beyond?
-2.   Interrupt loads.
-3.   Recover from network glitches.
-4.   Set the engine's proxy.
-5.   Store all site words.
-
-Remaining Items
-
-1.   QUrl::toEncoded() does not encode single quotes. Qt 4.x problem.
+- Allow query interval. 0.50 seconds and beyond?
+- Interrupt loads.
+- QUrl::toEncoded() does not encode single quotes. Qt 4.x problem.
+- Recover from network glitches.
+- Set the engine's proxy.
+- Store all site words.
